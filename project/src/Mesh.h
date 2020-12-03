@@ -10,7 +10,7 @@
 #include "Texture.h"
 
 class Mesh {
-	//std::vector<glm::vec4> vertices;
+	std::vector<glm::vec4> vertices;
 	//std::vector<glm::vec2> uvs;
 	//std::vector<glm::vec3> normals;
 	//std::vector<unsigned int> indices;
@@ -21,14 +21,15 @@ class Mesh {
 	Shader* shader;
 public:
 	Mesh(
-		std::vector<glm::vec4> vertices, 
-		std::vector<glm::vec2> uvs, 
-		std::vector<glm::vec3> normals, 
+		std::vector<glm::vec4> vertices,
+		std::vector<glm::vec2> uvs,
+		std::vector<glm::vec3> normals,
 		std::vector<unsigned int> indices,
 		Texture* texture
 	);
 	~Mesh();
 
+	std::vector<glm::vec4> getVertices();
 	VertexArray* getVertexArray();
 	IndexBuffer* getIndexBuffer();
 	Texture* getTexture();

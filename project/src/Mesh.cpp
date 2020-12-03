@@ -1,12 +1,13 @@
 #include "Mesh.h"
 
 Mesh::Mesh(
-	std::vector<glm::vec4> vertices, 
-	std::vector<glm::vec2> uvs, 
-	std::vector<glm::vec3> normals, 
+	std::vector<glm::vec4> vertices,
+	std::vector<glm::vec2> uvs,
+	std::vector<glm::vec3> normals,
 	std::vector<unsigned int> indices,
 	Texture* texture
 ) {
+	this->vertices = vertices;
 
 	Buffer* vertexBuffer = new Buffer(vertices);
 	Buffer* uvBuffer = new Buffer(uvs);
@@ -26,6 +27,10 @@ Mesh::Mesh(
 Mesh::~Mesh() {
 	delete vertexArray;
 	delete indexBuffer;
+}
+
+std::vector<glm::vec4> Mesh::getVertices() {
+	return vertices;
 }
 
 VertexArray* Mesh::getVertexArray() {

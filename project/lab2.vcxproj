@@ -96,8 +96,12 @@
     <ClCompile Include="src\buffers\Buffer.cpp" />
     <ClCompile Include="src\buffers\IndexBuffer.cpp" />
     <ClCompile Include="src\buffers\VertexArray.cpp" />
+    <ClCompile Include="src\Collider.cpp" />
+    <ClCompile Include="src\ColliderFloor.cpp" />
+    <ClCompile Include="src\CollisionManager.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Math.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Shader.cpp" />
@@ -107,6 +111,10 @@
     <ClInclude Include="src\buffers\Buffer.h" />
     <ClInclude Include="src\buffers\IndexBuffer.h" />
     <ClInclude Include="src\buffers\VertexArray.h" />
+    <ClInclude Include="src\Collider.h" />
+    <ClInclude Include="src\ColliderFloor.h" />
+    <ClInclude Include="src\CollisionManager.h" />
+    <ClInclude Include="src\Math.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Shader.h" />
