@@ -99,13 +99,20 @@
     <ClCompile Include="src\Collider.cpp" />
     <ClCompile Include="src\ColliderFloor.cpp" />
     <ClCompile Include="src\CollisionManager.cpp" />
+    <ClCompile Include="src\Math.cpp" />
+    <ClCompile Include="src\buffers\WaterFrameBuffer.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Math.cpp" />
+    <ClCompile Include="src\MainRenderer.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\Renderable.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\Water.cpp" />
+    <ClCompile Include="src\WaterRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\buffers\Buffer.h" />
@@ -115,10 +122,17 @@
     <ClInclude Include="src\ColliderFloor.h" />
     <ClInclude Include="src\CollisionManager.h" />
     <ClInclude Include="src\Math.h" />
+    <ClInclude Include="src\buffers\WaterFrameBuffer.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Water.h" />
+    <ClInclude Include="src\MainRenderer.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Model.h" />
+    <ClInclude Include="src\Renderable.h" />
+    <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\WaterRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\sha.frag" />
@@ -127,6 +141,10 @@
     <None Include="src\shaders\simple - Copy.vert" />
     <None Include="src\shaders\simple.frag" />
     <None Include="src\shaders\simple.vert" />
+    <None Include="src\shaders\water.frag" />
+    <None Include="src\shaders\water.vert" />
+    <None Include="src\shaders\WaterShader.frag" />
+    <None Include="src\shaders\WaterShader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

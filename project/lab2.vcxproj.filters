@@ -55,6 +55,25 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ColliderFloor.cpp">
+    <ClCompile Include="src\MainRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Water.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\buffers\WaterFrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WaterRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -90,6 +109,25 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ColliderFloor.h">
+    <ClInclude Include="src\Renderable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MainRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WaterRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Water.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\buffers\WaterFrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -110,6 +148,18 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="src\shaders\simple.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\shaders\water.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\shaders\water.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\shaders\WaterShader.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\shaders\WaterShader.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
