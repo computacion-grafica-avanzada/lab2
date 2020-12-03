@@ -13,6 +13,8 @@
 #include <fstream>
 #include "Model.h"
 #include "Shader.h"
+#include "ColliderFloor.h"
+#include "Collider.h"
 
 using namespace std;
 
@@ -21,7 +23,7 @@ GLuint shaderprogram; // handle for shader program
 GLuint vao, vbo[2]; // handles for our VAO and two VBOs
 float r = 0;
 
-  
+
 // loadFile - loads text file into char* fname
 // allocates memory - so need to delete after use
 const char* loadFile(char* fname)
@@ -166,7 +168,7 @@ void init(void)
 	//	1.0,  1.0,  0.0,
 	//	1.0,  0.0,  0.0 }; // yellow
 
-	const GLfloat pyramid[18] = {     
+	const GLfloat pyramid[18] = {
 		-0.5, 0.0, 0.0,
 		0.5, 0.0, 0.0,
 		0.0, 0.5, 0.0
@@ -248,19 +250,67 @@ void cleanup(void)
 	glDeleteVertexArrays(1, &vao);
 }
 
+void testFloorCollisions()
+{
+	glm::vec3 v1, v2, v3, pos;
 
-int main(int argc, char *argv[]) {
+	v1 = glm::vec3(-0.5f, 0, 0);
+	v2 = glm::vec3(0.5f, 0, 0);
+	v3 = glm::vec3(0.5f, 0.69f, 0.721);
+
+	pos = glm::vec3(0.2f, 1.0f, 0.315f);
+
+	printf("Is point in triangle: %s", ColliderFloor::isPointInTriangle(v1, v2, v3, pos) ? "true" : "false");
+	printf("\nHeight of point: %.6f", ColliderFloor::heightOfTriangleAtPos(v1, v2, v3, pos));
+
+	pos = glm::vec3(1.0f, 1.0f, 0.315f);
+	printf("\nIs point in triangle: %s", ColliderFloor::isPointInTriangle(v1, v2, v3, pos) ? "true" : "false");
+}
+
+void testSphereSphereCollisions()
+{
+	Collider* sphere1 = new Collider(0, 1, 0.5f);
+	sphere1->pos = glm::vec3(0, 0.5f, -1);
+	Collider* sphere2 = new Collider(1, 1, 0.5f);
+	sphere2->pos = glm::vec3(0.5f, 0.5f, -1.5f);
+
+	Collider::solveCollisionSphereSphere(sphere1, sphere2);
+
+	printf("\nSphere 1 pos: (%.6f, %.6f, %.6f)", sphere1->pos.x, sphere1->pos.y, sphere1->pos.z);
+	printf("\nSphere 2 pos: (%.6f, %.6f, %.6f)", sphere2->pos.x, sphere2->pos.y, sphere2->pos.z);
+}
+
+void testSphereBoxCollisions()
+{
+	Collider* sphere = new Collider(0, 1, 0.5f);
+	sphere->pos = glm::vec3(0.15f, 0.5f, -0.5f);
+	Collider* box = new Collider(1, 0, 1, 1, 1);
+	box->pos = glm::vec3(-0.1f, 0.5f, 0.3f);
+
+	Collider::solveCollisionSphereBox(sphere, box);
+
+	printf("\nSphere pos: (%.6f, %.6f, %.6f)", sphere->pos.x, sphere->pos.y, sphere->pos.z);
+	printf("\nBox pos: (%.6f, %.6f, %.6f)", box->pos.x, box->pos.y, box->pos.z);
+}
+
+int main(int argc, char* argv[]) {
+	// COLLISION TESTS
+	//testFloorCollisions();
+	//testSphereSphereCollisions();
+	//testSphereBoxCollisions();
+	//return 0;
+
 	//INICIALIZACION
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
 		SDL_Log("Failed to initialize SDL: %s", SDL_GetError());
 		return 1;
 	}
 
-	SDL_Window *window = NULL;
+	SDL_Window* window = NULL;
 	SDL_GLContext gl_context;
 
-	window = SDL_CreateWindow("Ventana", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 
-																	800, 800, SDL_WINDOW_OPENGL);
+	window = SDL_CreateWindow("Ventana", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+		800, 800, SDL_WINDOW_OPENGL);
 
 	gl_context = SDL_GL_CreateContext(window);
 	//disable limit of 60fps

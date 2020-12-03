@@ -56,7 +56,9 @@ void Collider::solveCollisionSphereSphere(Collider* s1, Collider* s2)
 	// Checks if the collision exists.
 	if (Math::distSquared(s1->pos, s2->pos) < (s1->radius + s2->radius) * (s1->radius + s2->radius))
 	{
-		glm::vec3 newDist = glm::normalize(s1->pos - s2->pos) * s1->radius + s2->radius;
+		printf("\nCollision detected!");
+
+		glm::vec3 newDist = glm::normalize(s1->pos - s2->pos) * (s1->radius + s2->radius);
 		// The lighter object corrects its position
 		if (s1->mass == 0 || (s1->mass > s2->mass && s2->mass != 0))
 		{
@@ -100,11 +102,16 @@ void Collider::solveCollisionBoxBox(Collider* b1, Collider* b2)
 
 void Collider::solveCollisionSphereBox(Collider* s, Collider* b)
 {
+	if (s->type != sphere || b->type != box)
+	{
+		return;
+	}
+
 	glm::vec3 closestPoint;
 	// get box closest point to sphere center by clamping
-	closestPoint.x = std::max(b->pos.x - b->width / 2, std::min(s->pos.x, b->pos.x + b->width / 2));
-	closestPoint.y = std::max(b->pos.y - b->height / 2, std::min(s->pos.y, b->pos.y + b->height / 2));
-	closestPoint.z = std::max(b->pos.z - b->depth / 2, std::min(s->pos.z, b->pos.z + b->depth / 2));
+	closestPoint.x = std::max(b->pos.x - b->width / 2.0f, std::min(s->pos.x, b->pos.x + b->width / 2.0f));
+	closestPoint.y = std::max(b->pos.y - b->height / 2.0f, std::min(s->pos.y, b->pos.y + b->height / 2.0f));
+	closestPoint.z = std::max(b->pos.z - b->depth / 2.0f, std::min(s->pos.z, b->pos.z + b->depth / 2.0f));
 
 	// this is the same as the sphere-sphere collision detection
 	float distSq = Math::distSquared(closestPoint, s->pos);
@@ -115,16 +122,18 @@ void Collider::solveCollisionSphereBox(Collider* s, Collider* b)
 	// Checks if the collision exists.
 	if (distSq < radiusSq)
 	{
-		glm::vec3 intersec = glm::normalize(closestPoint - s->pos) * std::sqrt(distSq);
+		printf("\nCollision detected!");
+		glm::vec3 intersec = glm::normalize(closestPoint - s->pos) * (s->radius - std::sqrt(distSq));
+		//printf("\nIntersec: (%.6f, %.6f, %.6f)", intersec.x, intersec.y, intersec.z);
 
 		// The lighter object corrects its position
 		if (s->mass == 0 || (s->mass > b->mass && b->mass != 0))
 		{
-			s->pos += intersec;
+			b->pos += intersec;
 		}
 		else
 		{
-			b->pos -= intersec;
+			s->pos -= intersec;
 		}
 	}
 }
