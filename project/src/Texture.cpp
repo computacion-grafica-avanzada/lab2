@@ -1,6 +1,6 @@
 #include "Texture.h"
 
-BYTE* loadImage(const char* filename, GLsizei &width, GLsizei &height) {
+BYTE* loadImage(const char* filename, GLsizei &width, GLsizei &height, bool &transparency) {
     FREE_IMAGE_FORMAT fif = FreeImage_GetFIFFromFilename(filename);
     FIBITMAP* bitmap = FreeImage_Load(fif, filename);
 
@@ -20,6 +20,7 @@ BYTE* loadImage(const char* filename, GLsizei &width, GLsizei &height) {
     width = FreeImage_GetWidth(bitmap);
     height = FreeImage_GetHeight(bitmap);
     BYTE* pixels = FreeImage_GetBits(bitmap);
+    transparency = FreeImage_IsTransparent(bitmap);
 
     if ((pixels == 0) || (width == 0) || (height == 0)) {
         return NULL;
@@ -27,9 +28,9 @@ BYTE* loadImage(const char* filename, GLsizei &width, GLsizei &height) {
     return pixels;
 }
 
-Texture::Texture(const std::string& filename, bool hasTransparency) : filename(filename) {
-    BYTE* pixels = loadImage(filename.c_str(), width, height);
-    this->transparency = hasTransparency;
+Texture::Texture(const std::string& filename) : filename(filename) {
+    BYTE* pixels = loadImage(filename.c_str(), width, height, transparency);
+    //this->transparency = hasTransparency;
 
     glGenTextures(1, &textureID);
     bind();

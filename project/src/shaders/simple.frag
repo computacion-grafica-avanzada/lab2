@@ -38,6 +38,10 @@ void main() {
 	vec4 textureColor = texture(textureSampler, In.textureCoord);
 
 	outColor = textureColor * (ambientColor + diffuseColor);
+	// remove transparent pixels
+	if (textureColor.a < 0.5) {
+		discard;
+	}
 	//outColor = vec4(1.0,0.0,1.0,1.0);
 	outColor = textureColor * vec4(1,1,1,1);
 }
