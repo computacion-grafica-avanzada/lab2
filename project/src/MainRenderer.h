@@ -22,5 +22,8 @@ public:
 	static void load(WaterRenderer* renderer);
 	static void unload(WaterRenderer* renderer);
 
+	static void enable_culling();
+	static void disable_culling();
+
 	static void render();
 };

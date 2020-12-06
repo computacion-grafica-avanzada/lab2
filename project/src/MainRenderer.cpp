@@ -31,33 +31,32 @@ void MainRenderer::render() {
 	float pitch = camera->GetPitch();
 
 	// move camera under plane
-	float distance = 2 * (cameraPosition.y - 15); //waterHeight
+	float distance = 2 * (cameraPosition.y - 4); //waterHeight
 	cameraPosition.y -= distance;
-	//cameraPosition.y *= -1;
-	////pitch *= -1;
+	pitch *= -1;
 	camera->SetPosition(cameraPosition);
-	//camera->SetPitch(pitch);
+	camera->SetPitch(pitch);
 
-	// Render the scene in the reflection buffer
+	 //Render the scene in the reflection buffer
 	waterFrameBuffer->bindReflectionBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	for (Renderer* renderer : renderers) {
-		renderer->enableClipPlane(glm::vec4(0, 1, 0, -15)); //TODO change to water height if different than 0
+		renderer->enableClipPlane(glm::vec4(0, 1, 0, -4)); //TODO change to water height if different than 0
 		renderer->render();
 		renderer->disableClipPlane();
 	}
 	waterFrameBuffer->unbindBuffer();
 
-	//// move camera back over plane
+	// move camera back over plane
 	cameraPosition.y += distance;
-	////pitch *= -1;
+	pitch *= -1;
 	camera->SetPosition(cameraPosition);
-	//camera->SetPitch(pitch);
+	camera->SetPitch(pitch);
 
 	waterFrameBuffer->bindRefractionBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (Renderer* renderer : renderers) {
-		renderer->enableClipPlane(glm::vec4(0, -1, 0, 15));
+		renderer->enableClipPlane(glm::vec4(0, -1, 0, 4));
 		renderer->render();
 		renderer->disableClipPlane();
 	}
@@ -70,4 +69,13 @@ void MainRenderer::render() {
 	for (WaterRenderer* renderer : waterRenderers) {
 		renderer->render(waterFrameBuffer);
 	}
+}
+
+void MainRenderer::enable_culling() {
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+}
+
+void MainRenderer::disable_culling() {
+	glDisable(GL_CULL_FACE);
 }

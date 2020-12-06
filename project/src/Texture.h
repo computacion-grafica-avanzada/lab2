@@ -13,7 +13,7 @@ private:
 
 public:
 	Texture(int width, int height);
-	Texture(const std::string& filename, bool transparency = false);
+	Texture(const std::string& filename);
 	~Texture();
 
 	bool hasTransparency();

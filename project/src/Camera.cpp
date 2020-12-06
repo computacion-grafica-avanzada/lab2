@@ -15,7 +15,7 @@ Camera::Camera(Projection projection, float size, float aspectRatio, float nearC
 	InitViewMatrix();
 }
 void Camera::InitViewMatrix() {
-	position = glm::vec3(0, 120, 400);
+	position = glm::vec3(-50, 75, 100);
 	front = glm::vec3(0, 0, -1);
 	worldUp = glm::vec3(0, 1, 0);
 	yaw = -90.0f;

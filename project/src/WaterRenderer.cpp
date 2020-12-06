@@ -29,8 +29,6 @@ void WaterRenderer::unload(Water* water) {
 float rae = 0;
 
 void WaterRenderer::render(WaterFrameBuffer* waterFrameBuffer) {
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (Water* water : waters) {
 		Shader* shader = water->getShader();
@@ -61,7 +59,7 @@ void WaterRenderer::render(WaterFrameBuffer* waterFrameBuffer) {
 		//shader->SetUniform1f("far", camera->GetFarClip());
 		//shader->SetUniform3f("lightPosition", Light::position);
 		//shader->SetUniform3f("lightColor", Light::color);
-		//shader->SetUniform3f("cameraPosition", camera->GetPosition());
+		shader->setUniform3f("cameraPosition", camera->GetPosition());
 		shader->setUniform1f("moveFactor", water->getMoveFactor());
 		//shader->SetUniform1f("textureTiling", water->textureTiling);
 		//shader->SetUniform1f("distorsionStrength", water->distorsionStrength);
@@ -106,6 +104,4 @@ void WaterRenderer::render(WaterFrameBuffer* waterFrameBuffer) {
 		vArray->unbind();
 		shader->unbind();
 	}
-
-	glDisable(GL_BLEND);
 }

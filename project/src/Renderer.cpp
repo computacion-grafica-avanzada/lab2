@@ -30,14 +30,9 @@ void Renderer::disableClipPlane() {
 	this->clipPlaneEnabled = false;
 }
 
-
 void Renderer::render() {
-	if (clipPlaneEnabled) {
-		glEnable(GL_CLIP_DISTANCE0);
-	}
-	else {
-		glDisable(GL_CLIP_DISTANCE0);
-	}
+
+    (clipPlaneEnabled) ? glEnable(GL_CLIP_DISTANCE0) : glDisable(GL_CLIP_DISTANCE0);
 
 	for (Renderable* renderable : renderables) {
 		Shader* shader = getShader();
@@ -45,31 +40,20 @@ void Renderer::render() {
 		VertexArray* vArray = renderable->getMesh()->getVertexArray();
 		IndexBuffer* iBuffer = renderable->getMesh()->getIndexBuffer();
 
+        if (texture->hasTransparency()) MainRenderer::disable_culling();
+
 		shader->bind();
 		texture->bind();
 		vArray->bind();
 		iBuffer->bind();
-
-		shader->setUniform4f("clipPlane", clipPlane);
-
-		glm::mat4 projection = glm::perspective(45.0f, 1.f, 0.1f, 2000.f);
-
-		// Create view matrix for the camera
-		//glm::mat4 view = glm::lookAt(glm::vec3(0, 5, -5 ), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-        glm::mat4 view = glm::lookAt(glm::vec3(-500, 100, 100), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
         
-        view = camera->GetViewMatrix();
-        ra += 0.0001; //for camera rotation
-		//view = glm::rotate(view, ra, glm::vec3(1.0f, 0.0f, 0.0f));
-
 		// Create model matrix for model transformations
 		glm::mat4 model(1.0);
 
+		shader->setUniform4f("clipPlane", clipPlane);
 		shader->setUniform1f("textureTiling", 1);
 		shader->setUniformMatrix4fv("projection", camera->GetProjectionMatrix());
-		shader->setUniformMatrix4fv("view", view);
-		//shader->setUniformMatrix4fv("projection", projection);
-		//shader->setUniformMatrix4fv("view", view);
+		shader->setUniformMatrix4fv("view", camera->GetViewMatrix());
 		shader->setUniformMatrix4fv("model", model);
 
 		//shader->setUniform1f("textureTiling", renderable->getTextureTiling());
@@ -80,11 +64,11 @@ void Renderer::render() {
 
 		glDrawElements(GL_TRIANGLES, iBuffer->getCount(), GL_UNSIGNED_INT, 0);
 
-
 		iBuffer->unbind();
 		vArray->unbind();
 		texture->unbind();
 		shader->unbind();
+        MainRenderer::enable_culling();
 	}
 }
 
