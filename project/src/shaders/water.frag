@@ -2,8 +2,9 @@
 
 in vec4 clipSpace;
 in vec2 textureCoords;
-out vec4 out_Color;
 in vec3 toCameraVector;
+
+out vec4 out_Color;
 
 uniform sampler2D reflectionSampler;
 uniform sampler2D refractionSampler;
@@ -40,5 +41,5 @@ void main() {
 	out_Color = mix(out_Color, vec4(0,0,1,1), 0.2);
 	//out_Color = vec4(ndc,0,1);
 	//out_Color = vec4(refractTexCoords,0,1);
-	//out_Color = vec4(1.0,0.0,0.0,1.0);
+	//out_Color = vec4(0,1,0,1.0);
 }

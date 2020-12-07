@@ -6,6 +6,7 @@ in DATA {
 	vec3 worldPosition;
 	vec2 textureCoord;
 	vec3 normal;
+	float alpha;
 } In;
 
 struct DirectionalLight {
@@ -33,6 +34,9 @@ vec4 CalculateDiffuseColor() {
 }
 
 void main() {
+	if (In.alpha <= 0) {
+		discard;
+	}
 	vec4 ambientColor = CalculateAmbientColor();
 	vec4 diffuseColor = CalculateDiffuseColor();
 	vec4 textureColor = texture(textureSampler, In.textureCoord);
@@ -42,6 +46,8 @@ void main() {
 	if (textureColor.a < 0.5) {
 		discard;
 	}
-	//outColor = vec4(1.0,0.0,1.0,1.0);
-	outColor = textureColor * vec4(1,1,1,1);
+
+	outColor = mix(vec4(1,1,1,1), textureColor, In.alpha);
+	//outColor = vec4(0,In.alpha,0,In.alpha);
+	//outColor = vec4(In.worldPosition,1);
 }

@@ -7,6 +7,8 @@ Renderer::Renderer(Camera* camera, bool isCharacter, glm::vec3 position) {
     this->position = position;
     this->camera = camera;
     this->clipPlaneEnabled = false;
+    this->clipPlane = glm::vec4(0, -1, 0, 100000);
+    this->shader = NULL;
 	MainRenderer::load(this);
     this->isCharacter = isCharacter;
 };
@@ -37,9 +39,7 @@ void Renderer::disableClipPlane() {
 }
 
 void Renderer::render() {
-
     (clipPlaneEnabled) ? glEnable(GL_CLIP_DISTANCE0) : glDisable(GL_CLIP_DISTANCE0);
-
 	for (Renderable* renderable : renderables) {
 		Shader* shader = getShader();
 		Texture* texture = renderable->getTexture();
@@ -53,6 +53,7 @@ void Renderer::render() {
 		vArray->bind();
 		iBuffer->bind();
 
+        shader->setUniform3f("cameraPosition", camera->GetPosition());
 		shader->setUniform4f("clipPlane", clipPlane);
 		shader->setUniform1f("textureTiling", 1);
 		shader->setUniformMatrix4fv("projection", camera->GetProjectionMatrix());

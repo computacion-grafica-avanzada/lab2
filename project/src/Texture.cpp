@@ -44,6 +44,28 @@ Texture::Texture(const std::string& filename) : filename(filename) {
     unbind();
 }
 
+Texture::Texture() {
+    glGenTextures(1, &textureID);
+    height = 0;
+    width = 0;
+    transparency = true;
+}
+
+void Texture::setText(const std::string& message, const std::string& fontFile, SDL_Color color, int fontSize) {
+    TTF_Font* font = TTF_OpenFont(fontFile.c_str(), fontSize);
+    //std::cout << TTF_GetError() << std::endl;
+    SDL_Surface* surf = TTF_RenderText_Blended(font, message.c_str(), color);
+    bind();
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, surf->w, surf->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, surf->pixels);
+    unbind();
+    SDL_FreeSurface(surf);
+    TTF_CloseFont(font);
+}
+
 Texture::Texture(int width, int height) {
     this->width = width;
     this->height = height;

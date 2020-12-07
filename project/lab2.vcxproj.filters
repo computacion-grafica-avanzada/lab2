@@ -87,6 +87,12 @@
     <ClCompile Include="src\Math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TimeFrame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GuiRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Mesh.h">
@@ -150,6 +156,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\WorldObject.h">
+    <ClInclude Include="src\TimeFrame.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GuiRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -182,6 +192,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="src\shaders\WaterShader.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\shaders\text.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\shaders\text.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

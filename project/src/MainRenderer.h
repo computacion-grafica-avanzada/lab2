@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Renderer.h"
 #include "Character.h"
+#include "GuiRenderer.h"
 #include "WaterRenderer.h"
 #include "buffers/WaterFrameBuffer.h"
 #include <set>
@@ -11,6 +12,7 @@ class MainRenderer {
 	static Character* character;
 
 	static std::set<Renderer*> renderers;
+	static std::set<GuiRenderer*> guiRenderers;
 	static std::set<WaterRenderer*> waterRenderers;
 	static WaterFrameBuffer* waterFrameBuffer;
 
@@ -20,6 +22,9 @@ public:
 
 	static void load(Renderer* renderer);
 	static void unload(Renderer* renderer);
+	
+	static void load(GuiRenderer* renderer);
+	static void unload(GuiRenderer* renderer);
 
 	static void load(WaterRenderer* renderer);
 	static void unload(WaterRenderer* renderer);
