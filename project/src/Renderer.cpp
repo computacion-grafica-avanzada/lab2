@@ -3,10 +3,12 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-Renderer::Renderer(Camera* camera) {
+Renderer::Renderer(Camera* camera, bool isCharacter, glm::vec3 position) {
+    this->position = position;
     this->camera = camera;
     this->clipPlaneEnabled = false;
 	MainRenderer::load(this);
+    this->isCharacter = isCharacter;
 };
 Renderer::~Renderer() {
 	renderables.clear();
@@ -18,6 +20,12 @@ void Renderer::load(Renderable* renderable) {
 }
 void Renderer::unload(Renderable* renderable) {
 	renderables.erase(renderable);
+}
+
+void Renderer::clearMesh() {
+    for(Renderable* renderable : renderables) {
+	    renderable->setMesh(NULL);
+    }
 }
 
 void Renderer::enableClipPlane(glm::vec4 clipPlane) {
@@ -46,15 +54,12 @@ void Renderer::render() {
 		texture->bind();
 		vArray->bind();
 		iBuffer->bind();
-        
-		// Create model matrix for model transformations
-		glm::mat4 model(1.0);
 
 		shader->setUniform4f("clipPlane", clipPlane);
 		shader->setUniform1f("textureTiling", 1);
 		shader->setUniformMatrix4fv("projection", camera->GetProjectionMatrix());
 		shader->setUniformMatrix4fv("view", camera->GetViewMatrix());
-		shader->setUniformMatrix4fv("model", model);
+		shader->setUniformMatrix4fv("model", camera->GetModelMatrix(isCharacter, position));
 
 		//shader->setUniform1f("textureTiling", renderable->getTextureTiling());
 		//shader->setUniform3f("directionalLight.color", Light::color);

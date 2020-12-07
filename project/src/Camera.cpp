@@ -22,6 +22,10 @@ void Camera::InitViewMatrix() {
 	pitch = 0.0f;
 	UpdateVectors();
 }
+/*
+Character* Camera::SetCharacter(Character* character) {
+	this->character = character;
+}*/
 
 Projection Camera::GetProjectionType() {
 	return projectionType;
@@ -71,6 +75,16 @@ void Camera::UpdateVectors() {
 
 	viewMatrix = glm::lookAt(this->position, this->position + this->front, this->up);
 }
+
+glm::mat4 Camera::GetModelMatrix(bool isCharacter, glm::vec3 position) {
+	glm::mat4 identityModelMatrix(1.0);
+	glm::mat4 modelMatrix = identityModelMatrix;
+	if (isCharacter) {
+	 	modelMatrix = glm::translate(identityModelMatrix, position);
+	}
+	return modelMatrix;
+}
+
 glm::mat4 Camera::GetViewMatrix() {
 	return viewMatrix;
 }
