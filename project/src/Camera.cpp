@@ -22,10 +22,6 @@ void Camera::InitViewMatrix() {
 	pitch = 0.0f;
 	UpdateVectors();
 }
-/*
-Character* Camera::SetCharacter(Character* character) {
-	this->character = character;
-}*/
 
 Projection Camera::GetProjectionType() {
 	return projectionType;
@@ -86,7 +82,14 @@ glm::mat4 Camera::GetModelMatrix(bool isCharacter, glm::vec3 position) {
 }
 
 glm::mat4 Camera::GetViewMatrix() {
-	return viewMatrix;
+	return glm::lookAt(
+		this->position, 
+		glm::vec3(
+			position.x + 200,
+			position.y - 30,
+			position.z - 80
+		),
+		this->up);
 }
 
 float Camera::GetOrthographicSize() {

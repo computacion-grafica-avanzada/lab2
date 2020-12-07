@@ -43,7 +43,6 @@ public:
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetModelMatrix(bool isCharacter, glm::vec3 position);
 
-	//Character* SetCharacter(Character* character);
 	float GetOrthographicSize();
 	void SetOrthographicSize(float orthographicSize);
 	float GetFieldOfView();
