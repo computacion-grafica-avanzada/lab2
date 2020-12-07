@@ -156,13 +156,9 @@ int main(int argc, char* argv[]) {
 							} else {
 								character->currentPathIndex++;
 							}
-							//characterRenderer->clearMesh();
+							characterRenderer->clearMesh();
 							character->path = charactersPaths[character->currentPathIndex];
 							characterRenderer->loadObj(character->path);
-							// O:
-							//MainRenderer::unload(characterRenderer);
-							//characterRenderer->setMesh(NULL);
-							//MainRenderer::load(characterRenderer);
 							break;
 					}
 					break;

@@ -23,9 +23,7 @@ void Renderer::unload(Renderable* renderable) {
 }
 
 void Renderer::clearMesh() {
-    for(Renderable* renderable : renderables) {
-	    renderable->setMesh(NULL);
-    }
+	renderables.clear();
 }
 
 void Renderer::enableClipPlane(glm::vec4 clipPlane) {
