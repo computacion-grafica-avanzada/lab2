@@ -1,6 +1,8 @@
 #include "MainRenderer.h"
+#include "Character.h"
 
 Camera* MainRenderer::camera = NULL;
+Character* MainRenderer::character = NULL;
 std::set<Renderer*> MainRenderer::renderers;
 std::set<WaterRenderer*> MainRenderer::waterRenderers;
 WaterFrameBuffer* MainRenderer::waterFrameBuffer = NULL;
@@ -24,6 +26,13 @@ void MainRenderer::load(WaterRenderer* renderer) {
 
 void MainRenderer::unload(WaterRenderer* renderer) {
 	waterRenderers.erase(renderer);
+}
+
+Character* MainRenderer::getCharacter() {
+	return character;
+}
+void MainRenderer::setCharacter(Character* _character) {
+	character = _character;
 }
 
 void MainRenderer::render() {

@@ -4,12 +4,15 @@
 #include "SDL.h"
 #include "SDL_opengl.h"
 
-#include "Model.h"
+#include "Display.h"
+#include "Character.h"
 #include "MainRenderer.h"
 #include "Camera.h"
 #include "Shader.h"
 #include "ColliderFloor.h"
 #include "Collider.h"
+
+using namespace std;
 
 void testFloorCollisions()
 {
@@ -67,28 +70,21 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	SDL_Window* window = NULL;
-	SDL_GLContext gl_context;
-
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 16);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 7);
 
-	window = SDL_CreateWindow("Ventana", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 800, SDL_WINDOW_OPENGL);
-
-	gl_context = SDL_GL_CreateContext(window);
-	SDL_GL_SetSwapInterval(0);				// disable limit of 60fps
-	printf("OpenGL loaded\n");				// Check OpenGL properties
+	SDL_GLContext gl_context;
+	Display display = Display(800, 800);
+	gl_context = SDL_GL_CreateContext(display.getWindow());
+	printf("OpenGL loaded\n");
 	gladLoadGLLoader(SDL_GL_GetProcAddress);
 	printf("Vendor:   %s\n", glGetString(GL_VENDOR));
 	printf("Renderer: %s\n", glGetString(GL_RENDERER));
 	printf("Version:  %s\n", glGetString(GL_VERSION));
 	glEnable(GL_MULTISAMPLE);
 
-	// TODO create camera
 	Camera* camera = new Camera(Projection::Perspective, 45, 1.f);
-	// TODO init main renderer
 	MainRenderer::init(camera);
-	// TODO create game manager
 
 	glEnable(GL_DEPTH_TEST);
 	MainRenderer::enable_culling();
@@ -99,12 +95,19 @@ int main(int argc, char* argv[]) {
 
 	Texture* dudv = new Texture("../models/dudv.png");
 
-	Renderer* piso = new Renderer(camera);
+	Renderer* characterRenderer = new Renderer(camera, true, glm::vec3(0, 0, 0));
+	characterRenderer->loadObj(BEAGLE_PATH);
+
+	Character* character = new Character(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), 1.0f, characterRenderer);
+	characterRenderer->setShader(worldShader);
+	MainRenderer::setCharacter(character);
+
+	Renderer* piso = new Renderer(camera, false, glm::vec3(0,0,0));
 	piso->loadObj("../models/Landscapes/water_plane.obj");
 	Mesh* mimesh = (*piso->renderables.begin())->getMesh();
 	MainRenderer::unload(piso);
 
-	Renderer* island = new Renderer(camera);
+	Renderer* island = new Renderer(camera, false,  glm::vec3(0,0,0));
 	island->loadObj("../models/Landscapes/three_island2.obj");
 	island->setShader(worldShader);
 
@@ -125,18 +128,57 @@ int main(int argc, char* argv[]) {
 
 		// TODO delta frame and tick engine
 
-		while (SDL_PollEvent(&sdlEvent))
-		{
-			if (sdlEvent.type == SDL_QUIT)
-				running = false;
+		while (SDL_PollEvent(&sdlEvent)) {
+			switch (sdlEvent.type) {
+				case SDL_QUIT:
+					running = false;
+					break;
+				case SDL_KEYDOWN:
+					cout << "character->position" << character->position.x << ", "<< character->position.y << "," << character->position.z << endl;
+					switch (sdlEvent.key.keysym.sym) {
+						case SDLK_q:
+							running = false;
+							break;
+						case SDLK_UP:
+							character->position = glm::vec3(character->position.x + 2, character->position.y, character->position.z);
+							break;
+						case SDLK_DOWN:
+							character->position = glm::vec3(character->position.x - 2, character->position.y, character->position.z);
+							break;
+						case SDLK_LEFT:
+							character->position = glm::vec3(character->position.x, character->position.y, character->position.z - 2);
+							break;
+						case SDLK_RIGHT:
+							character->position = glm::vec3(character->position.x, character->position.y, character->position.z + 2);
+							break;
+						case SDLK_c:
+							if (character->currentPathIndex == charactersSize - 1) {
+								character->currentPathIndex = 0;
+							} else {
+								character->currentPathIndex++;
+							}
+							characterRenderer->clearMesh();
+							character->path = charactersPaths[character->currentPathIndex];
+							characterRenderer->loadObj(character->path);
+							break;
+					}
+					break;
+				case SDL_MOUSEMOTION: // look around scene
+					//cout << "SDL_MOUSEMOTION" << endl;
+					break;
+			}
+			camera->SetPosition(glm::vec3(
+				character->position.x - 300,
+				character->position.y + 40,
+				character->position.z
+			));
+			MainRenderer::render();		// call the draw function
+			display.swapBuffers();	// swap buffers
 		}
-		MainRenderer::render();		// call the draw function
-		SDL_GL_SwapWindow(window);	// swap buffers
 	}
 
 	//FIN LOOP PRINCIPAL
-	SDL_GL_DeleteContext(gl_context);
-	SDL_DestroyWindow(window);
+	display.distroyWindow();
 	SDL_Quit();
 	return 0;
 }

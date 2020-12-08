@@ -1,4 +1,6 @@
 #include "Camera.h"
+#include "Character.h"
+#include "MainRenderer.h"
 #include <glm\gtc\matrix_transform.hpp>
 #include <cstdio>
 
@@ -71,8 +73,24 @@ void Camera::UpdateVectors() {
 
 	viewMatrix = glm::lookAt(this->position, this->position + this->front, this->up);
 }
+
+glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
+	Character* character = MainRenderer::getCharacter();
+	glm::mat4 identityModelMatrix(1.0);
+	glm::mat4 modelMatrix = identityModelMatrix;
+	if (isCharacter) {
+	 	modelMatrix = glm::translate(identityModelMatrix, character->position);
+	}
+	return modelMatrix;
+}
+
 glm::mat4 Camera::GetViewMatrix() {
-	return viewMatrix;
+	Character* character = MainRenderer::getCharacter();
+	return glm::lookAt(
+		this->position,
+		character->position,
+		this->up
+	);
 }
 
 float Camera::GetOrthographicSize() {
