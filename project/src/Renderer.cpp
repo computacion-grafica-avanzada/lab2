@@ -57,7 +57,7 @@ void Renderer::render() {
 		shader->setUniform1f("textureTiling", 1);
 		shader->setUniformMatrix4fv("projection", camera->GetProjectionMatrix());
 		shader->setUniformMatrix4fv("view", camera->GetViewMatrix());
-		shader->setUniformMatrix4fv("model", camera->GetModelMatrix(isCharacter, position));
+		shader->setUniformMatrix4fv("model", camera->GetModelMatrix(isCharacter));
 
 		//shader->setUniform1f("textureTiling", renderable->getTextureTiling());
 		//shader->setUniform3f("directionalLight.color", Light::color);

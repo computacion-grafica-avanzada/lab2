@@ -100,6 +100,7 @@ int main(int argc, char* argv[]) {
 
 	Character* character = new Character(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), 1.0f, characterRenderer);
 	characterRenderer->setShader(worldShader);
+	MainRenderer::setCharacter(character);
 
 	Renderer* piso = new Renderer(camera, false, glm::vec3(0,0,0));
 	piso->loadObj("../models/Landscapes/water_plane.obj");
@@ -167,9 +168,9 @@ int main(int argc, char* argv[]) {
 					break;
 			}
 			camera->SetPosition(glm::vec3(
-				character->position.x - 200,
-				character->position.y + 30,
-				character->position.z + 80
+				character->position.x - 300,
+				character->position.y + 40,
+				character->position.z
 			));
 			MainRenderer::render();		// call the draw function
 			display.swapBuffers();	// swap buffers

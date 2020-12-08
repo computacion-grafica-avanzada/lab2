@@ -1,6 +1,5 @@
 #pragma once
 
-//#include "Character.h"
 #include <glm/glm.hpp>
 
 enum Projection {Orthographic, Perspective};
@@ -15,7 +14,6 @@ private:
 
 	Projection projectionType;
 	glm::mat4 projectionMatrix;
-	//Character* character;
 	glm::vec3 position, front, worldUp, up, right;
 	float yaw, pitch;
 	glm::mat4 viewMatrix;
@@ -41,7 +39,7 @@ public:
 	void SetYaw(float yaw);
 	float GetYaw();
 	glm::mat4 GetViewMatrix();
-	glm::mat4 GetModelMatrix(bool isCharacter, glm::vec3 position);
+	glm::mat4 GetModelMatrix(bool isCharacter);
 
 	float GetOrthographicSize();
 	void SetOrthographicSize(float orthographicSize);
