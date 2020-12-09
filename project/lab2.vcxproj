@@ -95,7 +95,6 @@
   <ItemGroup>
     <ClCompile Include="src\Display.cpp" />
     <ClCompile Include="src\Character.cpp" />
-    <ClCompile Include="src\WorldObject.cpp" />
     <ClCompile Include="src\buffers\Buffer.cpp" />
     <ClCompile Include="src\buffers\IndexBuffer.cpp" />
     <ClCompile Include="src\buffers\VertexArray.cpp" />
@@ -121,7 +120,6 @@
   <ItemGroup>
     <ClInclude Include="src\Display.h" />
     <ClInclude Include="src\Character.h" />
-    <ClInclude Include="src\WorldObject.h" />
     <ClInclude Include="src\buffers\Buffer.h" />
     <ClInclude Include="src\buffers\IndexBuffer.h" />
     <ClInclude Include="src\buffers\VertexArray.h" />

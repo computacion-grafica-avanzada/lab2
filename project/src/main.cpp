@@ -109,7 +109,7 @@ int main(int argc, char* argv[]) {
 	Renderer* characterRenderer = new Renderer(camera, true, glm::vec3(0, 0, 0));
 	characterRenderer->loadObj(BEAGLE_PATH);
 
-	Character* character = new Character(glm::vec3(0, 0, 0), glm::vec3(1, 1, 1), 1.0f, characterRenderer);
+	Character* character = new Character(glm::vec3(0, 0, 0), 1.0f, characterRenderer);
 	characterRenderer->setShader(worldShader);
 	MainRenderer::setCharacter(character);
 
@@ -140,27 +140,31 @@ int main(int argc, char* argv[]) {
 		// TODO delta frame and tick engine
 
 		while (SDL_PollEvent(&sdlEvent)) {
+			glm::vec3 position = character->getPosition();
 			switch (sdlEvent.type) {
 				case SDL_QUIT:
 					running = false;
 					break;
 				case SDL_KEYDOWN:
-					//cout << "character->position" << character->position.x << ", "<< character->position.y << "," << character->position.z << endl;
 					switch (sdlEvent.key.keysym.sym) {
 						case SDLK_q:
 							running = false;
 							break;
 						case SDLK_UP:
-							character->position = glm::vec3(character->position.x + 2, character->position.y, character->position.z);
+							character->setPosition(glm::vec3(position.x + 2, position.y, position.z));
+							character->updateDirection(FRONT);
 							break;
 						case SDLK_DOWN:
-							character->position = glm::vec3(character->position.x - 2, character->position.y, character->position.z);
+							character->setPosition(glm::vec3(position.x - 2, position.y, position.z));
+							character->updateDirection(FRONT);
 							break;
 						case SDLK_LEFT:
-							character->position = glm::vec3(character->position.x, character->position.y, character->position.z - 2);
+							character->setPosition(glm::vec3(position.x + 2, position.y, position.z - 2));
+							character->updateDirection(LEFT);
 							break;
 						case SDLK_RIGHT:
-							character->position = glm::vec3(character->position.x, character->position.y, character->position.z + 2);
+							character->setPosition(glm::vec3(position.x + 2, position.y, position.z + 2));
+							character->updateDirection(RIGHT);
 							break;
 						case SDLK_c:
 							if (character->currentPathIndex == charactersSize - 1) {
@@ -179,9 +183,9 @@ int main(int argc, char* argv[]) {
 					break;
 			}
 			camera->SetPosition(glm::vec3(
-				character->position.x - 300,
-				character->position.y + 40,
-				character->position.z
+				position.x - 300,
+				position.y + 40,
+				position.z
 			));
 		}
 		MainRenderer::render();		// call the draw function

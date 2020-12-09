@@ -4,6 +4,8 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <cstdio>
 
+using namespace std;
+
 Camera::Camera() {
 	SetPerspective(45.0f, 1.0f);
 	InitViewMatrix();
@@ -71,15 +73,61 @@ void Camera::UpdateVectors() {
 	this->right = glm::normalize(glm::cross(this->front, this->worldUp));
 	this->up = glm::normalize(glm::cross(this->right, this->front));
 
-	viewMatrix = glm::lookAt(this->position, this->position + this->front, this->up);
 }
 
 glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
 	Character* character = MainRenderer::getCharacter();
 	glm::mat4 identityModelMatrix(1.0);
 	glm::mat4 modelMatrix = identityModelMatrix;
+	glm::mat4 TransformToPositionMatrix = identityModelMatrix;
+	glm::mat4 TransformToOriginMatrix = identityModelMatrix;
+	glm::mat4 RotateMatrix  = identityModelMatrix;
 	if (isCharacter) {
-	 	modelMatrix = glm::translate(identityModelMatrix, character->position);
+		Direction currentDirection = character->getCurrentDirection();
+		Direction lastDirection = character->getLastDirection();
+
+		TransformToPositionMatrix = glm::translate(TransformToPositionMatrix, character->getPosition());
+		TransformToOriginMatrix = glm::translate(TransformToOriginMatrix, glm::vec3(0, 0, 0));
+		switch (currentDirection) {
+			case LEFT:
+				switch (lastDirection) {
+					case LEFT:
+						break;
+					case RIGHT:
+						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
+						break;
+					case FRONT:
+						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
+						break;
+				}
+				break;
+			case RIGHT:
+				switch (lastDirection) {
+					case LEFT:
+						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(45.0f), glm::vec3(0, 1, 0));
+						break;
+					case RIGHT:
+						break;
+					case FRONT:
+						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(45.0f), glm::vec3(0, 1, 0));
+						break;
+				}
+				break;
+			case FRONT:
+				switch (lastDirection) {
+					case LEFT:
+						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(45.0f), glm::vec3(0, 1, 0));
+						break;
+					case RIGHT:
+						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
+						break;
+					case FRONT:
+						break;
+				}
+				break;
+		}
+		//modelMatrix = TransformToPositionMatrix * RotateMatrix * TransformToOriginMatrix;
+		modelMatrix = TransformToOriginMatrix * RotateMatrix * TransformToPositionMatrix;
 	}
 	return modelMatrix;
 }
@@ -88,7 +136,7 @@ glm::mat4 Camera::GetViewMatrix() {
 	Character* character = MainRenderer::getCharacter();
 	return glm::lookAt(
 		this->position,
-		character->position,
+		character->getPosition(),
 		this->up
 	);
 }
