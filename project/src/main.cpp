@@ -11,6 +11,8 @@
 #include "Shader.h"
 #include "ColliderFloor.h"
 #include "Collider.h"
+#include "TimeFrame.h"
+#include "GuiRenderer.h"
 
 using namespace std;
 
@@ -70,10 +72,18 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
+	if (TTF_Init() == -1) {
+		printf("TTF_Init: %s\n", TTF_GetError());
+		exit(2);
+	}
+
+
+	SDL_Window* window = NULL;
+	SDL_GLContext gl_context;
+
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 7);
 
-	SDL_GLContext gl_context;
 	Display display = Display(800, 800);
 	gl_context = SDL_GL_CreateContext(display.getWindow());
 	printf("OpenGL loaded\n");
@@ -92,6 +102,7 @@ int main(int argc, char* argv[]) {
 	// Create shaders
 	Shader* worldShader = new Shader("./src/shaders/simple.vert", "./src/shaders/simple.frag");
 	Shader* waterShader = new Shader("./src/shaders/water.vert", "./src/shaders/water.frag");
+	Shader* textShader = new Shader("./src/shaders/text.vert", "./src/shaders/text.frag");
 
 	Texture* dudv = new Texture("../models/dudv.png");
 
@@ -102,29 +113,29 @@ int main(int argc, char* argv[]) {
 	characterRenderer->setShader(worldShader);
 	MainRenderer::setCharacter(character);
 
-	Renderer* piso = new Renderer(camera, false, glm::vec3(0,0,0));
-	piso->loadObj("../models/Landscapes/water_plane.obj");
-	Mesh* mimesh = (*piso->renderables.begin())->getMesh();
-	MainRenderer::unload(piso);
-
 	Renderer* island = new Renderer(camera, false,  glm::vec3(0,0,0));
 	island->loadObj("../models/Landscapes/three_island2.obj");
 	island->setShader(worldShader);
 
-	Water* agua = new Water();
-	agua->setMesh(mimesh);
-	agua->setShader(waterShader);
-	agua->setDUDV(dudv);
+	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
 
-	WaterRenderer* waterRenderer = new WaterRenderer(camera);
-	waterRenderer->load(agua);
+	// create Gui with FPS
+	Texture* tex = new Texture();
+	GuiTexture* fps = new GuiTexture();
+	fps->tex = tex;
+	fps->scale = glm::vec2(0.125, 0.0625);
+	fps->position = glm::vec2(0.875, 0.9375);
+
+	GuiRenderer* guiRend = new GuiRenderer(textShader);
+	guiRend->load(fps);
 
 	bool running = true;	// set running to true
 	SDL_Event sdlEvent;		// variable to detect SDL events
 	while (running)			// the event loop
 	{
-		glClearColor(1.0, 0.0, 0.0, 1.0);					// set background colour
+		glClearColor(1.0, 1.0, 1.0, 1.0);					// set background colour
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
+		TimeFrame::update(tex);
 
 		// TODO delta frame and tick engine
 
@@ -134,7 +145,7 @@ int main(int argc, char* argv[]) {
 					running = false;
 					break;
 				case SDL_KEYDOWN:
-					cout << "character->position" << character->position.x << ", "<< character->position.y << "," << character->position.z << endl;
+					//cout << "character->position" << character->position.x << ", "<< character->position.y << "," << character->position.z << endl;
 					switch (sdlEvent.key.keysym.sym) {
 						case SDLK_q:
 							running = false;
@@ -172,9 +183,9 @@ int main(int argc, char* argv[]) {
 				character->position.y + 40,
 				character->position.z
 			));
-			MainRenderer::render();		// call the draw function
-			display.swapBuffers();	// swap buffers
 		}
+		MainRenderer::render();		// call the draw function
+		display.swapBuffers();	// swap buffers
 	}
 
 	//FIN LOOP PRINCIPAL

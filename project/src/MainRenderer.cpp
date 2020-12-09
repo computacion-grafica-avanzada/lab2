@@ -4,6 +4,7 @@
 Camera* MainRenderer::camera = NULL;
 Character* MainRenderer::character = NULL;
 std::set<Renderer*> MainRenderer::renderers;
+std::set<GuiRenderer*> MainRenderer::guiRenderers;
 std::set<WaterRenderer*> MainRenderer::waterRenderers;
 WaterFrameBuffer* MainRenderer::waterFrameBuffer = NULL;
 
@@ -18,6 +19,14 @@ void MainRenderer::load(Renderer* renderer) {
 
 void MainRenderer::unload(Renderer* renderer) {
 	renderers.erase(renderer);
+}
+
+void MainRenderer::load(GuiRenderer* renderer) {
+	guiRenderers.insert(renderer);
+}
+
+void MainRenderer::unload(GuiRenderer* renderer) {
+	guiRenderers.erase(renderer);
 }
 
 void MainRenderer::load(WaterRenderer* renderer) {
@@ -77,6 +86,10 @@ void MainRenderer::render() {
 
 	for (WaterRenderer* renderer : waterRenderers) {
 		renderer->render(waterFrameBuffer);
+	}
+
+	for (GuiRenderer* renderer : guiRenderers) {
+		renderer->render();
 	}
 }
 

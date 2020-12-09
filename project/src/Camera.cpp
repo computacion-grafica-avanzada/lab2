@@ -160,6 +160,6 @@ void Camera::SetPerspective(float fieldOfView, float aspectRatio, float nearClip
 	this->nearClip = nearClip;
 	this->farClip = farClip;
 
-	projectionMatrix = glm::perspective(fieldOfView, aspectRatio, nearClip, 10000.0f);
+	projectionMatrix = glm::perspective(fieldOfView, aspectRatio, nearClip, farClip);
 	//projectionMatrix = glm::infinitePerspective(fieldOfView, aspectRatio, nearClip);
 }
