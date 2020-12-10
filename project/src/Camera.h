@@ -1,38 +1,35 @@
 #pragma once
 
 #include <glm/glm.hpp>
-
-enum Projection {Orthographic, Perspective};
+#include "Character.h"
 
 class Camera {
-private:
+
+	Character* player;
 	float aspectRatio, nearClip, farClip;
-	// orthographic
-	float orthographicSize;
-	// perspective
 	float fieldOfView;
 
-	Projection projectionType;
-	glm::mat4 projectionMatrix;
+	glm::mat4 projectionMatrix, viewMatrix;
 	glm::vec3 position, front, worldUp, up, right;
-	float yaw, pitch;
-	glm::mat4 viewMatrix;
 
 	void InitViewMatrix();
-	void UpdateVectors();
 
+	float yaw, pitch, fov, zoom;
 public:
-	Camera();
-	Camera(Projection projection, float size, float aspectRatio, float nearClip = 0.1f, float farClip = 1000.0f);
+	void UpdateVectors();
+	float angle;
+	Camera(Character* player, float fov, float aspectRatio, float nearClip = 0.1f, float farClip = 1000.0f);
 
-	Projection GetProjectionType();
 	glm::mat4 GetProjectionMatrix();
+
+	void calculatePosition();
 
 	void SetPosition(glm::vec3 position);
 	glm::vec3 GetPosition();
 	glm::vec3 GetFront();
 	glm::vec3 GetUp();
 	glm::vec3 GetRight();
+	void SetFront(glm::vec3 front);
 
 	void SetPitch(float pitch);
 	float GetPitch();
@@ -41,8 +38,6 @@ public:
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetModelMatrix(bool isCharacter);
 
-	float GetOrthographicSize();
-	void SetOrthographicSize(float orthographicSize);
 	float GetFieldOfView();
 	void SetFieldOfView(float fov);
 	float GetAspectRatio();

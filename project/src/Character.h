@@ -1,5 +1,5 @@
 #pragma once
-#include "Renderer.h"
+//#include "Renderer.h"
 
 #include <glm/glm.hpp>
 #include <vector>
@@ -20,11 +20,10 @@ class Character {
 public:
 	string path;
 	int currentPathIndex;
-	Renderer* model;
+	//Renderer* model;
 	float speed;
-	Character(glm::vec3 _position, float _speed, Renderer* _model);
+	Character(glm::vec3 _position, glm::vec3 _size, float _speed); // , Renderer* _model);
 	Direction getDirection();
 	void setDirection(Direction direction);
 	glm::vec3 getPosition();
 	void setPosition(glm::vec3 position);
-};

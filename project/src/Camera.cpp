@@ -4,32 +4,38 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <cstdio>
 
-using namespace std;
-
-Camera::Camera() {
-	SetPerspective(45.0f, 1.0f);
-	InitViewMatrix();
-}
-Camera::Camera(Projection projection, float size, float aspectRatio, float nearClip, float farClip) {
-	if (projection == Projection::Perspective) {
-		SetPerspective(size, aspectRatio, nearClip, farClip);
-	} else {
-		SetOrthographic(size, aspectRatio, nearClip, farClip);
-	}
+Camera::Camera(Character* player, float fov, float aspectRatio, float nearClip, float farClip) {
+	this->player = player;
+	SetPerspective(fov, aspectRatio, nearClip, farClip);
 	InitViewMatrix();
 }
 void Camera::InitViewMatrix() {
-	position = glm::vec3(-50, 75, 100);
+	//position = glm::vec3(-50, 75, 100);
+	//position = glm::vec3(0, 0, 10);
 	front = glm::vec3(0, 0, -1);
 	worldUp = glm::vec3(0, 1, 0);
 	yaw = -90.0f;
 	pitch = 0.0f;
+	angle = 0;
+	zoom = 150.f;
 	UpdateVectors();
 }
 
-Projection Camera::GetProjectionType() {
-	return projectionType;
+void Camera::calculatePosition() {
+	float horizontalDistance = zoom * cos(glm::radians(pitch));
+	float verticalDistance = zoom * sin(glm::radians(pitch));
+
+	float theta = 180 - yaw;
+	float offsetX = horizontalDistance * sin(glm::radians(theta));
+	float offsetZ = horizontalDistance * cos(glm::radians(theta));
+
+	this->position = glm::vec3(
+		this->player->position.x - offsetX,
+		this->player->position.y + verticalDistance,
+		this->player->position.z - offsetZ
+	);
 }
+
 glm::mat4 Camera::GetProjectionMatrix() {
 	return projectionMatrix;
 }
@@ -53,6 +59,12 @@ void Camera::SetPitch(float pitch) {
 	this->pitch = pitch;
 	UpdateVectors();
 }
+
+void Camera::SetFront(glm::vec3 front) {
+	this->front = front;
+	UpdateVectors();
+}
+
 float Camera::GetPitch() {
 	return pitch;
 }
@@ -73,6 +85,9 @@ void Camera::UpdateVectors() {
 	this->right = glm::normalize(glm::cross(this->front, this->worldUp));
 	this->up = glm::normalize(glm::cross(this->right, this->front));
 
+	calculatePosition();
+	//viewMatrix = glm::lookAt(this->position, this->position + this->front, this->up);
+	viewMatrix = glm::lookAt(this->position, player->position, this->up);
 }
 
 glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
@@ -104,22 +119,13 @@ glm::mat4 Camera::GetViewMatrix() {
 	);
 }
 
-float Camera::GetOrthographicSize() {
-	return orthographicSize;
-}
-void Camera::SetOrthographicSize(float orthographicSize) {
-	if (projectionType == Projection::Orthographic) {
-		SetPerspective(orthographicSize, aspectRatio, nearClip, farClip);
-	}
-}
 float Camera::GetFieldOfView() {
 	return fieldOfView;
 }
 void Camera::SetFieldOfView(float fov) {
-	if (projectionType == Projection::Perspective) {
-		SetPerspective(fov, aspectRatio, nearClip, farClip);
-	}
+	SetPerspective(fov, aspectRatio, nearClip, farClip);
 }
+
 float Camera::GetAspectRatio() {
 	return aspectRatio;
 }
@@ -143,29 +149,10 @@ void Camera::SetFarClip(float farClip) {
 }
 
 void Camera::ResetCamera() {
-	if (projectionType == Projection::Perspective) {
-		SetPerspective(fieldOfView, aspectRatio, nearClip, farClip);
-	} else {
-		SetOrthographic(orthographicSize, aspectRatio, nearClip, farClip);
-	}
+	SetPerspective(fieldOfView, aspectRatio, nearClip, farClip);
 }
-void Camera::SetOrthographic(float orthographicSize, float aspectRatio, float nearClip, float farClip) {
-	this->projectionType = Projection::Orthographic;
-	this->orthographicSize = orthographicSize;
-	this->aspectRatio = aspectRatio;
-	this->nearClip = nearClip;
-	this->farClip = farClip;
-	
-	float left, right, bottom, top;
-	left = -orthographicSize * aspectRatio;
-	right = orthographicSize * aspectRatio;
-	bottom = -orthographicSize;
-	top = orthographicSize;
 
-	projectionMatrix = glm::ortho(left, right, bottom, top, nearClip, farClip);
-}
 void Camera::SetPerspective(float fieldOfView, float aspectRatio, float nearClip, float farClip) {
-	this->projectionType = Projection::Perspective;
 	this->fieldOfView = fieldOfView;
 	this->aspectRatio = aspectRatio;
 	this->nearClip = nearClip;

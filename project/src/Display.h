@@ -1,22 +1,29 @@
 #pragma once
+#include <glad/glad.h>
 #include "SDL.h"
 #include "SDL_opengl.h"
+#include "Texture.h"
 #include <iostream>
 
 using namespace std;
 
 class Display {
-	int width, height;
-	float deltaTime, lastFrame;
-    SDL_Window *window;
+	static int width;
+	static int height;
+
+	static int frames;
+	static float lastUpdate;
+	static float lastFPSCheck;
+	
+	static SDL_Window* window;
+	static SDL_GLContext gl_context;
 
 public:
-	Display(int width, int height);
-
-	int getWidth();
-	int getHeight();
-	float getDelta();
-    SDL_Window* getWindow();
-	void swapBuffers();
-	void distroyWindow();
+	static int fps;
+	static float deltaTime;
+	
+	static void init(int width, int height);
+	static void update(Texture* tex);
+	static void swapBuffers();
+	static void destroy();
 };

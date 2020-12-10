@@ -1,10 +1,10 @@
 #include "Character.h"
 
-Character::Character(glm::vec3 _position, float _speed, Renderer* _model) {
+Character::Character(glm::vec3 _position, float _speed/*, Renderer* _model*/) {
     path = BEAGLE_PATH;
     currentPathIndex = 0;
 	speed = _speed;
-	model = _model;
+	// model = _model;
 	direction = FRONT;
     position = _position;
 }

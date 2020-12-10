@@ -49,7 +49,7 @@ void WaterRenderer::render(WaterFrameBuffer* waterFrameBuffer) {
 	shader->bind();
 	vertexArray->bind();
 	
-	moveFactor += moveSpeed * TimeFrame::deltaTime;
+	moveFactor += moveSpeed * Display::deltaTime;
 	moveFactor = fmod(moveFactor, 1.0f);
 
 	glActiveTexture(GL_TEXTURE0);

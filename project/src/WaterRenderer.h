@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Camera.h"
-#include "Water.h"
+#include "Shader.h"
+#include "Texture.h"
+#include "buffers/VertexArray.h"
 #include "buffers/WaterFrameBuffer.h"
-#include "TimeFrame.h"
+#include "Display.h"
 #include <set>
 
 class WaterRenderer {
@@ -21,8 +23,6 @@ private:
 	float specularPower;
 
 public:
-
-
 	WaterRenderer(Camera* camera, Shader* shader, Texture* dudv, Texture* normal);
 	WaterRenderer(Camera* camera);
 	~WaterRenderer();
