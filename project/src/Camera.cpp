@@ -79,55 +79,18 @@ glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
 	Character* character = MainRenderer::getCharacter();
 	glm::mat4 identityModelMatrix(1.0);
 	glm::mat4 modelMatrix = identityModelMatrix;
-	glm::mat4 TransformToPositionMatrix = identityModelMatrix;
-	glm::mat4 TransformToOriginMatrix = identityModelMatrix;
-	glm::mat4 RotateMatrix  = identityModelMatrix;
 	if (isCharacter) {
-		Direction currentDirection = character->getCurrentDirection();
-		Direction lastDirection = character->getLastDirection();
-
-		TransformToPositionMatrix = glm::translate(TransformToPositionMatrix, character->getPosition());
-		TransformToOriginMatrix = glm::translate(TransformToOriginMatrix, glm::vec3(0, 0, 0));
-		switch (currentDirection) {
+		Direction direction = character->getDirection();
+		modelMatrix = glm::translate(modelMatrix, character->getPosition());
+		switch (direction) {
 			case LEFT:
-				switch (lastDirection) {
-					case LEFT:
-						break;
-					case RIGHT:
-						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
-						break;
-					case FRONT:
-						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
-						break;
-				}
+				modelMatrix = glm::rotate(modelMatrix , glm::radians(45.0f), glm::vec3(0, 1, 0));
 				break;
 			case RIGHT:
-				switch (lastDirection) {
-					case LEFT:
-						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(45.0f), glm::vec3(0, 1, 0));
-						break;
-					case RIGHT:
-						break;
-					case FRONT:
-						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(45.0f), glm::vec3(0, 1, 0));
-						break;
-				}
-				break;
-			case FRONT:
-				switch (lastDirection) {
-					case LEFT:
-						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(45.0f), glm::vec3(0, 1, 0));
-						break;
-					case RIGHT:
-						RotateMatrix = glm::rotate(RotateMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
-						break;
-					case FRONT:
-						break;
-				}
+				modelMatrix = glm::rotate(modelMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
 				break;
 		}
-		//modelMatrix = TransformToPositionMatrix * RotateMatrix * TransformToOriginMatrix;
-		modelMatrix = TransformToOriginMatrix * RotateMatrix * TransformToPositionMatrix;
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
 	}
 	return modelMatrix;
 }

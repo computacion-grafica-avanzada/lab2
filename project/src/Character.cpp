@@ -5,22 +5,16 @@ Character::Character(glm::vec3 _position, float _speed, Renderer* _model) {
     currentPathIndex = 0;
 	speed = _speed;
 	model = _model;
-	currentDirection = FRONT;
-	lastDirection = FRONT;	
+	direction = FRONT;
     position = _position;
 }
 
-Direction Character::getCurrentDirection() {
-    return currentDirection;
+Direction Character::getDirection() {
+    return direction;
 }
 
-Direction Character::getLastDirection() {
-    return lastDirection;
-}
-
-void Character::updateDirection(Direction _direction) {
-    lastDirection = currentDirection;
-    currentDirection = _direction;
+void Character::setDirection(Direction _direction) {
+    direction = _direction;
 }
 
 glm::vec3 Character::getPosition() {

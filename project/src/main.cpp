@@ -112,6 +112,8 @@ int main(int argc, char* argv[]) {
 	Character* character = new Character(glm::vec3(0, 0, 0), 1.0f, characterRenderer);
 	characterRenderer->setShader(worldShader);
 	MainRenderer::setCharacter(character);
+	glm::vec3 position = character->getPosition();
+	character->setPosition(glm::vec3(position.x - 200, position.y, position.z));
 
 	Renderer* island = new Renderer(camera, false,  glm::vec3(0,0,0));
 	island->loadObj("../models/Landscapes/three_island2.obj");
@@ -152,19 +154,19 @@ int main(int argc, char* argv[]) {
 							break;
 						case SDLK_UP:
 							character->setPosition(glm::vec3(position.x + 2, position.y, position.z));
-							character->updateDirection(FRONT);
+							character->setDirection(FRONT);
 							break;
 						case SDLK_DOWN:
 							character->setPosition(glm::vec3(position.x - 2, position.y, position.z));
-							character->updateDirection(FRONT);
+							character->setDirection(FRONT);
 							break;
 						case SDLK_LEFT:
 							character->setPosition(glm::vec3(position.x + 2, position.y, position.z - 2));
-							character->updateDirection(LEFT);
+							character->setDirection(LEFT);
 							break;
 						case SDLK_RIGHT:
 							character->setPosition(glm::vec3(position.x + 2, position.y, position.z + 2));
-							character->updateDirection(RIGHT);
+							character->setDirection(RIGHT);
 							break;
 						case SDLK_c:
 							if (character->currentPathIndex == charactersSize - 1) {
@@ -183,7 +185,7 @@ int main(int argc, char* argv[]) {
 					break;
 			}
 			camera->SetPosition(glm::vec3(
-				position.x - 300,
+				position.x - 110,
 				position.y + 40,
 				position.z
 			));
