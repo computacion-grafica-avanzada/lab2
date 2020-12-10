@@ -4,6 +4,8 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <cstdio>
 
+using namespace std;
+
 Camera::Camera() {
 	SetPerspective(45.0f, 1.0f);
 	InitViewMatrix();
@@ -71,7 +73,6 @@ void Camera::UpdateVectors() {
 	this->right = glm::normalize(glm::cross(this->front, this->worldUp));
 	this->up = glm::normalize(glm::cross(this->right, this->front));
 
-	viewMatrix = glm::lookAt(this->position, this->position + this->front, this->up);
 }
 
 glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
@@ -79,7 +80,17 @@ glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
 	glm::mat4 identityModelMatrix(1.0);
 	glm::mat4 modelMatrix = identityModelMatrix;
 	if (isCharacter) {
-	 	modelMatrix = glm::translate(identityModelMatrix, character->position);
+		Direction direction = character->getDirection();
+		modelMatrix = glm::translate(modelMatrix, character->getPosition());
+		switch (direction) {
+			case LEFT:
+				modelMatrix = glm::rotate(modelMatrix , glm::radians(45.0f), glm::vec3(0, 1, 0));
+				break;
+			case RIGHT:
+				modelMatrix = glm::rotate(modelMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
+				break;
+		}
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
 	}
 	return modelMatrix;
 }
@@ -88,7 +99,7 @@ glm::mat4 Camera::GetViewMatrix() {
 	Character* character = MainRenderer::getCharacter();
 	return glm::lookAt(
 		this->position,
-		character->position,
+		character->getPosition(),
 		this->up
 	);
 }
