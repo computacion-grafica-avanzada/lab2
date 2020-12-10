@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
 
 	Texture* dudv = new Texture("../models/dudv.png");
 
-	Renderer* characterRenderer = new Renderer(camera, true, glm::vec3(0, 0, 0));
+	Renderer* characterRenderer = new Renderer(camera, true);
 	characterRenderer->loadObj(BEAGLE_PATH);
 
 	Character* character = new Character(glm::vec3(0, 0, 0), 1.0f, characterRenderer);
@@ -115,7 +115,7 @@ int main(int argc, char* argv[]) {
 	glm::vec3 position = character->getPosition();
 	character->setPosition(glm::vec3(position.x - 200, position.y, position.z));
 
-	Renderer* island = new Renderer(camera, false,  glm::vec3(0,0,0));
+	Renderer* island = new Renderer(camera, false);
 	island->loadObj("../models/Landscapes/three_island2.obj");
 	island->setShader(worldShader);
 

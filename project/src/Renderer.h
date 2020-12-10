@@ -11,11 +11,10 @@ class Renderer {
 	bool clipPlaneEnabled;
 
 	bool isCharacter;
-	glm::vec3 position;
 	float ra = 0;
 public:
 	std::set<Renderable*> renderables;
-	Renderer(Camera* camera, bool isCharacter, glm::vec3 position);
+	Renderer(Camera* camera, bool isCharacter);
 	Renderer();
 	~Renderer();
 

@@ -3,8 +3,7 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-Renderer::Renderer(Camera* camera, bool isCharacter, glm::vec3 position) {
-    this->position = position;
+Renderer::Renderer(Camera* camera, bool isCharacter) {
     this->camera = camera;
     this->clipPlaneEnabled = false;
     this->clipPlane = glm::vec4(0, -1, 0, 100000);
