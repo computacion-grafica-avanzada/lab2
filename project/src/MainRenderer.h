@@ -2,15 +2,19 @@
 #include "Camera.h"
 #include "Renderer.h"
 #include "AnimationRenderer.h"
+#include "Character.h"
+#include "GuiRenderer.h"
 #include "WaterRenderer.h"
 #include "buffers/WaterFrameBuffer.h"
 #include <set>
 
 class MainRenderer {
 	static Camera* camera;
+	static Character* character;
 
 	static std::set<Renderer*> renderers;
 	static std::set<AnimationRenderer*> animationRenderers;
+	static std::set<GuiRenderer*> guiRenderers;
 	static std::set<WaterRenderer*> waterRenderers;
 	static WaterFrameBuffer* waterFrameBuffer;
 
@@ -20,6 +24,10 @@ public:
 
 	static void load(Renderer* renderer);
 	static void unload(Renderer* renderer);
+	
+	static void load(GuiRenderer* renderer);
+	static void unload(GuiRenderer* renderer);
+
 
 	static void load(AnimationRenderer* renderer);
 	static void unload(AnimationRenderer* renderer);
@@ -31,4 +39,7 @@ public:
 	static void disable_culling();
 
 	static void render();
+
+	static Character* getCharacter();
+	static void setCharacter(Character* character);
 };

@@ -3,10 +3,13 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
-Renderer::Renderer(Camera* camera) {
+Renderer::Renderer(Camera* camera, bool isCharacter) {
     this->camera = camera;
     this->clipPlaneEnabled = false;
+    this->clipPlane = glm::vec4(0, -1, 0, 100000);
+    this->shader = NULL;
 	MainRenderer::load(this);
+    this->isCharacter = isCharacter;
 };
 Renderer::~Renderer() {
 	renderables.clear();
@@ -20,6 +23,10 @@ void Renderer::unload(Renderable* renderable) {
 	renderables.erase(renderable);
 }
 
+void Renderer::clearMesh() {
+	renderables.clear();
+}
+
 void Renderer::enableClipPlane(glm::vec4 clipPlane) {
 	this->clipPlane = clipPlane;
 	this->clipPlaneEnabled = true;
@@ -31,9 +38,7 @@ void Renderer::disableClipPlane() {
 }
 
 void Renderer::render() {
-
     (clipPlaneEnabled) ? glEnable(GL_CLIP_DISTANCE0) : glDisable(GL_CLIP_DISTANCE0);
-
 	for (Renderable* renderable : renderables) {
 		Shader* shader = getShader();
 		Texture* texture = renderable->getTexture();
@@ -46,15 +51,13 @@ void Renderer::render() {
 		texture->bind();
 		vArray->bind();
 		iBuffer->bind();
-        
-		// Create model matrix for model transformations
-		glm::mat4 model(1.0);
 
+        shader->setUniform3f("cameraPosition", camera->GetPosition());
 		shader->setUniform4f("clipPlane", clipPlane);
 		shader->setUniform1f("textureTiling", 1);
 		shader->setUniformMatrix4fv("projection", camera->GetProjectionMatrix());
 		shader->setUniformMatrix4fv("view", camera->GetViewMatrix());
-		shader->setUniformMatrix4fv("model", model);
+		shader->setUniformMatrix4fv("model", camera->GetModelMatrix(isCharacter));
 
 		//shader->setUniform1f("textureTiling", renderable->getTextureTiling());
 		//shader->setUniform3f("directionalLight.color", Light::color);

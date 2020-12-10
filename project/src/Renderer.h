@@ -1,8 +1,7 @@
 #pragma once
 
-//#include "Camera.h"
-#include "Renderable.h"
 #include "Camera.h"
+#include "Renderable.h"
 #include <set>
 
 class Renderer {
@@ -11,16 +10,17 @@ class Renderer {
 	glm::vec4 clipPlane;
 	bool clipPlaneEnabled;
 
+	bool isCharacter;
 	float ra = 0;
 public:
 	std::set<Renderable*> renderables;
-	Renderer(Camera* camera);
+	Renderer(Camera* camera, bool isCharacter);
 	Renderer();
 	~Renderer();
 
 	void load(Renderable* renderable);
 	void unload(Renderable* renderable);
-
+ 	void clearMesh();
 	void enableClipPlane(glm::vec4 clipPlane);
 	void disableClipPlane();
 	void render();

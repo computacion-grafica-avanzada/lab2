@@ -85,6 +85,9 @@ void Shader::CompileShaders(const char* vertexSource, const char* fragmentSource
 		std::cout << "Program not linked." << std::endl;
 		printShaderError(shaderProgram);
 	}
+	else {
+		std::cout << "Program linked." << std::endl;
+	}
 
 	glDetachShader(shaderProgram, vertexShader);
 	glDetachShader(shaderProgram, fragmentShader);

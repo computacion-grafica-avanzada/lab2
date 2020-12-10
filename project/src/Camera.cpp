@@ -1,6 +1,10 @@
 #include "Camera.h"
+#include "Character.h"
+#include "MainRenderer.h"
 #include <glm\gtc\matrix_transform.hpp>
 #include <cstdio>
+
+using namespace std;
 
 Camera::Camera() {
 	SetPerspective(45.0f, 1.0f);
@@ -69,10 +73,35 @@ void Camera::UpdateVectors() {
 	this->right = glm::normalize(glm::cross(this->front, this->worldUp));
 	this->up = glm::normalize(glm::cross(this->right, this->front));
 
-	viewMatrix = glm::lookAt(this->position, this->position + this->front, this->up);
 }
+
+glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
+	Character* character = MainRenderer::getCharacter();
+	glm::mat4 identityModelMatrix(1.0);
+	glm::mat4 modelMatrix = identityModelMatrix;
+	if (isCharacter) {
+		Direction direction = character->getDirection();
+		modelMatrix = glm::translate(modelMatrix, character->getPosition());
+		switch (direction) {
+			case LEFT:
+				modelMatrix = glm::rotate(modelMatrix , glm::radians(45.0f), glm::vec3(0, 1, 0));
+				break;
+			case RIGHT:
+				modelMatrix = glm::rotate(modelMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
+				break;
+		}
+		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
+	}
+	return modelMatrix;
+}
+
 glm::mat4 Camera::GetViewMatrix() {
-	return viewMatrix;
+	Character* character = MainRenderer::getCharacter();
+	return glm::lookAt(
+		this->position,
+		character->getPosition(),
+		this->up
+	);
 }
 
 float Camera::GetOrthographicSize() {
@@ -142,6 +171,6 @@ void Camera::SetPerspective(float fieldOfView, float aspectRatio, float nearClip
 	this->nearClip = nearClip;
 	this->farClip = farClip;
 
-	projectionMatrix = glm::perspective(fieldOfView, aspectRatio, nearClip, 10000.0f);
+	projectionMatrix = glm::perspective(fieldOfView, aspectRatio, nearClip, farClip);
 	//projectionMatrix = glm::infinitePerspective(fieldOfView, aspectRatio, nearClip);
 }
