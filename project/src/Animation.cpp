@@ -1,0 +1,35 @@
+#include "Animation.h"
+#include <iostream>
+
+Animation::Animation(const json& jsonObj)
+{
+	name = jsonObj["name"].get<std::string>();
+	duration = jsonObj["duration"].get<double>();
+
+	for (json bone : jsonObj["bones"])
+	{
+		JointAnim jAnim;
+		jAnim._name = bone["name"].get<std::string>();
+
+		for (json posKey : bone["pos_keys"])
+		{
+			glm::vec3 pos(posKey["x"], posKey["y"], posKey["z"]);
+			double time = posKey["time"];
+			jAnim._positionKeys.insert(std::make_pair(time, pos));
+		}
+		for (json rotKey : bone["rot_keys"])
+		{
+			glm::quat rot(glm::degrees(rotKey["w"].get<float>()), glm::degrees(rotKey["x"].get<float>()), glm::degrees(rotKey["y"].get<float>()), glm::degrees(rotKey["z"].get<float>()));
+			double time = rotKey["time"];
+			jAnim._rotationKeys.insert(std::make_pair(time, rot));
+		}
+		for (json scaleKey : bone["scale_keys"])
+		{
+			glm::vec3 scale(scaleKey["x"], scaleKey["y"], scaleKey["z"]);
+			double time = scaleKey["time"];
+			jAnim._scallingKeys.insert(std::make_pair(time, scale));
+		}
+
+		jointAnims.push_back(jAnim);
+	}
+}

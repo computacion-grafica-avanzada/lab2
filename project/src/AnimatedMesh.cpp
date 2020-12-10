@@ -1,0 +1,21 @@
+#include "AnimatedMesh.h"
+
+AnimatedMesh::AnimatedMesh(
+	std::vector<glm::vec4> vertices,
+	std::vector<glm::vec2> uvs,
+	std::vector<glm::vec3> normals,
+	std::vector<glm::uvec4> jointIds,
+	std::vector<glm::vec4> jointWeights,
+	std::vector<unsigned int> indices
+) : Mesh(vertices, uvs, normals, indices) {
+
+	Buffer* jointIdsBuffer = new Buffer(jointIds);
+	Buffer* jointWeightsBuffer = new Buffer(jointWeights);
+
+	getVertexArray()->addBuffer(jointIdsBuffer, 0);
+	getVertexArray()->addBuffer(jointWeightsBuffer, 2);
+}
+
+AnimatedMesh::~AnimatedMesh() {
+}
+

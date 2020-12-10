@@ -1,9 +1,9 @@
 #include "Mesh.h"
 
 Mesh::Mesh(
-	std::vector<glm::vec4> vertices, 
-	std::vector<glm::vec2> uvs, 
-	std::vector<glm::vec3> normals, 
+	std::vector<glm::vec4> vertices,
+	std::vector<glm::vec2> uvs,
+	std::vector<glm::vec3> normals,
 	std::vector<unsigned int> indices
 ) {
 	this->vertices = vertices;

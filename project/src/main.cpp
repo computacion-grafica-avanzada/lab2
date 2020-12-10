@@ -10,6 +10,7 @@
 #include "Shader.h"
 #include "ColliderFloor.h"
 #include "Collider.h"
+#include "ColladaLoader.h"
 
 void testFloorCollisions()
 {
@@ -95,6 +96,7 @@ int main(int argc, char* argv[]) {
 
 	// Create shaders
 	Shader* worldShader = new Shader("./src/shaders/simple.vert", "./src/shaders/simple.frag");
+	Shader* animationShader = new Shader("./src/shaders/animated.vert", "./src/shaders/animated.frag");
 	Shader* waterShader = new Shader("./src/shaders/water.vert", "./src/shaders/water.frag");
 
 	Texture* dudv = new Texture("../models/dudv.png");
@@ -107,6 +109,13 @@ int main(int argc, char* argv[]) {
 	Renderer* island = new Renderer(camera);
 	island->loadObj("../models/Landscapes/three_island2.obj");
 	island->setShader(worldShader);
+
+	AnimatedModelData* animatedModel = ColladaLoader::loadColladaModel("../models/Characters/player.dae", 3);
+	AnimationData* animationData = ColladaLoader::loadColladaAnimation("../models/Characters/player.dae");
+
+	AnimationRenderer* player = new AnimationRenderer(camera);
+	player->loadCollada("../models/Characters/player.dae");
+	player->setShader(animationShader);
 
 	Water* agua = new Water();
 	agua->setMesh(mimesh);

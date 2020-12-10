@@ -8,6 +8,7 @@
 #include "buffers/VertexArray.h"
 
 class Mesh {
+
 	std::vector<glm::vec4> vertices;
 	//std::vector<glm::vec2> uvs;
 	//std::vector<glm::vec3> normals;
@@ -18,9 +19,9 @@ class Mesh {
 
 public:
 	Mesh(
-		std::vector<glm::vec4> vertices, 
-		std::vector<glm::vec2> uvs, 
-		std::vector<glm::vec3> normals, 
+		std::vector<glm::vec4> vertices,
+		std::vector<glm::vec2> uvs,
+		std::vector<glm::vec3> normals,
 		std::vector<unsigned int> indices
 	);
 	~Mesh();
