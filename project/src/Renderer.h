@@ -9,6 +9,7 @@ class Renderer {
 	Shader* shader;
 	glm::vec4 clipPlane;
 	bool clipPlaneEnabled;
+	glm::vec3 averageVertix;
 
 	bool isCharacter;
 	float ra = 0;
@@ -26,7 +27,8 @@ public:
 	void render();
 
 	void loadObj(const std::string& objFile);	// for each mesh creates a renderable and adds it to set
-	
+	glm::vec3 getAverageVertix();
+
 	void setShader(Shader* shader);
 	Shader* getShader();
 };

@@ -7,6 +7,7 @@
 #include "Display.h"
 #include "Character.h"
 #include "MainRenderer.h"
+#include "CollisionManager.h"
 #include "Camera.h"
 #include "Shader.h"
 #include "ColliderFloor.h"
@@ -114,12 +115,29 @@ int main(int argc, char* argv[]) {
 	MainRenderer::setCharacter(character);
 	glm::vec3 position = character->getPosition();
 	character->setPosition(glm::vec3(position.x - 200, position.y, position.z));
+	Collider* characterCollider = new Collider(0, 1, 15.0f);
 
 	Renderer* island = new Renderer(camera, false);
-	island->loadObj("../models/Landscapes/three_island2.obj");
+	//island->loadObj("../models/Landscapes/three_island2.obj");
+	island->loadObj("../models/Landscapes/floor.obj");
 	island->setShader(worldShader);
 
+	std::set<Mesh*> floorMeshes;
+    for(Renderable* renderable : island->renderables) {
+		floorMeshes.insert(renderable->getMesh());
+	}
+	ColliderFloor* floorCollider = new ColliderFloor(floorMeshes);
+
+	Renderer* boat = new Renderer(camera, false);
+	boat->loadObj("../models/boat/boat3.obj");
+	boat->setShader(worldShader);
+	Collider* boatCollider = new Collider(2, 2, 18.0f);
+	boatCollider->pos = boat->getAverageVertix();
+
 	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
+
+	CollisionManager* collisionManager = new CollisionManager(characterCollider, floorCollider);
+	collisionManager->addObjectCollider(boatCollider);
 
 	// create Gui with FPS
 	Texture* tex = new Texture();
@@ -190,6 +208,9 @@ int main(int argc, char* argv[]) {
 				position.z
 			));
 		}
+		characterCollider->pos = character->getPosition();
+		collisionManager->solvePlayerCollisions();
+		character->setPosition(characterCollider->pos); // correct it in case of collision
 		MainRenderer::render();		// call the draw function
 		display.swapBuffers();	// swap buffers
 	}

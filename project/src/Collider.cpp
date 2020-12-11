@@ -62,11 +62,13 @@ void Collider::solveCollisionSphereSphere(Collider* s1, Collider* s2)
 		// The lighter object corrects its position
 		if (s1->mass == 0 || (s1->mass > s2->mass && s2->mass != 0))
 		{
-			s2->pos = s1->pos - newDist;
+			s2->pos.x = s1->pos.x - newDist.x;
+			s2->pos.z = s1->pos.z - newDist.z;
 		}
 		else
 		{
-			s1->pos = s2->pos + newDist;
+			s1->pos.x = s2->pos.x + newDist.x;
+			s1->pos.z = s2->pos.z + newDist.z;
 		}
 	}
 }
