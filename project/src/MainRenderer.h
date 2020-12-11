@@ -1,4 +1,7 @@
 #pragma once
+
+#include <set>
+
 #include "Camera.h"
 #include "Renderer.h"
 #include "AnimationRenderer.h"
@@ -6,7 +9,6 @@
 #include "GuiRenderer.h"
 #include "WaterRenderer.h"
 #include "buffers/WaterFrameBuffer.h"
-#include <set>
 
 class MainRenderer {
 	static Camera* camera;
@@ -24,10 +26,9 @@ public:
 
 	static void load(Renderer* renderer);
 	static void unload(Renderer* renderer);
-	
+
 	static void load(GuiRenderer* renderer);
 	static void unload(GuiRenderer* renderer);
-
 
 	static void load(AnimationRenderer* renderer);
 	static void unload(AnimationRenderer* renderer);

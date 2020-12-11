@@ -28,6 +28,13 @@ Buffer::Buffer(const std::vector<glm::vec4>& data) : componentCount(4) {
 	unbind();
 }
 
+Buffer::Buffer(const std::vector<glm::uvec3>& data) : componentCount(4) {
+	glGenBuffers(1, &bufferID);
+	bind();
+	glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(glm::uvec4), data.data(), GL_STATIC_DRAW);
+	unbind();
+}
+
 Buffer::~Buffer() {
 	glDeleteBuffers(1, &bufferID);
 }

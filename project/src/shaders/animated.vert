@@ -3,11 +3,11 @@
 const int MAX_JOINTS = 50;
 const int MAX_WEIGHTS = 4;
 
-attribute vec3 position;
-attribute vec2 texCoord;
-attribute vec3 normal;
-attribute ivec4 jointIds;
-attribute vec4 jointWeights;
+layout (location = 0) in vec4 position;
+layout (location = 1) in vec2 texCoord;
+layout (location = 2) in vec3 normal;
+layout (location = 3) in ivec4 jointIds;
+layout (location = 4) in vec4 jointWeights;
 
 varying vec2 texCoord0;
 varying vec3 normal0;
@@ -25,14 +25,14 @@ void main()
     {		
         mat4 jointTransform = jointTransforms[jointIds[i]];
 
-        vec4 posePosition = jointTransform * vec4(position, 1.0);
+        vec4 posePosition = jointTransform * position;
         totalLocalPos += posePosition * jointWeights[i];
 
         vec4 worldNormal = jointTransform * vec4(normal, 0.0);
         totalNormal += worldNormal * jointWeights[i];
     }
 
-    //totalLocalPos = vec4(position, 1.0);
+    //totalLocalPos = position;
 
 	mat4 modelViewProjection = viewProjection * transform;
 

@@ -17,19 +17,15 @@ class GeometryLoader
 
 	tinyxml2::XMLElement* meshData;
 
-	std::vector<VertexSkinData> vertexWeights;
-
-	float* verticesArray;
-	float* normalsArray;
-	float* texturesArray;
-	int* indicesArray;
-	int* jointIdsArray;
-	float* weightsArray;
+	std::vector<VertexSkinData*> vertexWeights;
 
 	std::vector<Vertex*> vertices;
-	std::vector<glm::vec2> textures;
-	std::vector<glm::vec3> normals;
-	std::vector<int> indices;
+	std::vector<glm::vec4> verticesVector;
+	std::vector<glm::vec2> texturesVector;
+	std::vector<glm::vec3> normalsVector;
+	std::vector<glm::uvec3> jointIdsVector;
+	std::vector<glm::vec3> weightsVector;
+	std::vector<unsigned int> indicesVector;
 
 	void readRawData();
 	void readPositions();
@@ -37,14 +33,13 @@ class GeometryLoader
 	void readTextureCoords();
 	void assembleVertices();
 	Vertex* processVertex(int posIndex, int normIndex, int texIndex);
-	int* convertIndicesListToArray();
-	float convertDataToArrays();
+	float convertDataToVectors();
 	Vertex* dealWithAlreadyProcessedVertex(Vertex* previousVertex, int newTextureIndex, int newNormalIndex);
-	void initArrays();
+	void clearVectors();
 	void removeUnusedVertices();
 
 public:
-	GeometryLoader(tinyxml2::XMLElement* geometryNode, std::vector<VertexSkinData> vertexWeights);
+	GeometryLoader(tinyxml2::XMLElement* geometryNode, std::vector<VertexSkinData*> vertexWeights);
 	MeshData* extractModelData();
 };
 

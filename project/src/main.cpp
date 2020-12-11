@@ -15,6 +15,10 @@
 #include "TimeFrame.h"
 #include "GuiRenderer.h"
 #include "ColladaLoader.h"
+#include "AnimatedRenderable.h"
+#include "Animation.h"
+#include "AnimatedModelLoader.h"
+#include "AnimationLoader.h"
 
 using namespace std;
 
@@ -124,12 +128,9 @@ int main(int argc, char* argv[]) {
 
 	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
 
-	AnimatedModelData* animatedModel = ColladaLoader::loadColladaModel("../models/Characters/player.dae", 3);
-	AnimationData* animationData = ColladaLoader::loadColladaAnimation("../models/Characters/player.dae");
-
-	AnimationRenderer* player = new AnimationRenderer(camera);
-	player->loadCollada("../models/Characters/player.dae");
-	player->setShader(animationShader);
+	AnimatedRenderable* entity = AnimatedModelLoader::loadEntity("../models/characters/player/model.dae", "../models/characters/player/diffuse.png");
+	Animation* animation = AnimationLoader::loadAnimation("../models/characters/player/model.dae");
+	entity->doAnimation(animation);
 
 	// create Gui with FPS
 	Texture* tex = new Texture();

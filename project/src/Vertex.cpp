@@ -1,14 +1,10 @@
 #include "Vertex.h"
 
-Vertex::Vertex(int index, glm::vec3 position, VertexSkinData weightsData) {
+Vertex::Vertex(int index, glm::vec3 position, VertexSkinData* weightsData) {
 	this->index = index;
 	this->weightsData = weightsData;
 	this->position = position;
 	this->length = position.length();
-}
-
-VertexSkinData Vertex::getWeightsData() {
-	return weightsData;
 }
 
 void Vertex::addTangent(glm::vec3 tangent) {
@@ -73,7 +69,7 @@ glm::vec3 Vertex::getAverageTangent() {
 	return averagedTangent;
 }
 
-VertexSkinData Vertex::getWeightsData() {
+VertexSkinData* Vertex::getWeightsData() {
 	return weightsData;
 }
 

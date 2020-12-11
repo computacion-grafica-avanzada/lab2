@@ -6,6 +6,7 @@ Character* MainRenderer::character = NULL;
 std::set<Renderer*> MainRenderer::renderers;
 std::set<GuiRenderer*> MainRenderer::guiRenderers;
 std::set<WaterRenderer*> MainRenderer::waterRenderers;
+std::set<AnimationRenderer*> MainRenderer::animationRenderers;
 WaterFrameBuffer* MainRenderer::waterFrameBuffer = NULL;
 
 void MainRenderer::init(Camera* camera) {
@@ -37,6 +38,14 @@ void MainRenderer::unload(WaterRenderer* renderer) {
 	waterRenderers.erase(renderer);
 }
 
+void MainRenderer::load(AnimationRenderer* renderer) {
+	animationRenderers.insert(renderer);
+}
+
+void MainRenderer::unload(AnimationRenderer* renderer) {
+	animationRenderers.erase(renderer);
+}
+
 Character* MainRenderer::getCharacter() {
 	return character;
 }
@@ -55,9 +64,9 @@ void MainRenderer::render() {
 	camera->SetPosition(cameraPosition);
 	camera->SetPitch(pitch);
 
-	 //Render the scene in the reflection buffer
+	//Render the scene in the reflection buffer
 	waterFrameBuffer->bindReflectionBuffer();
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (Renderer* renderer : renderers) {
 		renderer->enableClipPlane(glm::vec4(0, 1, 0, -4)); //TODO change to water height if different than 0
 		renderer->render();

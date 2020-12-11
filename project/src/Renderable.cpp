@@ -1,7 +1,11 @@
 #include "Renderable.h"
 
 Renderable::Renderable() {}
-Renderable::~Renderable() {}
+
+Renderable::~Renderable() {
+	delete mesh;
+	delete texture;
+}
 
 void Renderable::setMesh(Mesh* mesh) {
 	this->mesh = mesh;

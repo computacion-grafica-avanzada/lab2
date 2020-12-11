@@ -1,55 +1,33 @@
-#ifndef JOINT_ANIM_H
-#define JOINT_ANIM_H
-
-#include <map>
-#include <glm\glm.hpp>
-#define GLM_ENABLE_EXPERIMENTAL
-#include <glm\gtx\quaternion.hpp>
-#include <glm\gtx\transform.hpp>
-
-struct JointAnim
-{
-	std::string _name;
-	std::map<double, glm::vec3> _positionKeys;
-	std::map<double, glm::quat> _rotationKeys;
-	std::map<double, glm::vec3> _scallingKeys;
-};
-
-#endif
-
-#ifndef ANIMATION_H
-#define ANIMATION_H
+#pragma once
 
 #include <vector>
-#include <nlohmann\json.hpp>
 
-using json = nlohmann::json;
+#include "KeyFrame.h"
 
 class Animation
 {
-private:
-	std::string name;
-	double duration = 0;
-	std::vector<JointAnim> jointAnims;
+	float length;//in seconds
+	std::vector<KeyFrame*> keyFrames;
 
 public:
-	Animation(const json& jsonObj);
-	virtual ~Animation() {}
+	/**
+	 * @param lengthInSeconds
+	 *            - the total length of the animation in seconds.
+	 * @param frames
+	 *            - all the keyframes for the animation, ordered by time of
+	 *            appearance in the animation.
+	 */
+	Animation(float lengthInSeconds, std::vector<KeyFrame*> frames);
 
-	inline std::string getName()
-	{
-		return name;
-	}
+	/**
+	 * @return The length of the animation in seconds.
+	 */
+	float getLength();
 
-	inline double getDuration()
-	{
-		return duration;
-	}
-
-	inline std::vector<JointAnim> getJointAnims()
-	{
-		return jointAnims;
-	}
+	/**
+	 * @return An array of the animation's keyframes. The array is ordered based
+	 *         on the order of the keyframes in the animation (first keyframe of
+	 *         the animation in array position 0).
+	 */
+	std::vector<KeyFrame*> getKeyFrames();
 };
-
-#endif

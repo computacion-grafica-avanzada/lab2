@@ -17,11 +17,10 @@ class Vertex
 	float length;
 	std::vector<glm::vec3> tangents;
 	glm::vec3 averagedTangent;
-	VertexSkinData weightsData;
+	VertexSkinData* weightsData;
 
 public:
-	Vertex(int index, glm::vec3 position, VertexSkinData weightsData);
-	VertexSkinData getWeightsData();
+	Vertex(int index, glm::vec3 position, VertexSkinData* weightsData);
 	void addTangent(glm::vec3 tangent);
 	void averageTangents();
 	bool isSet();
@@ -36,6 +35,6 @@ public:
 	int getIndex();
 	float getLength();
 	glm::vec3 getAverageTangent();
-	VertexSkinData getWeightsData();
+	VertexSkinData* getWeightsData();
 };
 

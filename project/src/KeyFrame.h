@@ -10,11 +10,8 @@ class KeyFrame
 	float timeStamp;
 	std::map<std::string, JointTransform*> pose;
 
-protected:
-	/**
-	 * @return The time in seconds of the keyframe in the animation.
-	 */
-	float getTimeStamp();
+
+public:
 
 	/**
 	 * @return The desired bone-space transforms of all the joints at this
@@ -24,7 +21,11 @@ protected:
 	 */
 	std::map<std::string, JointTransform*> getJointKeyFrames();
 
-public:
+	/**
+	 * @return The time in seconds of the keyframe in the animation.
+	 */
+	float getTimeStamp();
+
 
 	/**
 	 * @param timeStamp

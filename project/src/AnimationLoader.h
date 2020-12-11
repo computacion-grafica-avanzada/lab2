@@ -24,6 +24,6 @@ class AnimationLoader
 
 public:
 	/* Loads up a collada animation file, and returns and animation created from the extracted animation data from the file. */
-	static Animation loadAnimation(const char* colladaFile);
+	static Animation* loadAnimation(const char* colladaFile);
 };
 

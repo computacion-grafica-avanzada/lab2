@@ -1,132 +1,197 @@
 #include "Animator.h"
-#include "..\AnimatedModel\Model.h"
-#include <iostream>
 
-Animator::Animator(Model* model)
-{
-	model = model;
-}
-
-void Animator::startAnimation(const std::string& animationName)
-{
-	for (auto animation : animations)
-	{
-		if (animation->getName() == animationName)
-		{
-			animationTime = 0;
-			currentAnimation = animation;
-		}
+/**
+* Increases the current animation time which allows the animation to
+* progress. If the current animation has reached the end then the timer is
+* reset, causing the animation to loop.
+*/
+void Animator::increaseAnimationTime() {
+	animationTime += TimeFrame::deltaTime;
+	while (animationTime > currentAnimation->getLength()) {
+		this->animationTime -= currentAnimation->getLength();
 	}
 }
 
-void Animator::addAnimation(const json& jsonAnimation)
-{
-	animations.push_back(std::make_shared<Animation>(jsonAnimation));
+/**
+ * This method returns the current animation pose of the entity. It returns
+ * the desired local-space transforms for all the joints in a map, indexed
+ * by the name of the joint that they correspond to.
+ *
+ * The pose is calculated based on the previous and next keyframes in the
+ * current animation. Each keyframe provides the desired pose at a certain
+ * time in the animation, so the animated pose for the current time can be
+ * calculated by interpolating between the previous and next keyframe.
+ *
+ * This method first finds the preious and next keyframe, calculates how far
+ * between the two the current animation is, and then calculated the pose
+ * for the current animation time by interpolating between the transforms at
+ * those keyframes.
+ *
+ * @return The current pose as a map of the desired local-space transforms
+ *         for all the joints. The transforms are indexed by the name ID of
+ *         the joint that they should be applied to.
+ */
+std::map<std::string, glm::mat4> Animator::calculateCurrentAnimationPose() {
+	std::pair<KeyFrame*, KeyFrame*> frames = getPreviousAndNextFrames();
+	float progression = calculateProgression(frames.first, frames.second);
+	return interpolatePoses(frames.first, frames.second, progression);
 }
 
-void Animator::update(double elapsedTime)
-{
-	if (currentAnimation == nullptr) {
+/**
+ * This is the method where the animator calculates and sets those all-
+ * important "joint transforms" that I talked about so much in the tutorial.
+ *
+ * This method applies the current pose to a given joint, and all of its
+ * descendants. It does this by getting the desired local-transform for the
+ * current joint, before applying it to the joint. Before applying the
+ * transformations it needs to be converted from local-space to model-space
+ * (so that they are relative to the model's origin, rather than relative to
+ * the parent joint). This can be done by multiplying the local-transform of
+ * the joint with the model-space transform of the parent joint.
+ *
+ * The same thing is then done to all the child joints.
+ *
+ * Finally the inverse of the joint's bind transform is multiplied with the
+ * model-space transform of the joint. This basically "subtracts" the
+ * joint's original bind (no animation applied) transform from the desired
+ * pose transform. The result of this is then the transform required to move
+ * the joint from its original model-space transform to it's desired
+ * model-space posed transform. This is the transform that needs to be
+ * loaded up to the vertex shader and used to transform the vertices into
+ * the current pose.
+ *
+ * @param currentPose
+ *            - a map of the local-space transforms for all the joints for
+ *            the desired pose. The map is indexed by the name of the joint
+ *            which the transform corresponds to.
+ * @param joint
+ *            - the current joint which the pose should be applied to.
+ * @param parentTransform
+ *            - the desired model-space transform of the parent joint for
+ *            the pose.
+ */
+void Animator::applyPoseToJoints(std::map<std::string, glm::mat4> currentPose, Joint* joint, glm::mat4 parentTransform) {
+	glm::mat4 currentLocalTransform = currentPose[joint->name];
+	glm::mat4 currentTransform = parentTransform * currentLocalTransform;
+	for (Joint* childJoint : joint->children) {
+		applyPoseToJoints(currentPose, childJoint, currentTransform);
+	}
+	currentTransform = currentTransform * joint->getInverseBindTransform();
+	joint->setAnimationTransform(currentTransform);
+}
+
+/**
+ * Finds the previous keyframe in the animation and the next keyframe in the
+ * animation, and returns them in an array of length 2. If there is no
+ * previous frame (perhaps current animation time is 0.5 and the first
+ * keyframe is at time 1.5) then the first keyframe is used as both the
+ * previous and next keyframe. The last keyframe is used for both next and
+ * previous if there is no next keyframe.
+ *
+ * @return The previous and next keyframes, in an array which therefore will
+ *         always have a length of 2.
+ */
+std::pair<KeyFrame*, KeyFrame*> Animator::getPreviousAndNextFrames() {
+	std::vector<KeyFrame*> allFrames = currentAnimation->getKeyFrames();
+	KeyFrame* previousFrame = allFrames[0];
+	KeyFrame* nextFrame = allFrames[0];
+	for (int i = 1; i < allFrames.size(); i++) {
+		nextFrame = allFrames[i];
+		if (nextFrame->getTimeStamp() > animationTime) {
+			break;
+		}
+		previousFrame = allFrames[i];
+	}
+	return std::pair<KeyFrame*, KeyFrame*>(previousFrame, nextFrame);
+}
+
+/**
+ * Calculates how far between the previous and next keyframe the current
+ * animation time is, and returns it as a value between 0 and 1.
+ *
+ * @param previousFrame
+ *            - the previous keyframe in the animation.
+ * @param nextFrame
+ *            - the next keyframe in the animation.
+ * @return A number between 0 and 1 indicating how far between the two
+ *         keyframes the current animation time is.
+ */
+float Animator::calculateProgression(KeyFrame* previousFrame, KeyFrame* nextFrame) {
+	float totalTime = nextFrame->getTimeStamp() - previousFrame->getTimeStamp();
+	float currentTime = animationTime - previousFrame->getTimeStamp();
+	return currentTime / totalTime;
+}
+
+/**
+ * Calculates all the local-space joint transforms for the desired current
+ * pose by interpolating between the transforms at the previous and next
+ * keyframes.
+ *
+ * @param previousFrame
+ *            - the previous keyframe in the animation.
+ * @param nextFrame
+ *            - the next keyframe in the animation.
+ * @param progression
+ *            - a number between 0 and 1 indicating how far between the
+ *            previous and next keyframes the current animation time is.
+ * @return The local-space transforms for all the joints for the desired
+ *         current pose. They are returned in a map, indexed by the name of
+ *         the joint to which they should be applied.
+ */
+std::map<std::string, glm::mat4> Animator::interpolatePoses(KeyFrame* previousFrame, KeyFrame* nextFrame, float progression) {
+	std::map<std::string, glm::mat4> currentPose;
+	std::map<std::string, JointTransform*> m = previousFrame->getJointKeyFrames();
+	std::vector<std::string> jointsNames;
+	for (std::map<std::string, JointTransform*>::iterator it = m.begin(); it != m.end(); ++it) {
+		jointsNames.push_back(it->first);
+	}
+
+	for (std::string jointName : jointsNames) {
+		JointTransform* previousTransform = previousFrame->getJointKeyFrames()[jointName];
+		JointTransform* nextTransform = nextFrame->getJointKeyFrames()[jointName];
+		JointTransform* currentTransform = JointTransform::interpolate(previousTransform, nextTransform, progression);
+		currentPose.insert(std::pair<std::string, glm::mat4>(jointName, currentTransform->getLocalTransform()));
+	}
+	return currentPose;
+}
+
+/**
+ * @param entity
+ *            - the entity which will by animated by this animator.
+ */
+Animator::Animator(Joint* modelRootJoint) {
+	this->modelRootJoint = modelRootJoint;
+}
+
+/**
+ * Indicates that the entity should carry out the given animation. Resets
+ * the animation time so that the new animation starts from the beginning.
+ *
+ * @param animation
+ *            - the new animation to carry out.
+ */
+void Animator::doAnimation(Animation* animation) {
+	this->animationTime = 0;
+	this->currentAnimation = animation;
+}
+
+/**
+ * This method should be called each frame to update the animation currently
+ * being played. This increases the animation time (and loops it back to
+ * zero if necessary), finds the pose that the entity should be in at that
+ * time of the animation, and then applies that pose to all the model's
+ * joints by setting the joint transforms.
+ */
+void Animator::update() {
+	if (currentAnimation == NULL) {
 		return;
 	}
-	animationTime += elapsedTime;
-	if (animationTime > currentAnimation->getDuration()) animationTime -= currentAnimation->getDuration();
-
-	std::unordered_map<std::string, glm::mat4> jointMap = calculateJointTransforms();
-
-	for (auto jointTransform : jointMap)
-	{
-		std::shared_ptr<Joint> joint = model->FindJoint(jointTransform.first);
-		if (joint != nullptr) joint->setTransform(jointTransform.second);
-	}
-	model->InitJointHierarchy(model->getRootJoint(), glm::scale(glm::vec3(1)));
+	increaseAnimationTime();
+	std::map<std::string, glm::mat4> currentPose = calculateCurrentAnimationPose();
+	applyPoseToJoints(currentPose, modelRootJoint, glm::identity<glm::mat4>());
 }
 
-std::unordered_map<std::string, glm::mat4> Animator::calculateJointTransforms()
+void Animator::setRootJoint(Joint* joint)
 {
-	std::unordered_map<std::string, glm::mat4> jointTransforms;
-	for (auto jointKeys : currentAnimation->getJointAnims())
-	{
-		//Using upper bound as it will never return the first value of a map.
-		auto posNext = jointKeys._positionKeys.upper_bound(animationTime);
-		auto rotNext = jointKeys._rotationKeys.upper_bound(animationTime);
-		auto scaleNext = jointKeys._scallingKeys.upper_bound(animationTime);
-
-		if (posNext == jointKeys._positionKeys.end()) posNext--;
-		if (rotNext == jointKeys._rotationKeys.end()) rotNext--;
-		if (scaleNext == jointKeys._scallingKeys.end()) scaleNext--;
-
-		glm::vec3 pos = getInterpolatedPos(*(std::prev(posNext)), *posNext);
-		glm::quat rot = getInterpolatedRot(*(std::prev(rotNext)), *rotNext);
-		glm::vec3 scale = getInterpolatedScale(*(std::prev(scaleNext)), *scaleNext);
-
-		glm::mat4 transform = glm::translate(pos) * glm::toMat4(rot) * glm::scale(scale);
-
-		jointTransforms.insert(std::make_pair(jointKeys._name, transform));
-	}
-	return jointTransforms;
-}
-
-glm::vec3 Animator::getInterpolatedPos(std::pair<double, glm::vec3> start, std::pair<double, glm::vec3> end)
-{
-	double delta = end.first - start.first;
-	double factor = (animationTime - start.first) / delta;
-	glm::vec3 deltaPos = end.second - start.second;
-	glm::vec3 pos = start.second + (float)factor * deltaPos;
-	return pos;
-}
-
-glm::quat Animator::getInterpolatedRot(std::pair<double, glm::quat> start, std::pair<double, glm::quat> end)
-{
-	double delta = end.first - start.first;
-	double factor = (animationTime - start.first) / delta;
-	glm::quat rot = slerp(start.second, end.second, (float)factor);
-	return glm::normalize(rot);
-}
-
-//Adapted from wikipedia: https://en.wikipedia.org/wiki/Slerp#Source_code
-glm::quat Animator::slerp(glm::quat v0, glm::quat v1, float t) {
-	// Only unit quaternions are valid rotations.
-	// Normalize to avoid undefined behavior.
-	v0 = glm::normalize(v0);
-	v1 = glm::normalize(v1);
-
-	// Compute the cosine of the angle between the two vectors.
-	float dot = glm::dot(v0, v1);
-
-	// If the dot product is negative, the quaternions
-	// have opposite handed-ness and slerp won't take
-	// the shorter path. Fix by reversing one quaternion.
-	if (dot < 0.0f) {
-		v1 = -v1;
-		dot = -dot;
-	}
-
-	//const double DOT_THRESHOLD = 0.9995;
-	//if (dot > DOT_THRESHOLD) {
-	//	// If the inputs are too close for comfort, linearly interpolate
-	//	// and normalize the result.
-
-	//	glm::quat result = v0 + t * (v1 – v0);
-	//	result = glm::normalize(result);
-	//	return result;
-	//}
-
-	glm::clamp(dot, -1.0f, 1.0f);           // Robustness: Stay within domain of acos()
-	float theta_0 = acos(dot);  // theta_0 = angle between input vectors
-	float theta = theta_0 * t;    // theta = angle between v0 and result
-
-	float s0 = cos(theta) - dot * sin(theta) / sin(theta_0);  // == sin(theta_0 - theta) / sin(theta_0)
-	float s1 = sin(theta) / sin(theta_0);
-
-	return (s0 * v0) + (s1 * v1);
-}
-
-glm::vec3 Animator::getInterpolatedScale(std::pair<double, glm::vec3> start, std::pair<double, glm::vec3> end)
-{
-	double delta = end.first - start.first;
-	double factor = (animationTime - start.first) / delta;
-	glm::vec3 deltaScale = end.second - start.second;
-	glm::vec3 scale = start.second + (float)factor * deltaScale;
-	return scale;
+	this->modelRootJoint = joint;
 }

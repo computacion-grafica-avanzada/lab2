@@ -13,6 +13,8 @@ public:
 	Buffer(const std::vector<glm::vec2>& data);
 	Buffer(const std::vector<glm::vec3>& data);
 	Buffer(const std::vector<glm::vec4>& data);
+	Buffer(const std::vector<glm::uvec3>& data);
+
 	~Buffer();
 
 	void bind();

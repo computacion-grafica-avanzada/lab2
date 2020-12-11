@@ -37,7 +37,7 @@ void GeometryLoader::readNormals()
 		float z = std::stof(normData[i * 3 + 2]);
 		glm::vec4 norm(x, y, z, 0);
 		norm = CORRECTION * norm;
-		normals.push_back(glm::vec3(norm.x, norm.y, norm.z));
+		normalsVector.push_back(glm::vec3(norm.x, norm.y, norm.z));
 	}
 }
 
@@ -51,7 +51,7 @@ void GeometryLoader::readTextureCoords()
 	{
 		float s = std::stof(texData[i * 2]);
 		float t = std::stof(texData[i * 2 + 1]);
-		textures.push_back(glm::vec2(s, t));
+		texturesVector.push_back(glm::vec2(s, t));
 	}
 }
 
@@ -76,7 +76,7 @@ Vertex* GeometryLoader::processVertex(int posIndex, int normIndex, int texIndex)
 	{
 		currentVertex->setTextureIndex(texIndex);
 		currentVertex->setNormalIndex(normIndex);
-		indices.push_back(posIndex);
+		indicesVector.push_back(posIndex);
 		return currentVertex;
 	}
 	else
@@ -85,17 +85,7 @@ Vertex* GeometryLoader::processVertex(int posIndex, int normIndex, int texIndex)
 	}
 }
 
-int* GeometryLoader::convertIndicesListToArray()
-{
-	indicesArray = new int[indices.size()];
-	for (int i = 0; i < indices.size(); i++)
-	{
-		indicesArray[i] = indices[i];
-	}
-	return indicesArray;
-}
-
-float GeometryLoader::convertDataToArrays()
+float GeometryLoader::convertDataToVectors()
 {
 	float furthestPoint = 0;
 	for (int i = 0; i < vertices.size(); i++)
@@ -106,23 +96,16 @@ float GeometryLoader::convertDataToArrays()
 			furthestPoint = currentVertex->getLength();
 		}
 		glm::vec3 position = currentVertex->getPosition();
-		glm::vec2 textureCoord = textures[currentVertex->getTextureIndex()];
-		glm::vec3 normalVector = normals[currentVertex->getNormalIndex()];
-		verticesArray[i * 3] = position.x;
-		verticesArray[i * 3 + 1] = position.y;
-		verticesArray[i * 3 + 2] = position.z;
-		texturesArray[i * 2] = textureCoord.x;
-		texturesArray[i * 2 + 1] = 1 - textureCoord.y;
-		normalsArray[i * 3] = normalVector.x;
-		normalsArray[i * 3 + 1] = normalVector.y;
-		normalsArray[i * 3 + 2] = normalVector.z;
-		VertexSkinData weights = currentVertex->getWeightsData();
-		jointIdsArray[i * 3] = weights.jointIds[0];
-		jointIdsArray[i * 3 + 1] = weights.jointIds[1];
-		jointIdsArray[i * 3 + 2] = weights.jointIds[2];
-		weightsArray[i * 3] = weights.weights[0];
-		weightsArray[i * 3 + 1] = weights.weights[1];
-		weightsArray[i * 3 + 2] = weights.weights[2];
+		glm::vec2 textureCoord = texturesVector[currentVertex->getTextureIndex()];
+		glm::vec3 normalVector = normalsVector[currentVertex->getNormalIndex()];
+		verticesVector.push_back(glm::vec4(position, 1.0f));
+		texturesVector.push_back(textureCoord);
+		normalsVector.push_back(normalVector);
+		VertexSkinData* weights = currentVertex->getWeightsData();
+		glm::uvec3 jointIds(weights->jointIds[0], weights->jointIds[1], weights->jointIds[2]);
+		jointIdsVector.push_back(jointIds);
+		glm::vec3 jointsWeights(weights->weights[0], weights->weights[1], weights->weights[2]);
+		weightsVector.push_back(jointsWeights);
 	}
 	return furthestPoint;
 }
@@ -131,7 +114,7 @@ Vertex* GeometryLoader::dealWithAlreadyProcessedVertex(Vertex* previousVertex, i
 {
 	if (previousVertex->hasSameTextureAndNormal(newTextureIndex, newNormalIndex))
 	{
-		indices.push_back(previousVertex->getIndex());
+		indicesVector.push_back(previousVertex->getIndex());
 		return previousVertex;
 	}
 	else
@@ -148,19 +131,19 @@ Vertex* GeometryLoader::dealWithAlreadyProcessedVertex(Vertex* previousVertex, i
 			duplicateVertex->setNormalIndex(newNormalIndex);
 			previousVertex->setDuplicateVertex(duplicateVertex);
 			vertices.push_back(duplicateVertex);
-			indices.push_back(duplicateVertex->getIndex());
+			indicesVector.push_back(duplicateVertex->getIndex());
 			return duplicateVertex;
 		}
 	}
 }
 
-void GeometryLoader::initArrays()
+void GeometryLoader::clearVectors()
 {
-	this->verticesArray = new float[vertices.size() * 3];
-	this->texturesArray = new float[vertices.size() * 2];
-	this->normalsArray = new float[vertices.size() * 3];
-	this->jointIdsArray = new int[vertices.size() * 3];
-	this->weightsArray = new float[vertices.size() * 3];
+	this->verticesVector.clear();
+	this->texturesVector.clear();
+	this->normalsVector.clear();
+	this->jointIdsVector.clear();
+	this->weightsVector.clear();
 }
 
 void GeometryLoader::removeUnusedVertices()
@@ -176,7 +159,7 @@ void GeometryLoader::removeUnusedVertices()
 	}
 }
 
-GeometryLoader::GeometryLoader(tinyxml2::XMLElement* geometryNode, std::vector<VertexSkinData> vertexWeights)
+GeometryLoader::GeometryLoader(tinyxml2::XMLElement* geometryNode, std::vector<VertexSkinData*> vertexWeights)
 {
 	this->vertexWeights = vertexWeights;
 	this->meshData = geometryNode->FirstChildElement("geometry")->FirstChildElement("mesh");
@@ -187,8 +170,7 @@ MeshData* GeometryLoader::extractModelData()
 	readRawData();
 	assembleVertices();
 	removeUnusedVertices();
-	initArrays();
-	convertDataToArrays();
-	convertIndicesListToArray();
-	return new MeshData(verticesArray, texturesArray, normalsArray, indicesArray, jointIdsArray, weightsArray, vertices.size());
+	clearVectors();
+	convertDataToVectors();
+	return new MeshData(verticesVector, texturesVector, normalsVector, jointIdsVector, weightsVector, indicesVector, vertices.size());
 }

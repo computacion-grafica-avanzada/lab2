@@ -1,7 +1,5 @@
 #include "AnimationRenderer.h"
 #include "MainRenderer.h"
-#define TINYOBJLOADER_IMPLEMENTATION
-#include "tiny_obj_loader.h"
 
 AnimationRenderer::AnimationRenderer(Camera* camera) {
 	this->camera = camera;
@@ -55,8 +53,8 @@ void AnimationRenderer::render() {
 		// Create model matrix for model transformations
 		glm::mat4 model(1.0);
 
-		glm::mat4 jointTransforms[MAX_JOINTS];
-		for (unsigned int i = 0; i < (jointVector.size() < MAX_JOINTS ? jointVector.size() : MAX_JOINTS); ++i)
+		glm::mat4 jointTransforms[MAX_JOINTS_MODEL];
+		for (unsigned int i = 0; i < (jointVector.size() < MAX_JOINTS_MODEL ? jointVector.size() : MAX_JOINTS_MODEL); ++i)
 		{
 			jointTransforms[i] = jointVector[i];
 		}

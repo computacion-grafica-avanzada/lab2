@@ -19,7 +19,7 @@ JointTransform* AnimationLoader::createTransform(JointTransformData* data) {
 }
 
 /* Loads up a collada animation file, and returns and animation created from the extracted animation data from the file. */
-Animation AnimationLoader::loadAnimation(const char* colladaFile) {
+Animation* AnimationLoader::loadAnimation(const char* colladaFile) {
 	AnimationData* animationData = ColladaLoader::loadColladaAnimation(colladaFile);
 	std::vector<KeyFrame*> frames;
 	for (int i = 0; i < animationData->keyFrames.size(); i++) {
