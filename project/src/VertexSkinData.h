@@ -6,7 +6,7 @@
 class VertexSkinData
 {
 	void fillEmptyWeights(int max);
-	float saveTopWeights(std::vector<float> topWeightsArray);
+	float saveTopWeights(std::vector<float>& topWeightsArray);
 	void refillWeightList(std::vector<float> topWeights, float total);
 	void removeExcessJointIds(int max);
 

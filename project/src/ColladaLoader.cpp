@@ -2,15 +2,16 @@
 
 AnimatedModelData* ColladaLoader::loadColladaModel(const char* colladaFile, int maxWeights) {
 	tinyxml2::XMLDocument doc;
-	doc.LoadFile(colladaFile);
+	tinyxml2::XMLError error = doc.LoadFile(colladaFile);
+	tinyxml2::XMLElement* firstElem = doc.FirstChildElement();
 
-	SkinLoader* skinLoader = new SkinLoader(doc.FirstChildElement("library_controllers"), maxWeights);
+	SkinLoader* skinLoader = new SkinLoader(firstElem->FirstChildElement("library_controllers"), maxWeights);
 	SkinningData* skinningData = skinLoader->extractSkinData();
 
-	SkeletonLoader* jointsLoader = new SkeletonLoader(doc.FirstChildElement("library_visual_scenes"), skinningData->jointOrder);
+	SkeletonLoader* jointsLoader = new SkeletonLoader(firstElem->FirstChildElement("library_visual_scenes"), skinningData->jointOrder);
 	SkeletonData* jointsData = jointsLoader->extractBoneData();
 
-	GeometryLoader* g = new GeometryLoader(doc.FirstChildElement("library_geometries"), skinningData->verticesSkinData);
+	GeometryLoader* g = new GeometryLoader(firstElem->FirstChildElement("library_geometries"), skinningData->verticesSkinData);
 	MeshData* meshData = g->extractModelData();
 
 	return new AnimatedModelData(meshData, jointsData);
@@ -19,9 +20,11 @@ AnimatedModelData* ColladaLoader::loadColladaModel(const char* colladaFile, int 
 AnimationData* ColladaLoader::loadColladaAnimation(const char* colladaFile) {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(colladaFile);
+	doc.Print();
+	tinyxml2::XMLElement* firstElem = doc.FirstChildElement();
 
-	tinyxml2::XMLElement* animNode = doc.FirstChildElement("library_animations");
-	tinyxml2::XMLElement* jointsNode = doc.FirstChildElement("library_visual_scenes");
+	tinyxml2::XMLElement* animNode = firstElem->FirstChildElement("library_animations");
+	tinyxml2::XMLElement* jointsNode = firstElem->FirstChildElement("library_visual_scenes");
 	AnimationDataLoader* loader = new AnimationDataLoader(animNode, jointsNode);
 	AnimationData* animData = loader->extractAnimation();
 	return animData;

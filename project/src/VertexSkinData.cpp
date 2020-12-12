@@ -7,10 +7,10 @@ void VertexSkinData::fillEmptyWeights(int max) {
 	}
 }
 
-float VertexSkinData::saveTopWeights(std::vector<float> topWeightsArray) {
+float VertexSkinData::saveTopWeights(std::vector<float> &topWeightsArray) {
 	float total = 0;
-	for (int i = 0; i < topWeightsArray.size(); i++) {
-		topWeightsArray[i] = weights[i];
+	for (int i = 0; i < 3; i++) {
+		topWeightsArray.push_back(weights[i]);
 		total += topWeightsArray[i];
 	}
 	return total;

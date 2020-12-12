@@ -39,13 +39,15 @@ glm::mat4 SkeletonLoader::convertData(std::vector<std::string> rawData)
 	std::vector<float> matrixData;
 	glm::mat4 matrix;
 	int auxIndex;
+	std::string aux;
 	for (int i = 0; i < 16; i++)
 	{
-		matrixData[i] = std::stof(rawData[i]);
+		aux = rawData[i];
+		matrixData.push_back(std::stof(aux));
 	}
 	for (int i = 3; i >= 0; i--)
 	{
-		for (int j = 3; i >= 0; j--)
+		for (int j = 3; j >= 0; j--)
 		{
 			auxIndex = i * 4 + j;
 			matrix[i][j] = matrixData[auxIndex];

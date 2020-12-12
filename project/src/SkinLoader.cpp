@@ -3,7 +3,8 @@
 std::vector<std::string> SkinLoader::loadJointsList()
 {
 	tinyxml2::XMLElement* inputNode = skinningData->FirstChildElement("vertex_weights");
-	std::string jointDataId = XMLUtils::firstChildElementWithAttribute(inputNode, "input", "semantic", "JOINT")->Attribute("source") + 1;
+	std::string aux = std::string(XMLUtils::firstChildElementWithAttribute(inputNode, "input", "semantic", "JOINT")->Attribute("source"));
+	std::string jointDataId = aux.substr(1);
 	tinyxml2::XMLElement* jointsNode = XMLUtils::firstChildElementWithAttribute(skinningData, "source", "id", jointDataId)->FirstChildElement("Name_array");
 	std::vector<std::string> names = XMLUtils::splitText(jointsNode->GetText(), " ");
 	std::vector<std::string> jointsList;
@@ -17,7 +18,8 @@ std::vector<std::string> SkinLoader::loadJointsList()
 std::vector<float> SkinLoader::loadWeights()
 {
 	tinyxml2::XMLElement* inputNode = skinningData->FirstChildElement("vertex_weights");
-	std::string weightsDataId = XMLUtils::firstChildElementWithAttribute(inputNode, "input", "semantic", "WEIGHT")->Attribute("source") + 1;
+	std::string aux = std::string(XMLUtils::firstChildElementWithAttribute(inputNode, "input", "semantic", "WEIGHT")->Attribute("source"));
+	std::string weightsDataId = aux.substr(1);
 	tinyxml2::XMLElement* weightsNode = XMLUtils::firstChildElementWithAttribute(skinningData, "source", "id", weightsDataId)->FirstChildElement("float_array");
 	std::vector<std::string> rawData = XMLUtils::splitText(weightsNode->GetText(), " ");
 	std::vector<float> weights;
@@ -44,13 +46,17 @@ std::vector<VertexSkinData*> SkinLoader::getSkinData(tinyxml2::XMLElement* weigh
 	std::vector<std::string> rawData = XMLUtils::splitText(weightsDataNode->FirstChildElement("v")->GetText(), " ");
 	std::vector<VertexSkinData*> skinningData;
 	int pointer = 0;
+	std::string aux;
+	int jointId, weightId;
 	for (int count : counts)
 	{
 		VertexSkinData* skinData = new VertexSkinData();
 		for (int i = 0; i < count; i++)
 		{
-			int jointId = std::stoi(rawData[pointer++]);
-			int weightId = std::stoi(rawData[pointer++]);
+			aux = rawData[pointer++];
+			jointId = std::stoi(aux);
+			aux = rawData[pointer++];
+			weightId = std::stoi(aux);
 			skinData->addJointEffect(jointId, weights[weightId]);
 		}
 		skinData->limitJointNumber(maxWeights);
@@ -61,7 +67,8 @@ std::vector<VertexSkinData*> SkinLoader::getSkinData(tinyxml2::XMLElement* weigh
 
 SkinLoader::SkinLoader(tinyxml2::XMLElement* controllersNode, int maxWeights)
 {
-	this->skinningData = controllersNode->FirstChildElement("controller")->FirstChildElement("skin");
+	tinyxml2::XMLElement* aux = controllersNode->FirstChildElement("controller");
+	this->skinningData = aux->FirstChildElement("skin");
 	this->maxWeights = maxWeights;
 }
 

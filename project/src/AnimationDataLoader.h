@@ -21,7 +21,7 @@ class AnimationDataLoader
 
 	std::vector<float> getKeyTimes();
 	std::vector<KeyFrameData*> initKeyFrames(std::vector<float> times);
-	void loadJointTransforms(std::vector<KeyFrameData*> frames, tinyxml2::XMLNode* jointData, std::string rootNodeId);
+	void loadJointTransforms(std::vector<KeyFrameData*> frames, tinyxml2::XMLElement* jointData, std::string rootNodeId);
 	std::string getDataId(tinyxml2::XMLNode* jointData);
 	std::string getJointName(tinyxml2::XMLNode* jointData);
 	void processTransforms(std::string jointName, std::vector<std::string> rawData, std::vector<KeyFrameData*> keyFrames, bool root);

@@ -88,6 +88,9 @@ Vertex* GeometryLoader::processVertex(int posIndex, int normIndex, int texIndex)
 float GeometryLoader::convertDataToVectors()
 {
 	float furthestPoint = 0;
+	std::vector< glm::vec2> auxTexturesVector;
+	std::vector< glm::vec3> auxNormalsVector;
+
 	for (int i = 0; i < vertices.size(); i++)
 	{
 		Vertex* currentVertex = vertices[i];
@@ -99,14 +102,17 @@ float GeometryLoader::convertDataToVectors()
 		glm::vec2 textureCoord = texturesVector[currentVertex->getTextureIndex()];
 		glm::vec3 normalVector = normalsVector[currentVertex->getNormalIndex()];
 		verticesVector.push_back(glm::vec4(position, 1.0f));
-		texturesVector.push_back(textureCoord);
-		normalsVector.push_back(normalVector);
+		auxTexturesVector.push_back(textureCoord);
+		auxNormalsVector.push_back(normalVector);
 		VertexSkinData* weights = currentVertex->getWeightsData();
 		glm::uvec3 jointIds(weights->jointIds[0], weights->jointIds[1], weights->jointIds[2]);
 		jointIdsVector.push_back(jointIds);
 		glm::vec3 jointsWeights(weights->weights[0], weights->weights[1], weights->weights[2]);
 		weightsVector.push_back(jointsWeights);
 	}
+	texturesVector = auxTexturesVector;
+	normalsVector = auxNormalsVector;
+
 	return furthestPoint;
 }
 
@@ -167,10 +173,10 @@ GeometryLoader::GeometryLoader(tinyxml2::XMLElement* geometryNode, std::vector<V
 
 MeshData* GeometryLoader::extractModelData()
 {
+	clearVectors();
 	readRawData();
 	assembleVertices();
 	removeUnusedVertices();
-	clearVectors();
 	convertDataToVectors();
 	return new MeshData(verticesVector, texturesVector, normalsVector, jointIdsVector, weightsVector, indicesVector, vertices.size());
 }

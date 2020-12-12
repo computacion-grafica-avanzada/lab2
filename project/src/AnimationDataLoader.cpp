@@ -6,7 +6,7 @@ std::vector<float> AnimationDataLoader::getKeyTimes()
 	std::string text(timeData->GetText());
 	std::vector<std::string> rawTimes = XMLUtils::splitText(text, " ");
 	std::vector<float> times;
-	for (int i = 0; i < times.size(); i++) {
+	for (int i = 0; i < rawTimes.size(); i++) {
 		times.push_back(std::stof(rawTimes[i]));
 	}
 	return times;
@@ -22,11 +22,11 @@ std::vector<KeyFrameData*> AnimationDataLoader::initKeyFrames(std::vector<float>
 	return frames;
 }
 
-void AnimationDataLoader::loadJointTransforms(std::vector<KeyFrameData*> frames, tinyxml2::XMLNode* jointData, std::string rootNodeId)
+void AnimationDataLoader::loadJointTransforms(std::vector<KeyFrameData*> frames, tinyxml2::XMLElement* jointData, std::string rootNodeId)
 {
 	std::string jointNameId = getJointName(jointData);
 	std::string dataId = getDataId(jointData);
-	tinyxml2::XMLElement* transformData = XMLUtils::firstChildElementWithAttribute(jointHierarchy->FirstChildElement("sampler"), "source", "id", dataId);
+	tinyxml2::XMLElement* transformData = XMLUtils::firstChildElementWithAttribute(jointData, "source", "id", dataId);
 	std::string text(transformData->FirstChildElement("float_array")->GetText());
 	std::vector<std::string> rawData = XMLUtils::splitText(text, " ");
 	processTransforms(jointNameId, rawData, frames, jointNameId == rootNodeId);
@@ -34,8 +34,10 @@ void AnimationDataLoader::loadJointTransforms(std::vector<KeyFrameData*> frames,
 
 std::string AnimationDataLoader::getDataId(tinyxml2::XMLNode* jointData)
 {
-	tinyxml2::XMLElement* elem = XMLUtils::firstChildElementWithAttribute(jointHierarchy->FirstChildElement("sampler"), "input", "semantic", "OUTPUT");
-	return elem->Attribute("source") + 1;
+	tinyxml2::XMLElement* aux = jointData->FirstChildElement("sampler");
+	tinyxml2::XMLElement* elem = XMLUtils::firstChildElementWithAttribute(aux, "input", "semantic", "OUTPUT");
+	std::string res = std::string(elem->Attribute("source"));
+	return res.substr(1);
 }
 
 std::string AnimationDataLoader::getJointName(tinyxml2::XMLNode* jointData)
@@ -84,7 +86,8 @@ void AnimationDataLoader::processTransforms(std::string jointName, std::vector<s
 
 std::string AnimationDataLoader::findRootJointName()
 {
-	tinyxml2::XMLElement* skeleton = XMLUtils::firstChildElementWithAttribute(jointHierarchy->FirstChildElement("visual_scene"), "node", "id", "Armature");
+	tinyxml2::XMLElement* aux = jointHierarchy->FirstChildElement("visual_scene");
+	tinyxml2::XMLElement* skeleton = XMLUtils::firstChildElementWithAttribute(aux, "node", "id", "Armature");
 	return skeleton->FirstChildElement("node")->Attribute("id");
 }
 
@@ -102,7 +105,7 @@ AnimationData* AnimationDataLoader::extractAnimation()
 	std::vector<KeyFrameData*> keyFrames = initKeyFrames(times);
 	std::vector<tinyxml2::XMLElement*> animationNodes = XMLUtils::childrenWithName(animationData, "animation");
 
-	for (tinyxml2::XMLNode* jointNode : animationNodes)
+	for (tinyxml2::XMLElement* jointNode : animationNodes)
 	{
 		loadJointTransforms(keyFrames, jointNode, rootNode);
 	}

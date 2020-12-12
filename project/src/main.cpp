@@ -123,8 +123,8 @@ int main(int argc, char* argv[]) {
 	character->setPosition(glm::vec3(position.x - 200, position.y, position.z));
 
 	Renderer* island = new Renderer(camera, false);
-	island->loadObj("../models/Landscapes/three_island2.obj");
-	island->setShader(worldShader);
+	//island->loadObj("../models/Landscapes/three_island2.obj");
+	//island->setShader(worldShader);
 
 	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
 
