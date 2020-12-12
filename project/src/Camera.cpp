@@ -90,6 +90,7 @@ glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
 				modelMatrix = glm::rotate(modelMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
 				break;
 		}
+		modelMatrix = glm::scale(modelMatrix, glm::vec3(4.0f));
 		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
 	}
 	return modelMatrix;

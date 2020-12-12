@@ -19,7 +19,7 @@ JointData* SkeletonLoader::extractMainJointData(tinyxml2::XMLElement* jointNode,
 	// If element was found
 	if (it != boneOrder.end())
 	{
-		int index = it - boneOrder.begin();
+		index = it - boneOrder.begin();
 	}
 	std::vector<std::string> matrixData = XMLUtils::splitText(jointNode->FirstChildElement("matrix")->GetText(), " ");
 	glm::mat4 matrix = glm::identity<glm::mat4>();
@@ -59,7 +59,7 @@ glm::mat4 SkeletonLoader::convertData(std::vector<std::string> rawData)
 SkeletonLoader::SkeletonLoader(tinyxml2::XMLElement* visualSceneNode, std::vector<std::string> boneOrder)
 {
 	armatureData = XMLUtils::firstChildElementWithAttribute(visualSceneNode->FirstChildElement("visual_scene"), "node", "id", "Armature");
-	boneOrder = boneOrder;
+	this->boneOrder = boneOrder;
 }
 
 SkeletonData* SkeletonLoader::extractBoneData()

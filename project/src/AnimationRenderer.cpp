@@ -53,6 +53,8 @@ void AnimationRenderer::render() {
 		// Create model matrix for model transformations
 		//glm::mat4 model(1.0);
 
+		jointVector = renderable->getJointTransforms();
+
 		glm::mat4 jointTransforms[MAX_JOINTS_MODEL];
 		for (unsigned int i = 0; i < (jointVector.size() < MAX_JOINTS_MODEL ? jointVector.size() : MAX_JOINTS_MODEL); ++i)
 		{
@@ -63,8 +65,8 @@ void AnimationRenderer::render() {
 		shader->setUniform1f("textureTiling", 1);
 		shader->setUniformMatrix4fv("projection", camera->GetProjectionMatrix());
 		shader->setUniformMatrix4fv("view", camera->GetViewMatrix());
-		shader->setUniformMatrix4fv("model", camera->GetModelMatrix(false));
-		shader->setUniformMatrix4fv("jointTransforms", jointTransforms[0]);
+		shader->setUniformMatrix4fv("model", camera->GetModelMatrix(true));
+		shader->setUniformMatrix4fvArray("jointTransforms", jointTransforms[0], MAX_JOINTS_MODEL);
 
 		glDrawElements(GL_TRIANGLES, iBuffer->getCount(), GL_UNSIGNED_INT, 0);
 
@@ -73,8 +75,6 @@ void AnimationRenderer::render() {
 		texture->unbind();
 		shader->unbind();
 		MainRenderer::enable_culling();
-
-		printf("\nRENDER ANIMATION RENDERER");
 	}
 }
 

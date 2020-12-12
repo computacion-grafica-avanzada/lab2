@@ -40,7 +40,7 @@ void AnimatedRenderable::addJointsToArray(Joint* headJoint, std::vector<glm::mat
  *            this entity.
  *
  */
-AnimatedRenderable::AnimatedRenderable(Mesh* mesh, Texture* texture, float textureTiling, Joint* rootJoint, int jointCount) {
+AnimatedRenderable::AnimatedRenderable(AnimatedMesh* mesh, Texture* texture, float textureTiling, Joint* rootJoint, int jointCount) {
 	this->setMesh(mesh);
 	this->setTexture(texture, textureTiling);
 	this->rootJoint = rootJoint;

@@ -117,7 +117,10 @@ void Shader::setUniformMatrix4fv(const char* name, const glm::mat4& matrix) {
 	GLint matrixID = glGetUniformLocation(shaderProgram, name);
 	glUniformMatrix4fv(matrixID, 1, GL_FALSE, glm::value_ptr(matrix));
 }
-
+void Shader::setUniformMatrix4fvArray(const char* name, const glm::mat4& matrix, int size) {
+	GLint matrixID = glGetUniformLocation(shaderProgram, name);
+	glUniformMatrix4fv(matrixID, size, GL_FALSE, glm::value_ptr(matrix));
+}
 void Shader::setUniform1f(const char* name, const float& value) {
 	GLint floatID = glGetUniformLocation(shaderProgram, name);
 	glUniform1f(floatID, value);

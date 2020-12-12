@@ -2,8 +2,8 @@
 
 AnimatedModelData::AnimatedModelData(MeshData* mesh, SkeletonData* joints)
 {
-	this->joints = joints;
 	this->mesh = mesh;
+	this->joints = joints;
 }
 
 MeshData* AnimatedModelData::getMeshData()

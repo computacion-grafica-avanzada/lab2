@@ -22,6 +22,7 @@ public:
 	void bind();
 	void unbind();
 	void setUniformMatrix4fv(const char* name, const glm::mat4& matrix);
+	void setUniformMatrix4fvArray(const char* name, const glm::mat4& matrix, int size);
 	void setUniform1f(const char* name, const float& value);
 	void setUniform2f(const char* name, const glm::vec2& vector);
 	void setUniform3f(const char* name, const glm::vec3& vector);

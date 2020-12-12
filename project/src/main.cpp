@@ -107,26 +107,21 @@ int main(int argc, char* argv[]) {
 
 	// Create shaders
 	Shader* worldShader = new Shader("./src/shaders/simple.vert", "./src/shaders/simple.frag");
-	Shader* animationShader = new Shader("./src/shaders/animated.vert", "./src/shaders/animated.frag");
+	Shader* animationShader = new Shader("./src/shaders/animated.vert", "./src/shaders/simple.frag");
 	Shader* waterShader = new Shader("./src/shaders/water.vert", "./src/shaders/water.frag");
 	Shader* textShader = new Shader("./src/shaders/text.vert", "./src/shaders/text.frag");
 
 	Texture* dudv = new Texture("../models/dudv.png");
 
-	Renderer* characterRenderer = new Renderer(camera, true);
-	characterRenderer->loadObj(BEAGLE_PATH);
-
-	Character* character = new Character(glm::vec3(0, 0, 0), 1.0f, characterRenderer);
-	characterRenderer->setShader(worldShader);
-	MainRenderer::setCharacter(character);
-	glm::vec3 position = character->getPosition();
-	character->setPosition(glm::vec3(position.x - 200, position.y, position.z));
+	//Renderer* characterRenderer = new Renderer(camera, true);
+	//characterRenderer->loadObj(BEAGLE_PATH);
+	//characterRenderer->setShader(worldShader);
 
 	Renderer* island = new Renderer(camera, false);
 	//island->loadObj("../models/Landscapes/three_island2.obj");
 	//island->setShader(worldShader);
 
-	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
+	//WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
 
 	AnimatedRenderable* animatedCharacter = AnimatedModelLoader::loadEntity("../models/characters/player/model.dae", "../models/characters/player/diffuse.png");
 	Animation* animation = AnimationLoader::loadAnimation("../models/characters/player/model.dae");
@@ -135,6 +130,11 @@ int main(int argc, char* argv[]) {
 	AnimationRenderer* animationRenderer = new AnimationRenderer(camera);
 	animationRenderer->load(animatedCharacter);
 	animationRenderer->setShader(animationShader);
+
+	Character* character = new Character(glm::vec3(0, 0, 0), 1.0f, NULL);
+	MainRenderer::setCharacter(character);
+	glm::vec3 position = character->getPosition();
+	character->setPosition(glm::vec3(position.x - 200, position.y, position.z));
 
 	// create Gui with FPS
 	Texture* tex = new Texture();
@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
 					character->setDirection(RIGHT);
 					break;
 				case SDLK_c:
-					if (character->currentPathIndex == charactersSize - 1) {
+					/*if (character->currentPathIndex == charactersSize - 1) {
 						character->currentPathIndex = 0;
 					}
 					else {
@@ -194,7 +194,7 @@ int main(int argc, char* argv[]) {
 					}
 					characterRenderer->clearMesh();
 					character->path = charactersPaths[character->currentPathIndex];
-					characterRenderer->loadObj(character->path);
+					characterRenderer->loadObj(character->path);*/
 					break;
 				}
 				break;

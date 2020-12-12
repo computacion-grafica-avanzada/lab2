@@ -8,6 +8,8 @@
 #include "Renderable.h"
 #include "Animation.h"
 #include "Animator.h"
+#include "AnimatedMesh.h"
+
 
 
 /**
@@ -66,7 +68,7 @@ public:
 	 *            this entity.
 	 *
 	 */
-	AnimatedRenderable(Mesh* mesh, Texture* texture, float textureTiling, Joint* rootJoint, int jointCount);
+	AnimatedRenderable(AnimatedMesh* mesh, Texture* texture, float textureTiling, Joint* rootJoint, int jointCount);
 
 	/**
 	 * @return The root joint of the joint hierarchy. This joint has no parent,
