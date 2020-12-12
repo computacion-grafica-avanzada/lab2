@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include "Mesh.h"
 #include <set>
+#include "octree/octree.h"
 
 using namespace std;
 
@@ -9,6 +10,7 @@ class ColliderFloor
 {
 private:
 	std::set<Mesh*> meshes;
+	//Octree<glm::vec3> octree;
 public:
 	ColliderFloor(std::set<Mesh*> meshes);
 

@@ -154,5 +154,15 @@
     <None Include="src\shaders\WaterShader.frag" />
     <None Include="src\shaders\WaterShader.vert" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\octree\array.h" />
+    <None Include="src\octree\array2d.h" />
+    <None Include="src\octree\numtraits.h" />
+    <None Include="src\octree\octree.h" />
+    <None Include="src\octree\octree.tcc" />
+    <None Include="src\octree\point3d.h" />
+    <None Include="src\octree\shareddata.h" />
+    <None Include="src\octree\tinyvector.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

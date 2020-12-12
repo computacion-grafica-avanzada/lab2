@@ -3,6 +3,25 @@
 ColliderFloor::ColliderFloor(std::set<Mesh*> meshes)
 {
 	this->meshes = meshes;
+	int octreeSize = meshes.size();
+	for(Mesh* mesh : meshes) {
+		octreeSize *= mesh->getVertices().size();
+	}
+	while (ceil(log2(octreeSize)) != floor(log2(octreeSize))) {
+		octreeSize++;
+	}
+	float height = 0;
+	int v1 = 0, v2 = 0, v3 = 0;
+	printf(" octreeSize %d", octreeSize);
+	Octree<glm::vec3> o(octreeSize);
+	for(Mesh* mesh : meshes) {
+		for (int vertex = 1; vertex < mesh->getVertices().size(); vertex += 3) {
+			v1 = vertex;
+			v2 = vertex + 1;
+			v3 = vertex + 2;
+			//height = heightOfTriangleAtPos(mesh->getVertices()[v1], mesh->getVertices()[v2], mesh->getVertices()[v3], pos);
+		}
+	}
 }
 
 // Reference
@@ -79,7 +98,7 @@ float ColliderFloor::getHeightAtPos(glm::vec3 pos) {
 
 	//Buscar el triangulo en el que las coordenada x y z est�n localizadas.
 	
-    for(Mesh* mesh : meshes) {
+		/*for(Mesh* mesh : meshes) {
 		for (int vertex = 1; vertex < mesh->getVertices().size(); vertex += 3) {
 			//indices de la cara (vertices)
 			//a = mesh->getVertices()[vertex].cara[0]; //n�mero del primer v�rtice del triangulo
@@ -105,7 +124,7 @@ float ColliderFloor::getHeightAtPos(glm::vec3 pos) {
 				break;
 			}
 		}
-	}
+	}*/
 
 	//if (height == 99999999) {
 	//	height = 0;
