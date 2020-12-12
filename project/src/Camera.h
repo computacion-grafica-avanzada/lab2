@@ -5,6 +5,7 @@
 
 class Camera {
 
+	float sensitivity = 0.1f;
 	Character* player;
 	float aspectRatio, nearClip, farClip;
 	float fieldOfView;
@@ -14,10 +15,12 @@ class Camera {
 
 	void InitViewMatrix();
 
-	float yaw, pitch, fov, zoom;
+	float yaw, pitch, fov;
+
+	float prevRot;
 public:
 	void UpdateVectors();
-	float angle;
+	float angle, aap, zoom;
 	Camera(Character* player, float fov, float aspectRatio, float nearClip = 0.1f, float farClip = 1000.0f);
 
 	glm::mat4 GetProjectionMatrix();
@@ -31,9 +34,11 @@ public:
 	glm::vec3 GetRight();
 	void SetFront(glm::vec3 front);
 
-	void SetPitch(float pitch);
+	void setPitch(float delta);
+	void setAap(float delta);
+
 	float GetPitch();
-	void SetYaw(float yaw);
+	void setYaw(float delta);
 	float GetYaw();
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetModelMatrix(bool isCharacter);
@@ -47,8 +52,8 @@ public:
 	float GetFarClip();
 	void SetFarClip(float farClip);
 
+	void setZoom(float delta);
+	void resetCamera();
 private:
-	void ResetCamera();
-	void SetOrthographic(float size, float aspectRatio, float nearClip = 0.1f, float farClip = 1000.0f);
-	void SetPerspective(float fieldOfView, float aspectRatio, float nearClip = 0.1f, float farClip = 1000.0f);
+	void setPerspective(float fieldOfView, float aspectRatio, float nearClip = 0.1f, float farClip = 1000.0f);
 };

@@ -67,12 +67,12 @@ int main(int argc, char* argv[]) {
 	//return 0;
 
 	Display::init(800, 800);
-	Character* character = new Character(glm::vec3(0, 10, 0), glm::vec3(1, 1, 1), 1.0f);// , characterRenderer);
+	Character* character = new Character(glm::vec3(10, 10, 0));// , characterRenderer);
 	Camera* camera = new Camera(character, 45, 1.f);
 	MainRenderer::init(camera);
 
 	glEnable(GL_DEPTH_TEST);
-	//MainRenderer::enable_culling();
+	MainRenderer::enable_culling();
 
 	// Create shaders
 	Shader* worldShader = new Shader("./src/shaders/simple.vert", "./src/shaders/simple.frag");
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
 	Texture* dudv = new Texture("../models/dudv.png");
 
 	Renderer* characterRenderer = new Renderer(camera, true);
-	characterRenderer->loadObj(BEAGLE_PATH);
+	characterRenderer->loadObj(character->currentCharacterPath());
 
 	characterRenderer->setShader(worldShader);
 	MainRenderer::setCharacter(character);
@@ -131,10 +131,11 @@ int main(int argc, char* argv[]) {
 		Display::update(tex);
 
 		// TODO delta frame and tick engine
-		SDL_SetRelativeMouseMode((SDL_bool) true);
-		float cameraSpeed = 250.f * Display::deltaTime;
+		//SDL_SetRelativeMouseMode((SDL_bool) true);
+		float cameraSpeed = character->currentCharacterSpeed() * Display::deltaTime;
 		while (SDL_PollEvent(&sdlEvent)) {
 			glm::vec3 position = character->getPosition();
+			glm::vec3 cross = glm::cross(camera->GetFront(), camera->GetUp());
 			switch (sdlEvent.type) {
 				case SDL_QUIT:
 					running = false;
@@ -145,80 +146,55 @@ int main(int argc, char* argv[]) {
 							running = false;
 							break;
 						case SDLK_UP:
-							character->setPosition(glm::vec3(position.x + 2, position.y, position.z));
-							character->setDirection(FRONT);
+						case SDLK_w:
+							character->setPosition(position + camera->GetFront() * cameraSpeed);
+							character->setDirection(Direction::FRONT);
 							break;
 						case SDLK_DOWN:
-							character->setPosition(glm::vec3(position.x - 2, position.y, position.z));
-							character->setDirection(FRONT);
+						case SDLK_s:
+							character->setPosition(position - camera->GetFront() * cameraSpeed);
+							character->setDirection(Direction::BACK);
 							break;
 						case SDLK_LEFT:
-							character->setPosition(glm::vec3(position.x + 2, position.y, position.z - 2));
-							character->setDirection(LEFT);
+						case SDLK_a:
+							character->setPosition(position - glm::normalize(cross) * cameraSpeed);
+							//character->setPosition(glm::vec3(position.x, position.y, position.z - 2));
+							character->setDirection(Direction::LEFT);
 							break;
 						case SDLK_RIGHT:
-							character->setPosition(glm::vec3(position.x + 2, position.y, position.z + 2));
-							character->setDirection(RIGHT);
+						case SDLK_d:
+							character->setPosition(position + glm::normalize(cross) * cameraSpeed);
+							character->setDirection(Direction::RIGHT);
+							break;
+						case SDLK_SPACE:
+							character->setPosition(position + camera->GetUp() * cameraSpeed);
+							break;
+						case SDLK_LSHIFT:
+							character->setPosition(position - camera->GetUp() * cameraSpeed);
 							break;
 						case SDLK_c:
-							if (character->currentPathIndex == charactersSize - 1) {
-								character->currentPathIndex = 0;
-							} else {
-								character->currentPathIndex++;
-							}
+							character->switchCharacter();
 							characterRenderer->clearMesh();
-							character->path = charactersPaths[character->currentPathIndex];
-							characterRenderer->loadObj(character->path);
+							characterRenderer->loadObj(character->currentCharacterPath());
+							break;
+						case SDLK_r:
+							camera->resetCamera();
 							break;
 					}
 					break;
 				case SDL_MOUSEMOTION: // look around scene
 				{
 					if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-						// look around scene
-						//cout << (sdlEvent.type == SDL_MOUSEBUTTONDOWN) << endl;
-						float xoffset = sdlEvent.motion.xrel;
-						float yoffset = sdlEvent.motion.yrel;
-						float sensitivity = 0.1f;
-						xoffset *= sensitivity;
-						yoffset *= sensitivity;
-
-						float yaw = camera->GetYaw() + xoffset;
-						camera->SetYaw(yaw);
-					
-						float pitch = camera->GetPitch() + yoffset;
-						if (pitch > 89.0f)
-							pitch = 89.0f;
-						if (pitch < -89.0f)
-							pitch = -89.0f;
-						camera->SetPitch(pitch);
+						camera->setAap(sdlEvent.motion.xrel);
+						camera->setPitch(sdlEvent.motion.yrel);
 					}
 					break;
 				}
 				case SDL_MOUSEWHEEL:
 				{
-					float fov = camera->GetFieldOfView() - sdlEvent.wheel.y * 0.1f;
-					std::cout << fov << std::endl;
-					if (fov <= 1.0f) fov = 1.0f;
-					if (fov >= 45.0f) fov = 45.0f;
-					camera->SetFieldOfView(fov);
-					//if (sdlEvent.wheel.y > 0) // scroll up
-					//{
-					//	// Put code for handling "scroll up" here!
-					//}
-					//else if (sdlEvent.wheel.y < 0) // scroll down
-					//{
-					//	camera->SetFieldOfView(camera->GetFieldOfView() + sdlEvent.wheel.y * 0.1f);
-					//	// Put code for handling "scroll down" here!
-					//}
+					camera->setZoom(sdlEvent.wheel.y);
 				}
-
 			}
-			camera->SetPosition(glm::vec3(
-				position.x - 110,
-				position.y + 40,
-				position.z
-			));
 		}
 		// characterCollider->pos = character->getPosition();
 		// collisionManager->solvePlayerCollisions();
