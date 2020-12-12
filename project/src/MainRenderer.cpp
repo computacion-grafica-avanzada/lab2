@@ -53,7 +53,7 @@ void MainRenderer::render() {
 	cameraPosition.y -= distance;
 	pitch *= -1;
 	camera->SetPosition(cameraPosition);
-	camera->SetPitch(pitch);
+	camera->setPitch(pitch);
 
 	 //Render the scene in the reflection buffer
 	waterFrameBuffer->bindReflectionBuffer();
@@ -69,7 +69,7 @@ void MainRenderer::render() {
 	cameraPosition.y += distance;
 	pitch *= -1;
 	camera->SetPosition(cameraPosition);
-	camera->SetPitch(pitch);
+	camera->setPitch(pitch);
 
 	waterFrameBuffer->bindRefractionBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

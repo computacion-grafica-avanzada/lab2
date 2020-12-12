@@ -12,7 +12,6 @@
 #include "Shader.h"
 #include "ColliderFloor.h"
 #include "Collider.h"
-#include "TimeFrame.h"
 #include "GuiRenderer.h"
 
 using namespace std;
@@ -67,34 +66,9 @@ int main(int argc, char* argv[]) {
 	//testSphereBoxCollisions();
 	//return 0;
 
-	//INICIALIZACION
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS) != 0) {
-		SDL_Log("Failed to initialize SDL: %s", SDL_GetError());
-		return 1;
-	}
-
-	if (TTF_Init() == -1) {
-		printf("TTF_Init: %s\n", TTF_GetError());
-		exit(2);
-	}
-
-
-	SDL_Window* window = NULL;
-	SDL_GLContext gl_context;
-
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 7);
-
-	Display display = Display(800, 800);
-	gl_context = SDL_GL_CreateContext(display.getWindow());
-	printf("OpenGL loaded\n");
-	gladLoadGLLoader(SDL_GL_GetProcAddress);
-	printf("Vendor:   %s\n", glGetString(GL_VENDOR));
-	printf("Renderer: %s\n", glGetString(GL_RENDERER));
-	printf("Version:  %s\n", glGetString(GL_VERSION));
-	glEnable(GL_MULTISAMPLE);
-
-	Camera* camera = new Camera(Projection::Perspective, 45, 1.f);
+	Display::init(800, 800);
+	Character* character = new Character(glm::vec3(10, 10, 0));// , characterRenderer);
+	Camera* camera = new Camera(character, 45, 1.f);
 	MainRenderer::init(camera);
 
 	glEnable(GL_DEPTH_TEST);
@@ -108,9 +82,8 @@ int main(int argc, char* argv[]) {
 	Texture* dudv = new Texture("../models/dudv.png");
 
 	Renderer* characterRenderer = new Renderer(camera, true);
-	characterRenderer->loadObj(BEAGLE_PATH);
+	characterRenderer->loadObj(character->currentCharacterPath());
 
-	Character* character = new Character(glm::vec3(0, 0, 0), 1.0f, characterRenderer);
 	characterRenderer->setShader(worldShader);
 	MainRenderer::setCharacter(character);
 	glm::vec3 position = character->getPosition();
@@ -155,12 +128,14 @@ int main(int argc, char* argv[]) {
 	{
 		glClearColor(1.0, 1.0, 1.0, 1.0);					// set background colour
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
-		TimeFrame::update(tex);
+		Display::update(tex);
 
 		// TODO delta frame and tick engine
-
+		//SDL_SetRelativeMouseMode((SDL_bool) true);
+		float cameraSpeed = character->currentCharacterSpeed() * Display::deltaTime;
 		while (SDL_PollEvent(&sdlEvent)) {
 			glm::vec3 position = character->getPosition();
+			glm::vec3 cross = glm::cross(camera->GetFront(), camera->GetUp());
 			switch (sdlEvent.type) {
 				case SDL_QUIT:
 					running = false;
@@ -171,52 +146,65 @@ int main(int argc, char* argv[]) {
 							running = false;
 							break;
 						case SDLK_UP:
-							character->setPosition(glm::vec3(position.x + 2, position.y, position.z));
-							character->setDirection(FRONT);
+						case SDLK_w:
+							character->setPosition(position + camera->GetFront() * cameraSpeed);
+							character->setDirection(Direction::FRONT);
 							break;
 						case SDLK_DOWN:
-							character->setPosition(glm::vec3(position.x - 2, position.y, position.z));
-							character->setDirection(FRONT);
+						case SDLK_s:
+							character->setPosition(position - camera->GetFront() * cameraSpeed);
+							character->setDirection(Direction::BACK);
 							break;
 						case SDLK_LEFT:
-							character->setPosition(glm::vec3(position.x + 2, position.y, position.z - 2));
-							character->setDirection(LEFT);
+						case SDLK_a:
+							character->setPosition(position - glm::normalize(cross) * cameraSpeed);
+							//character->setPosition(glm::vec3(position.x, position.y, position.z - 2));
+							character->setDirection(Direction::LEFT);
 							break;
 						case SDLK_RIGHT:
-							character->setPosition(glm::vec3(position.x + 2, position.y, position.z + 2));
-							character->setDirection(RIGHT);
+						case SDLK_d:
+							character->setPosition(position + glm::normalize(cross) * cameraSpeed);
+							character->setDirection(Direction::RIGHT);
+							break;
+						case SDLK_SPACE:
+							character->setPosition(position + camera->GetUp() * cameraSpeed);
+							break;
+						case SDLK_LSHIFT:
+							character->setPosition(position - camera->GetUp() * cameraSpeed);
 							break;
 						case SDLK_c:
-							if (character->currentPathIndex == charactersSize - 1) {
-								character->currentPathIndex = 0;
-							} else {
-								character->currentPathIndex++;
-							}
+							character->switchCharacter();
 							characterRenderer->clearMesh();
-							character->path = charactersPaths[character->currentPathIndex];
-							characterRenderer->loadObj(character->path);
+							characterRenderer->loadObj(character->currentCharacterPath());
+							break;
+						case SDLK_r:
+							camera->resetCamera();
 							break;
 					}
 					break;
 				case SDL_MOUSEMOTION: // look around scene
-					//cout << "SDL_MOUSEMOTION" << endl;
+				{
+					if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+						camera->setAap(sdlEvent.motion.xrel);
+						camera->setPitch(sdlEvent.motion.yrel);
+					}
 					break;
+				}
+				case SDL_MOUSEWHEEL:
+				{
+					camera->setZoom(sdlEvent.wheel.y);
+				}
 			}
-			camera->SetPosition(glm::vec3(
-				position.x - 110,
-				position.y + 40,
-				position.z
-			));
 		}
-		characterCollider->pos = character->getPosition();
-		collisionManager->solvePlayerCollisions();
-		character->setPosition(characterCollider->pos); // correct it in case of collision
+		// characterCollider->pos = character->getPosition();
+		// collisionManager->solvePlayerCollisions();
+		// character->setPosition(characterCollider->pos); // correct it in case of collision
+		camera->UpdateVectors();
 		MainRenderer::render();		// call the draw function
-		display.swapBuffers();	// swap buffers
+		Display::swapBuffers();	// swap buffers
 	}
 
 	//FIN LOOP PRINCIPAL
-	display.distroyWindow();
-	SDL_Quit();
+	Display::destroy();
 	return 0;
 }
