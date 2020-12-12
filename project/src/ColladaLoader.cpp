@@ -20,7 +20,6 @@ AnimatedModelData* ColladaLoader::loadColladaModel(const char* colladaFile, int 
 AnimationData* ColladaLoader::loadColladaAnimation(const char* colladaFile) {
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile(colladaFile);
-	doc.Print();
 	tinyxml2::XMLElement* firstElem = doc.FirstChildElement();
 
 	tinyxml2::XMLElement* animNode = firstElem->FirstChildElement("library_animations");

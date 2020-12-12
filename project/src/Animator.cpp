@@ -5,9 +5,11 @@
 * progress. If the current animation has reached the end then the timer is
 * reset, causing the animation to loop.
 */
-void Animator::increaseAnimationTime() {
+void Animator::increaseAnimationTime()
+{
 	animationTime += TimeFrame::deltaTime;
-	while (animationTime > currentAnimation->getLength()) {
+	while (animationTime > currentAnimation->getLength())
+	{
 		this->animationTime -= currentAnimation->getLength();
 	}
 }
@@ -31,7 +33,8 @@ void Animator::increaseAnimationTime() {
  *         for all the joints. The transforms are indexed by the name ID of
  *         the joint that they should be applied to.
  */
-std::map<std::string, glm::mat4> Animator::calculateCurrentAnimationPose() {
+std::map<std::string, glm::mat4> Animator::calculateCurrentAnimationPose()
+{
 	std::pair<KeyFrame*, KeyFrame*> frames = getPreviousAndNextFrames();
 	float progression = calculateProgression(frames.first, frames.second);
 	return interpolatePoses(frames.first, frames.second, progression);
@@ -70,10 +73,12 @@ std::map<std::string, glm::mat4> Animator::calculateCurrentAnimationPose() {
  *            - the desired model-space transform of the parent joint for
  *            the pose.
  */
-void Animator::applyPoseToJoints(std::map<std::string, glm::mat4> currentPose, Joint* joint, glm::mat4 parentTransform) {
+void Animator::applyPoseToJoints(std::map<std::string, glm::mat4> currentPose, Joint* joint, glm::mat4 parentTransform)
+{
 	glm::mat4 currentLocalTransform = currentPose[joint->name];
 	glm::mat4 currentTransform = parentTransform * currentLocalTransform;
-	for (Joint* childJoint : joint->children) {
+	for (Joint* childJoint : joint->children)
+	{
 		applyPoseToJoints(currentPose, childJoint, currentTransform);
 	}
 	currentTransform = currentTransform * joint->getInverseBindTransform();
@@ -91,13 +96,16 @@ void Animator::applyPoseToJoints(std::map<std::string, glm::mat4> currentPose, J
  * @return The previous and next keyframes, in an array which therefore will
  *         always have a length of 2.
  */
-std::pair<KeyFrame*, KeyFrame*> Animator::getPreviousAndNextFrames() {
+std::pair<KeyFrame*, KeyFrame*> Animator::getPreviousAndNextFrames()
+{
 	std::vector<KeyFrame*> allFrames = currentAnimation->getKeyFrames();
 	KeyFrame* previousFrame = allFrames[0];
 	KeyFrame* nextFrame = allFrames[0];
-	for (int i = 1; i < allFrames.size(); i++) {
+	for (int i = 1; i < allFrames.size(); i++)
+	{
 		nextFrame = allFrames[i];
-		if (nextFrame->getTimeStamp() > animationTime) {
+		if (nextFrame->getTimeStamp() > animationTime)
+		{
 			break;
 		}
 		previousFrame = allFrames[i];
@@ -116,7 +124,8 @@ std::pair<KeyFrame*, KeyFrame*> Animator::getPreviousAndNextFrames() {
  * @return A number between 0 and 1 indicating how far between the two
  *         keyframes the current animation time is.
  */
-float Animator::calculateProgression(KeyFrame* previousFrame, KeyFrame* nextFrame) {
+float Animator::calculateProgression(KeyFrame* previousFrame, KeyFrame* nextFrame)
+{
 	float totalTime = nextFrame->getTimeStamp() - previousFrame->getTimeStamp();
 	float currentTime = animationTime - previousFrame->getTimeStamp();
 	return currentTime / totalTime;
@@ -138,15 +147,18 @@ float Animator::calculateProgression(KeyFrame* previousFrame, KeyFrame* nextFram
  *         current pose. They are returned in a map, indexed by the name of
  *         the joint to which they should be applied.
  */
-std::map<std::string, glm::mat4> Animator::interpolatePoses(KeyFrame* previousFrame, KeyFrame* nextFrame, float progression) {
+std::map<std::string, glm::mat4> Animator::interpolatePoses(KeyFrame* previousFrame, KeyFrame* nextFrame, float progression)
+{
 	std::map<std::string, glm::mat4> currentPose;
 	std::map<std::string, JointTransform*> m = previousFrame->getJointKeyFrames();
 	std::vector<std::string> jointsNames;
-	for (std::map<std::string, JointTransform*>::iterator it = m.begin(); it != m.end(); ++it) {
+	for (std::map<std::string, JointTransform*>::iterator it = m.begin(); it != m.end(); ++it)
+	{
 		jointsNames.push_back(it->first);
 	}
 
-	for (std::string jointName : jointsNames) {
+	for (std::string jointName : jointsNames)
+	{
 		JointTransform* previousTransform = previousFrame->getJointKeyFrames()[jointName];
 		JointTransform* nextTransform = nextFrame->getJointKeyFrames()[jointName];
 		JointTransform* currentTransform = JointTransform::interpolate(previousTransform, nextTransform, progression);
@@ -159,7 +171,8 @@ std::map<std::string, glm::mat4> Animator::interpolatePoses(KeyFrame* previousFr
  * @param entity
  *            - the entity which will by animated by this animator.
  */
-Animator::Animator(Joint* modelRootJoint) {
+Animator::Animator(Joint* modelRootJoint)
+{
 	this->modelRootJoint = modelRootJoint;
 }
 
@@ -170,7 +183,8 @@ Animator::Animator(Joint* modelRootJoint) {
  * @param animation
  *            - the new animation to carry out.
  */
-void Animator::doAnimation(Animation* animation) {
+void Animator::doAnimation(Animation* animation)
+{
 	this->animationTime = 0;
 	this->currentAnimation = animation;
 }
@@ -182,7 +196,8 @@ void Animator::doAnimation(Animation* animation) {
  * time of the animation, and then applies that pose to all the model's
  * joints by setting the joint transforms.
  */
-void Animator::update() {
+void Animator::update()
+{
 	if (currentAnimation == NULL) {
 		return;
 	}

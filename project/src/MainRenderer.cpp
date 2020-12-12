@@ -97,6 +97,10 @@ void MainRenderer::render() {
 		renderer->render(waterFrameBuffer);
 	}
 
+	for (AnimationRenderer* renderer : animationRenderers) {
+		renderer->render();
+	}
+
 	for (GuiRenderer* renderer : guiRenderers) {
 		renderer->render();
 	}

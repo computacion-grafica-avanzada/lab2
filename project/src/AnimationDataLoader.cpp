@@ -6,7 +6,8 @@ std::vector<float> AnimationDataLoader::getKeyTimes()
 	std::string text(timeData->GetText());
 	std::vector<std::string> rawTimes = XMLUtils::splitText(text, " ");
 	std::vector<float> times;
-	for (int i = 0; i < rawTimes.size(); i++) {
+	for (int i = 0; i < rawTimes.size(); i++)
+	{
 		times.push_back(std::stof(rawTimes[i]));
 	}
 	return times;
@@ -15,7 +16,7 @@ std::vector<float> AnimationDataLoader::getKeyTimes()
 std::vector<KeyFrameData*> AnimationDataLoader::initKeyFrames(std::vector<float> times)
 {
 	std::vector<KeyFrameData*> frames;
-	for (int i = 0; i < frames.size(); i++)
+	for (int i = 0; i < times.size(); i++)
 	{
 		frames.push_back(new KeyFrameData(times[i]));
 	}
@@ -68,7 +69,7 @@ void AnimationDataLoader::processTransforms(std::string jointName, std::vector<s
 		glm::mat4 transform;
 		for (int i = 3; i >= 0; i--)
 		{
-			for (int j = 3; i >= 0; j--)
+			for (int j = 3; j >= 0; j--)
 			{
 				auxIndex = i * 4 + j;
 				transform[i][j] = matrixData[auxIndex];

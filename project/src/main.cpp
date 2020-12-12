@@ -128,9 +128,13 @@ int main(int argc, char* argv[]) {
 
 	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
 
-	AnimatedRenderable* entity = AnimatedModelLoader::loadEntity("../models/characters/player/model.dae", "../models/characters/player/diffuse.png");
+	AnimatedRenderable* animatedCharacter = AnimatedModelLoader::loadEntity("../models/characters/player/model.dae", "../models/characters/player/diffuse.png");
 	Animation* animation = AnimationLoader::loadAnimation("../models/characters/player/model.dae");
-	entity->doAnimation(animation);
+	animatedCharacter->doAnimation(animation);
+
+	AnimationRenderer* animationRenderer = new AnimationRenderer(camera);
+	animationRenderer->load(animatedCharacter);
+	animationRenderer->setShader(animationShader);
 
 	// create Gui with FPS
 	Texture* tex = new Texture();
@@ -149,6 +153,8 @@ int main(int argc, char* argv[]) {
 		glClearColor(1.0, 1.0, 1.0, 1.0);					// set background colour
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
 		TimeFrame::update(tex);
+
+		animatedCharacter->update();
 
 		// TODO delta frame and tick engine
 
