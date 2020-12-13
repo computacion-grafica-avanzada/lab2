@@ -12,7 +12,7 @@ SkyboxRenderer::SkyboxRenderer(Camera* camera) {
 	this->end = glm::vec3(0.141, 0.643, 0.847);
 	this->blendFactor = 0.f;
 
-	float size = 500.f;
+	float size = 8000.f;
 	std::vector<glm::vec3> vertices = {
 		glm::vec3(-size,  size, -size),
 		glm::vec3(-size, -size, -size),

@@ -56,7 +56,7 @@ void main() {
 	vec3 unitLightVector = normalize(In.toLightVector);
 
 	float nDotl = dot(unitNormal, unitLightVector);
-	float brightness = max(0.0, nDotl);
+	float brightness = max(0.3, nDotl);
 	vec3 diffuse = brightness * lightColor;
 
 	outColor = vec4(diffuse, 1.0) * textureColor;

@@ -115,9 +115,10 @@ int main(int argc, char* argv[]) {
 	//}
 	//ColliderFloor* floorCollider = new ColliderFloor(floorMeshes);
 
+
 	Renderer* island2 = new Renderer(camera, false, glm::mat4(1.0));
 	//island->loadObj("../models/Landscapes/three_island2.obj");
-	island2->loadObj("../models/Landscapes/island_low.obj");
+	island2->loadObj("../models/Landscapes/island_low_nice.obj");
 	island2->setShader(worldShader);
 
 	glm::mat4 fishModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-80, 15, 100));
@@ -138,7 +139,7 @@ int main(int argc, char* argv[]) {
 	//Collider* boatCollider = new Collider(2, 2, 18.0f);
 	//boatCollider->pos = boat->getAverageVertix();
 
-	Light* light = new Light(glm::vec3(400, 400, 400), glm::vec3(1, 1, 1));
+	Light* light = new Light(glm::vec3(550), glm::vec3(1, 1, 1));
 	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
 
 	//CollisionManager* collisionManager = new CollisionManager(characterCollider, floorCollider);
