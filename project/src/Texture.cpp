@@ -44,6 +44,19 @@ Texture::Texture(const std::string& filename) : filename(filename) {
     unbind();
 }
 
+Texture::Texture(std::vector<std::string> filenames) {
+    glGenTextures(1, &textureID);
+    bind();
+    for (int i = 0; i < filenames.size(); i++) {
+        int height, width;
+        BYTE* pixels = loadImage(filenames[i].c_str(), width, height, transparency);
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, pixels);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
+    unbind();
+}
+
 Texture::Texture() {
     glGenTextures(1, &textureID);
     height = 0;

@@ -3,14 +3,26 @@
 
 Camera* MainRenderer::camera = NULL;
 Character* MainRenderer::character = NULL;
+std::set<Light*> MainRenderer::lights; 
 std::set<Renderer*> MainRenderer::renderers;
 std::set<GuiRenderer*> MainRenderer::guiRenderers;
 std::set<WaterRenderer*> MainRenderer::waterRenderers;
+
+SkyboxRenderer* MainRenderer::skybox = NULL;
 WaterFrameBuffer* MainRenderer::waterFrameBuffer = NULL;
 
 void MainRenderer::init(Camera* camera) {
 	MainRenderer::camera = camera;
 	waterFrameBuffer = new WaterFrameBuffer();
+	skybox = new SkyboxRenderer(camera);
+}
+
+void MainRenderer::load(Light* light) {
+	lights.insert(light);
+}
+
+void MainRenderer::unload(Light* light) {
+	lights.erase(light);
 }
 
 void MainRenderer::load(Renderer* renderer) {
@@ -60,8 +72,11 @@ void MainRenderer::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	for (Renderer* renderer : renderers) {
 		renderer->enableClipPlane(glm::vec4(0, 1, 0, -4)); //TODO change to water height if different than 0
-		renderer->render();
+		renderer->render(lights);
 		renderer->disableClipPlane();
+		skybox->enableClipPlane(glm::vec4(0, 1, 0, -4));
+		skybox->render(); 
+		skybox->disableClipPlane();
 	}
 	waterFrameBuffer->unbindBuffer();
 
@@ -75,18 +90,23 @@ void MainRenderer::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (Renderer* renderer : renderers) {
 		renderer->enableClipPlane(glm::vec4(0, -1, 0, 4));
-		renderer->render();
+		renderer->render(lights);
 		renderer->disableClipPlane();
+		skybox->enableClipPlane(glm::vec4(0, -1, 0, 4));
+		skybox->render();
+		skybox->disableClipPlane();
 	}
 	waterFrameBuffer->unbindBuffer();
 
 	for (Renderer* renderer : renderers) {
-		renderer->render();
+		renderer->render(lights);
 	}
 
 	for (WaterRenderer* renderer : waterRenderers) {
 		renderer->render(waterFrameBuffer);
 	}
+
+	skybox->render();
 
 	for (GuiRenderer* renderer : guiRenderers) {
 		renderer->render();

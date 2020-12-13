@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Light.h"
+#include "Renderable.h"
 #include "Camera.h"
 #include "Renderable.h"
 #include <set>
@@ -24,7 +26,7 @@ public:
  	void clearMesh();
 	void enableClipPlane(glm::vec4 clipPlane);
 	void disableClipPlane();
-	void render();
+	void render(std::set<Light*> lights);
 
 	void loadObj(const std::string& objFile);	// for each mesh creates a renderable and adds it to set
 	glm::vec3 getAverageVertix();

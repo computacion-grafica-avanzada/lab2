@@ -13,6 +13,7 @@
 #include "ColliderFloor.h"
 #include "Collider.h"
 #include "GuiRenderer.h"
+#include "TickEngine.h"
 
 using namespace std;
 
@@ -107,6 +108,7 @@ int main(int argc, char* argv[]) {
 	Collider* boatCollider = new Collider(2, 2, 18.0f);
 	boatCollider->pos = boat->getAverageVertix();
 
+	Light* light = new Light(glm::vec3(400,400,400), glm::vec3(1, 1, 1));
 	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
 
 	CollisionManager* collisionManager = new CollisionManager(characterCollider, floorCollider);
@@ -121,6 +123,7 @@ int main(int argc, char* argv[]) {
 
 	GuiRenderer* guiRend = new GuiRenderer(textShader);
 	guiRend->load(fps);
+
 
 	bool running = true;	// set running to true
 	SDL_Event sdlEvent;		// variable to detect SDL events

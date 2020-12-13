@@ -101,6 +101,8 @@
     <ClCompile Include="src\Collider.cpp" />
     <ClCompile Include="src\ColliderFloor.cpp" />
     <ClCompile Include="src\CollisionManager.cpp" />
+    <ClCompile Include="src\ITickable.cpp" />
+    <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Math.cpp" />
     <ClCompile Include="src\buffers\WaterFrameBuffer.cpp" />
     <ClCompile Include="src\Camera.cpp" />
@@ -112,7 +114,9 @@
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\GuiRenderer.cpp" />
+    <ClCompile Include="src\SkyboxRenderer.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\TickEngine.cpp" />
     <ClCompile Include="src\WaterRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +129,13 @@
     <ClInclude Include="src\ColliderFloor.h" />
     <ClInclude Include="src\CollisionManager.h" />
     <ClInclude Include="src\GuiRenderer.h" />
+    <ClInclude Include="src\ITickable.h" />
+    <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\Math.h" />
     <ClInclude Include="src\buffers\WaterFrameBuffer.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\SkyboxRenderer.h" />
+    <ClInclude Include="src\TickEngine.h" />
     <ClInclude Include="src\MainRenderer.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Renderable.h" />
@@ -143,6 +151,8 @@
     <None Include="src\shaders\simple - Copy.vert" />
     <None Include="src\shaders\simple.frag" />
     <None Include="src\shaders\simple.vert" />
+    <None Include="src\shaders\skybox.frag" />
+    <None Include="src\shaders\skybox.vert" />
     <None Include="src\shaders\text.frag" />
     <None Include="src\shaders\text.vert" />
     <None Include="src\shaders\water.frag" />
