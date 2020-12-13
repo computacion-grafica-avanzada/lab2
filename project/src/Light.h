@@ -1,7 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "ITickable.h"
-#include "TimeFrame.h"
+#include "Display.h"
 
 class Light : ITickable {
 	glm::vec3 position;

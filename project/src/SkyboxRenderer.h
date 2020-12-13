@@ -3,7 +3,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include "ITickable.h"
-#include "TimeFrame.h"
+#include "Display.h"
 #include "buffers/VertexArray.h"
 #include <vector>
 
