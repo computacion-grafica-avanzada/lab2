@@ -281,6 +281,14 @@ void Renderer::setShader(Shader* shader) {
     this->shader = shader;
 }
 
+void Renderer::setCustomModel(glm::mat4 customModel) {
+    this->customModel = customModel;
+}
+
+glm::mat4 Renderer::getCustomModel() {
+   return customModel;
+}
+
 glm::vec3 Renderer::getAverageVertix() {
     return averageVertix;
 }

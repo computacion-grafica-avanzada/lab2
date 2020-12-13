@@ -34,6 +34,9 @@ public:
 
 	void setShader(Shader* shader);
 	Shader* getShader();
+
+	void setCustomModel(glm::mat4 customModel);
+	glm::mat4 getCustomModel();
 };
 
 struct TriangleMesh {

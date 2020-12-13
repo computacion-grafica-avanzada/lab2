@@ -120,6 +120,16 @@ int main(int argc, char* argv[]) {
 	island2->loadObj("../models/Landscapes/island_low.obj");
 	island2->setShader(worldShader);
 
+	glm::mat4 fishModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-80, 15, 100));
+	Renderer* fish = new Renderer(camera, false, fishModelMatrix);
+	fish->loadObj("../models/fish/big_fish.obj");
+	fish->setShader(worldShader);
+	
+	glm::mat4 fishModelMatrix2 = glm::translate(glm::mat4(1.0), glm::vec3(80, 15, -100));
+	Renderer* fish2 = new Renderer(camera, false, fishModelMatrix);
+	fish2->loadObj("../models/fish/big_fish.obj");
+	fish2->setShader(worldShader);
+
 	initIsland(camera, worldShader);
 
 	//Renderer* boat = new Renderer(camera, false);
@@ -146,6 +156,7 @@ int main(int argc, char* argv[]) {
 
 
 	bool running = true;	// set running to true
+	int count = 0;
 	SDL_Event sdlEvent;		// variable to detect SDL events
 	while (running)			// the event loop
 	{
@@ -153,7 +164,14 @@ int main(int argc, char* argv[]) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
 		Display::update(tex);
 		TickEngine::tick();
-
+		if (count == 4) {
+			fishModelMatrix = glm::rotate(fishModelMatrix, glm::radians(0.5f), glm::vec3(0, 1, 0));
+			fish->setCustomModel(fishModelMatrix);
+			fishModelMatrix2 = glm::rotate(fishModelMatrix2, glm::radians(0.8f), glm::vec3(0, 1, 0));
+			fish2->setCustomModel(fishModelMatrix2);
+			count = 0;
+		}
+		count++;
 		// TODO delta frame and tick engine
 		//SDL_SetRelativeMouseMode((SDL_bool) true);
 		float cameraSpeed = character->currentCharacterSpeed() * Display::deltaTime;
