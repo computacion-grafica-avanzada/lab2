@@ -81,6 +81,18 @@
     <ClCompile Include="src\GuiRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\SkyboxRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ITickable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TickEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Mesh.h">
@@ -140,6 +152,18 @@
     <ClInclude Include="src\GuiRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\SkyboxRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ITickable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TickEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\shaders\sha.frag">
@@ -176,6 +200,12 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="src\shaders\text.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\shaders\skybox.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="src\shaders\skybox.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

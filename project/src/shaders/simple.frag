@@ -7,6 +7,7 @@ in DATA {
 	vec2 textureCoord;
 	vec3 normal;
 	float alpha;
+	vec3 toLightVector;
 } In;
 
 struct DirectionalLight {
@@ -17,6 +18,8 @@ struct DirectionalLight {
 
 uniform DirectionalLight directionalLight;
 uniform sampler2D textureSampler;
+
+uniform vec3 lightColor;
 
 out vec4 outColor;
 
@@ -42,12 +45,20 @@ void main() {
 	vec4 textureColor = texture(textureSampler, In.textureCoord);
 
 	outColor = textureColor * (ambientColor + diffuseColor);
+
+
 	// remove transparent pixels
 	if (textureColor.a < 0.5) {
 		discard;
 	}
 
-	outColor = mix(vec4(1,1,1,1), textureColor, In.alpha);
-	//outColor = vec4(0,In.alpha,0,In.alpha);
-	//outColor = vec4(In.worldPosition,1);
+	vec3 unitNormal = normalize(In.normal);
+	vec3 unitLightVector = normalize(In.toLightVector);
+
+	float nDotl = dot(unitNormal, unitLightVector);
+	float brightness = max(0.0, nDotl);
+	vec3 diffuse = brightness * lightColor;
+
+	outColor = vec4(diffuse, 1.0) * textureColor;
+	outColor = mix(vec4(1,1,1,1), outColor, In.alpha);
 }

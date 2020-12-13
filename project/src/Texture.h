@@ -1,5 +1,6 @@
 #pragma once
 
+#include <vector>
 #include <string>
 #include <glad/glad.h>
 #include <iostream>
@@ -17,6 +18,7 @@ public:
 	Texture();
 	Texture(int width, int height);
 	Texture(const std::string& filename);
+	Texture(std::vector<std::string> filenames);
 	~Texture();
 
 	bool hasTransparency();

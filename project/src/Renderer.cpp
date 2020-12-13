@@ -59,7 +59,7 @@ void Renderer::disableClipPlane() {
 	this->clipPlaneEnabled = false;
 }
 
-void Renderer::render() {
+void Renderer::render(std::set<Light*> lights) {
     (clipPlaneEnabled) ? glEnable(GL_CLIP_DISTANCE0) : glDisable(GL_CLIP_DISTANCE0);
 	for (Renderable* renderable : renderables) {
 		Shader* shader = getShader();
@@ -80,6 +80,11 @@ void Renderer::render() {
 		shader->setUniformMatrix4fv("projection", camera->GetProjectionMatrix());
 		shader->setUniformMatrix4fv("view", camera->GetViewMatrix());
 		shader->setUniformMatrix4fv("model", camera->GetModelMatrix(isCharacter));
+
+        Light* light = *lights.begin();
+
+        shader->setUniform3f("lightPosition", light->getPosition());
+        shader->setUniform3f("lightColor", light->getColor());
 
 		//shader->setUniform1f("textureTiling", renderable->getTextureTiling());
 		//shader->setUniform3f("directionalLight.color", Light::color);
