@@ -93,6 +93,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\GameScene.cpp" />
     <ClCompile Include="src\Display.cpp" />
     <ClCompile Include="src\Character.cpp" />
     <ClCompile Include="src\buffers\Buffer.cpp" />
@@ -128,6 +129,7 @@
     <ClInclude Include="src\Collider.h" />
     <ClInclude Include="src\ColliderFloor.h" />
     <ClInclude Include="src\CollisionManager.h" />
+    <ClInclude Include="src\GameScene.h" />
     <ClInclude Include="src\GuiRenderer.h" />
     <ClInclude Include="src\ITickable.h" />
     <ClInclude Include="src\Light.h" />

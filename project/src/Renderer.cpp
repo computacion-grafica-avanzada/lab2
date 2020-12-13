@@ -23,13 +23,14 @@ glm::vec3 calculateAverage(std::set<Renderable*> renderables) {
     return glm::vec3(average.x/total, average.y/total, average.z/total);
 }
 
-Renderer::Renderer(Camera* camera, bool isCharacter) {
+Renderer::Renderer(Camera* camera, bool isCharacter, glm::mat4 customModel) {
     this->camera = camera;
     this->clipPlaneEnabled = false;
     this->clipPlane = glm::vec4(0, -1, 0, 100000);
     this->shader = NULL;
 	MainRenderer::load(this);
     this->isCharacter = isCharacter;
+    this->customModel = customModel;
 };
 Renderer::~Renderer() {
 	renderables.clear();
@@ -74,12 +75,20 @@ void Renderer::render(std::set<Light*> lights) {
 		vArray->bind();
 		iBuffer->bind();
 
+        glm::mat4 model;
+        if (isCharacter) {
+            model = camera->GetModelMatrix(isCharacter);
+        }
+        else {
+            model = customModel;
+        }
+
         shader->setUniform3f("cameraPosition", camera->GetPosition());
 		shader->setUniform4f("clipPlane", clipPlane);
 		shader->setUniform1f("textureTiling", 1);
 		shader->setUniformMatrix4fv("projection", camera->GetProjectionMatrix());
 		shader->setUniformMatrix4fv("view", camera->GetViewMatrix());
-		shader->setUniformMatrix4fv("model", camera->GetModelMatrix(isCharacter));
+		shader->setUniformMatrix4fv("model", model);
 
         Light* light = *lights.begin();
 

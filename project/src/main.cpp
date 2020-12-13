@@ -14,6 +14,7 @@
 #include "Collider.h"
 #include "GuiRenderer.h"
 #include "TickEngine.h"
+#include "GameScene.h"
 
 using namespace std;
 
@@ -96,7 +97,7 @@ int main(int argc, char* argv[]) {
 
 	Texture* dudv = new Texture("../models/dudv.png");
 
-	Renderer* characterRenderer = new Renderer(camera, true);
+	Renderer* characterRenderer = new Renderer(camera, true, glm::mat4(1.0));
 	characterRenderer->loadObj(character->currentCharacterPath());
 
 	characterRenderer->setShader(worldShader);
@@ -108,15 +109,18 @@ int main(int argc, char* argv[]) {
 	//island->loadObj("../models/Landscapes/floor.obj");
 	//island->setShader(worldShader);
 
-	std::set<Mesh*> floorMeshes;
-	for (Renderable* renderable : island->renderables) {
-		floorMeshes.insert(renderable->getMesh());
-	}
-	ColliderFloor* floorCollider = new ColliderFloor(floorMeshes);
-	Renderer* island2 = new Renderer(camera, false);
+	//std::set<Mesh*> floorMeshes;
+	//for (Renderable* renderable : island->renderables) {
+	//	floorMeshes.insert(renderable->getMesh());
+	//}
+	//ColliderFloor* floorCollider = new ColliderFloor(floorMeshes);
+
+	Renderer* island2 = new Renderer(camera, false, glm::mat4(1.0));
 	//island->loadObj("../models/Landscapes/three_island2.obj");
-	island2->loadObj("../models/Landscapes/pent_island.obj");
+	island2->loadObj("../models/Landscapes/island_low.obj");
 	island2->setShader(worldShader);
+
+	initIsland(camera, worldShader);
 
 	//Renderer* boat = new Renderer(camera, false);
 	//boat->loadObj("../models/boat/boat3.obj");

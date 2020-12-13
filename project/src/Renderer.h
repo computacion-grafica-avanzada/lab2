@@ -12,12 +12,13 @@ class Renderer {
 	glm::vec4 clipPlane;
 	bool clipPlaneEnabled;
 	glm::vec3 averageVertix;
+	glm::mat4 customModel;
 
 	bool isCharacter;
 	float ra = 0;
 public:
 	std::set<Renderable*> renderables;
-	Renderer(Camera* camera, bool isCharacter);
+	Renderer(Camera* camera, bool isCharacter, glm::mat4 customModel);
 	Renderer();
 	~Renderer();
 
