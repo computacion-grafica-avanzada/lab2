@@ -102,17 +102,17 @@ int main(int argc, char* argv[]) {
 	}
 	ColliderFloor* floorCollider = new ColliderFloor(floorMeshes);
 
-	Renderer* boat = new Renderer(camera, false);
-	boat->loadObj("../models/boat/boat3.obj");
-	boat->setShader(worldShader);
-	Collider* boatCollider = new Collider(2, 2, 18.0f);
-	boatCollider->pos = boat->getAverageVertix();
+	//Renderer* boat = new Renderer(camera, false);
+	//boat->loadObj("../models/boat/boat3.obj");
+	//boat->setShader(worldShader);
+	//Collider* boatCollider = new Collider(2, 2, 18.0f);
+	//boatCollider->pos = boat->getAverageVertix();
 
 	Light* light = new Light(glm::vec3(400,400,400), glm::vec3(1, 1, 1));
 	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
 
-	CollisionManager* collisionManager = new CollisionManager(characterCollider, floorCollider);
-	collisionManager->addObjectCollider(boatCollider);
+	//CollisionManager* collisionManager = new CollisionManager(characterCollider, floorCollider);
+	//collisionManager->addObjectCollider(boatCollider);
 
 	// create Gui with FPS
 	Texture* tex = new Texture();
@@ -132,6 +132,7 @@ int main(int argc, char* argv[]) {
 		glClearColor(1.0, 1.0, 1.0, 1.0);					// set background colour
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
 		Display::update(tex);
+		TickEngine::tick();
 
 		// TODO delta frame and tick engine
 		//SDL_SetRelativeMouseMode((SDL_bool) true);
@@ -188,7 +189,7 @@ int main(int argc, char* argv[]) {
 				case SDL_MOUSEMOTION: // look around scene
 				{
 					if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-						camera->setAap(sdlEvent.motion.xrel);
+						camera->setAap(-sdlEvent.motion.xrel);
 						camera->setPitch(sdlEvent.motion.yrel);
 					}
 					break;

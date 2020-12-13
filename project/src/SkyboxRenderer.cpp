@@ -117,7 +117,7 @@ void SkyboxRenderer::render() {
 }
 
 void SkyboxRenderer::tick() {
-	time += TimeFrame::deltaTime;
+	time += Display::deltaTime;
 	time = fmod(time, 60.0f);
 
 	// one day is one minute
