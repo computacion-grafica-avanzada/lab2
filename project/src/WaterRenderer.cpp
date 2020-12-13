@@ -34,7 +34,7 @@ WaterRenderer::WaterRenderer(Camera* camera, Shader* shader, Texture* dudv, Text
 	specularPower = 20.0f;
 
 	height = 4.f;
-	scale = glm::vec2(400, 400);
+	scale = glm::vec2(550, 550);
 
 	MainRenderer::load(this);
 }

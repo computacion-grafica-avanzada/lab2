@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
 	//return 0;
 
 	Display::init(800, 800);
-	Character* character = new Character(glm::vec3(10, 10, 0));// , characterRenderer);
+	Character* character = new Character(glm::vec3(0, 60, 0));// , characterRenderer);
 	Camera* camera = new Camera(character, 45, 1.f);
 	MainRenderer::init(camera);
 
@@ -101,20 +101,22 @@ int main(int argc, char* argv[]) {
 
 	characterRenderer->setShader(worldShader);
 	MainRenderer::setCharacter(character);
-	glm::vec3 position = character->getPosition();
-	character->setPosition(glm::vec3(position.x - 200, position.y, position.z));
 	Collider* characterCollider = new Collider(0, 1, 15.0f);
 
-	Renderer* island = new Renderer(camera, false);
-	//island->loadObj("../models/Landscapes/three_island2.obj");
-	island->loadObj("../models/Landscapes/floor.obj");
-	island->setShader(worldShader);
+	//Renderer* island = new Renderer(camera, false);
+	////island->loadObj("../models/Landscapes/three_island2.obj");
+	//island->loadObj("../models/Landscapes/floor.obj");
+	//island->setShader(worldShader);
 
 	std::set<Mesh*> floorMeshes;
 	for (Renderable* renderable : island->renderables) {
 		floorMeshes.insert(renderable->getMesh());
 	}
 	ColliderFloor* floorCollider = new ColliderFloor(floorMeshes);
+	Renderer* island2 = new Renderer(camera, false);
+	//island->loadObj("../models/Landscapes/three_island2.obj");
+	island2->loadObj("../models/Landscapes/pent_island.obj");
+	island2->setShader(worldShader);
 
 	//Renderer* boat = new Renderer(camera, false);
 	//boat->loadObj("../models/boat/boat3.obj");

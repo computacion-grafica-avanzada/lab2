@@ -21,7 +21,7 @@ uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
 uniform float textureTiling;
 
-const float threshold = 100 * 100;
+const float threshold = 10000 * 10000;
 
 void main() {
 	vec4 worldPosition = model * position;
