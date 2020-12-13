@@ -140,6 +140,69 @@ void Collider::solveCollisionSphereBox(Collider* s, Collider* b)
 	}
 }
 
+void Collider::solveCollisionSphereCapsule(Collider* s, Collider* c)
+{
+	if (s->type != sphere || c->type != capsule)
+	{
+		return;
+	}
+
+	// Checks if the collision exists.
+	if (Math::distXZSquared(s->pos, c->pos) < (s->radius + c->radius) * (s->radius + c->radius) &&
+		abs(s->pos.y - c->pos.y) < s->radius + c->height + c->radius)
+	{
+		printf("\nCollision detected!");
+
+		// Solve the collision as if it was with a ball at the top/bottom of the capsule
+		if (abs(s->pos.y - c->pos.y) > s->radius + c->height / 2.0f)
+		{
+			printf("\nCase limits");
+
+			glm::vec3 extremePos;
+			// Sphere at the top of the capsule
+			if (s->pos.y > c->pos.y)
+			{
+				extremePos = glm::vec3(c->pos.x, c->pos.y + c->height / 2.0f, c->pos.z);
+			}
+			else
+			{
+				extremePos = glm::vec3(c->pos.x, c->pos.y - c->height / 2.0f, c->pos.z);
+			}
+
+			glm::vec3 newDist = glm::normalize(s->pos - extremePos) * (s->radius + c->radius);
+			// The lighter object corrects its position
+			if (s->mass == 0 || (s->mass > c->mass && c->mass != 0))
+			{
+				c->pos = s->pos - newDist;
+			}
+			else
+			{
+				s->pos = extremePos + newDist;
+			}
+		}
+		// Solve the collision as if it was with a ball at the same height of the sphere
+		else
+		{
+			printf("\nCase middle");
+
+			glm::vec3 imaginarySpherePos;
+			// Sphere at the same height of the other sphere
+			imaginarySpherePos = glm::vec3(c->pos.x, s->pos.y, c->pos.z);
+
+			glm::vec3 newDist = glm::normalize(s->pos - imaginarySpherePos) * (s->radius + c->radius);
+			// The lighter object corrects its position
+			if (s->mass == 0 || (s->mass > c->mass && c->mass != 0))
+			{
+				c->pos = s->pos - newDist;
+			}
+			else
+			{
+				s->pos = imaginarySpherePos + newDist;
+			}
+		}
+	}
+}
+
 
 void Collider::solveCollisionWithObject(Collider* objectCollider)
 {
