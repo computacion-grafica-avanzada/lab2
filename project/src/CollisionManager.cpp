@@ -49,4 +49,5 @@ void CollisionManager::solvePlayerCollisions()
 	{
 		player->solveCollisionWithObject(objectsColliders[i]);
 	}
+	//solvePlayerCollisionWithFloor();
 }

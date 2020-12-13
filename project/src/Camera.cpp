@@ -1,35 +1,42 @@
 #include "Camera.h"
-#include "Character.h"
+//#include "Character.h"
 #include "MainRenderer.h"
 #include <glm\gtc\matrix_transform.hpp>
 #include <cstdio>
 
-using namespace std;
-
-Camera::Camera() {
-	SetPerspective(45.0f, 1.0f);
-	InitViewMatrix();
-}
-Camera::Camera(Projection projection, float size, float aspectRatio, float nearClip, float farClip) {
-	if (projection == Projection::Perspective) {
-		SetPerspective(size, aspectRatio, nearClip, farClip);
-	} else {
-		SetOrthographic(size, aspectRatio, nearClip, farClip);
-	}
+Camera::Camera(Character* player, float fov, float aspectRatio, float nearClip, float farClip) {
+	this->player = player;
+	setPerspective(fov, aspectRatio, nearClip, farClip);
 	InitViewMatrix();
 }
 void Camera::InitViewMatrix() {
-	position = glm::vec3(-50, 75, 100);
 	front = glm::vec3(0, 0, -1);
 	worldUp = glm::vec3(0, 1, 0);
+	up = worldUp;
+
+
 	yaw = -90.0f;
-	pitch = 0.0f;
+	zoom = 150.f;
+	pitch = 0.f;
+	aap = 180.f;
 	UpdateVectors();
 }
 
-Projection Camera::GetProjectionType() {
-	return projectionType;
+void Camera::calculatePosition() {
+	float horizontalDistance = zoom * cos(glm::radians(pitch));
+	float verticalDistance = zoom * sin(glm::radians(pitch));
+
+	yaw = 180 - aap;
+	float offsetX = horizontalDistance * sin(glm::radians(aap));
+	float offsetZ = horizontalDistance * cos(glm::radians(aap));
+
+	this->position = glm::vec3(
+		this->player->getPosition().x - offsetX,
+		this->player->getPosition().y + verticalDistance,
+		this->player->getPosition().z - offsetZ
+	);
 }
+
 glm::mat4 Camera::GetProjectionMatrix() {
 	return projectionMatrix;
 }
@@ -49,14 +56,28 @@ glm::vec3 Camera::GetUp() {
 glm::vec3 Camera::GetRight() {
 	return right;
 }
-void Camera::SetPitch(float pitch) {
-	this->pitch = pitch;
+void Camera::setPitch(float delta) {
+	pitch += (delta * sensitivity);
+	if (pitch > 89.0f)
+		pitch = 89.0f;
+	if (pitch < -89.0f)
+		pitch = -89.0f;
+}
+
+void Camera::setAap(float delta) {
+	aap += (delta * sensitivity);
+	aap = fmodf(aap, 360);
+}
+
+void Camera::SetFront(glm::vec3 front) {
+	this->front = front;
 	UpdateVectors();
 }
+
 float Camera::GetPitch() {
 	return pitch;
 }
-void Camera::SetYaw(float yaw) {
+void Camera::setYaw(float delta) {
 	this->yaw = yaw;
 	UpdateVectors();
 }
@@ -64,15 +85,24 @@ float Camera::GetYaw() {
 	return yaw;
 }
 void Camera::UpdateVectors() {
-	glm::vec3 front;
-	front.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
-	front.y = sin(glm::radians(this->pitch));
-	front.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+	//glm::vec3 front;
+	//front.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+	//front.y = sin(glm::radians(this->pitch));
+	//front.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
+	////front.x = cos(glm::radians(this->yaw)) * cos(glm::radians(0.0f));
+	////front.y = sin(glm::radians(0.0f));
+	////front.z = sin(glm::radians(this->yaw)) * cos(glm::radians(0.0f));
 
-	this->front = glm::normalize(front);
-	this->right = glm::normalize(glm::cross(this->front, this->worldUp));
-	this->up = glm::normalize(glm::cross(this->right, this->front));
+	//this->front = glm::normalize(front);
+	//this->right = glm::normalize(glm::cross(this->front, this->worldUp));
+	//this->up = glm::normalize(glm::cross(this->right, this->front));
 
+
+	calculatePosition();
+	this->front = player->getPosition() - this->position;
+	this->front.y = 0;
+	this->front = glm::normalize(this->front);
+	viewMatrix = glm::lookAt(this->position, player->getPosition(), this->up);
 }
 
 glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
@@ -81,97 +111,107 @@ glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
 	glm::mat4 modelMatrix = identityModelMatrix;
 	if (isCharacter) {
 		Direction direction = character->getDirection();
+
+		float rot2 = acos(glm::dot(front, glm::vec3(1, 0, 0))) * (180 / M_PI);
+
+		glm::vec3 ref(1, 0, 0);
+		glm::vec3 cross = glm::cross(ref, front);
+		float dot = glm::dot(ref, front);
+		float det = glm::dot(up, cross);
+		float rot = atan2(det, dot);
+
+		//float rot2 = glm::radians(-90.f);
+		//cout << zoom << " " << rot2 << " " << aap << " " << rot << " (" << position.x << " " << position.y << " " << position.z << ") " << front.x << " " << front.y << " " << front.z << endl;
+
 		modelMatrix = glm::translate(modelMatrix, character->getPosition());
 		switch (direction) {
-			case LEFT:
-				modelMatrix = glm::rotate(modelMatrix , glm::radians(45.0f), glm::vec3(0, 1, 0));
-				break;
-			case RIGHT:
-				modelMatrix = glm::rotate(modelMatrix , glm::radians(-45.0f), glm::vec3(0, 1, 0));
-				break;
+		case Direction::FRONT:
+			modelMatrix = glm::rotate(modelMatrix, rot, up);
+			prevRot = rot;
+			character->setDirection(Direction::NONE);
+			break;
+		case Direction::BACK:
+			rot += glm::radians(180.0f);
+			modelMatrix = glm::rotate(modelMatrix, rot, up);
+			prevRot = rot;
+			character->setDirection(Direction::NONE);
+			break;
+		case Direction::LEFT:
+			rot += glm::radians(90.0f);
+			modelMatrix = glm::rotate(modelMatrix, rot, up);
+			prevRot = rot;
+			character->setDirection(Direction::NONE);
+			break;
+		case Direction::RIGHT:
+			rot += glm::radians(-90.0f);
+			modelMatrix = glm::rotate(modelMatrix, rot, up);
+			prevRot = rot;
+			character->setDirection(Direction::NONE);
+			break;
+		case Direction::NONE:
+			modelMatrix = glm::rotate(modelMatrix, prevRot, up);
+			break;
 		}
 		modelMatrix = glm::scale(modelMatrix, glm::vec3(4.0f));
-		modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
+		//modelMatrix = glm::rotate(modelMatrix, glm::radians(90.f), up);
+		//modelMatrix = glm::translate(modelMatrix, -character->getPosition());
+		//modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
 	}
 	return modelMatrix;
 }
 
 glm::mat4 Camera::GetViewMatrix() {
-	Character* character = MainRenderer::getCharacter();
 	return glm::lookAt(
 		this->position,
-		character->getPosition(),
+		this->player->getPosition(),
 		this->up
 	);
 }
 
-float Camera::GetOrthographicSize() {
-	return orthographicSize;
-}
-void Camera::SetOrthographicSize(float orthographicSize) {
-	if (projectionType == Projection::Orthographic) {
-		SetPerspective(orthographicSize, aspectRatio, nearClip, farClip);
-	}
-}
 float Camera::GetFieldOfView() {
 	return fieldOfView;
 }
 void Camera::SetFieldOfView(float fov) {
-	if (projectionType == Projection::Perspective) {
-		SetPerspective(fov, aspectRatio, nearClip, farClip);
-	}
+	setPerspective(fov, aspectRatio, nearClip, farClip);
 }
+
 float Camera::GetAspectRatio() {
 	return aspectRatio;
 }
 void Camera::SetAspectRatio(float aspectRatio) {
 	this->aspectRatio = aspectRatio;
-	ResetCamera();
+	resetCamera();
 }
 float Camera::GetNearClip() {
 	return nearClip;
 }
 void Camera::SetNearClip(float nearClip) {
 	this->nearClip = nearClip;
-	ResetCamera();
+	resetCamera();
 }
 float Camera::GetFarClip() {
 	return farClip;
 }
 void Camera::SetFarClip(float farClip) {
 	this->farClip = farClip;
-	ResetCamera();
+	resetCamera();
 }
 
-void Camera::ResetCamera() {
-	if (projectionType == Projection::Perspective) {
-		SetPerspective(fieldOfView, aspectRatio, nearClip, farClip);
-	} else {
-		SetOrthographic(orthographicSize, aspectRatio, nearClip, farClip);
-	}
+void Camera::resetCamera() {
+	setPerspective(fieldOfView, aspectRatio, nearClip, farClip);
+	InitViewMatrix();
 }
-void Camera::SetOrthographic(float orthographicSize, float aspectRatio, float nearClip, float farClip) {
-	this->projectionType = Projection::Orthographic;
-	this->orthographicSize = orthographicSize;
-	this->aspectRatio = aspectRatio;
-	this->nearClip = nearClip;
-	this->farClip = farClip;
-	
-	float left, right, bottom, top;
-	left = -orthographicSize * aspectRatio;
-	right = orthographicSize * aspectRatio;
-	bottom = -orthographicSize;
-	top = orthographicSize;
 
-	projectionMatrix = glm::ortho(left, right, bottom, top, nearClip, farClip);
-}
-void Camera::SetPerspective(float fieldOfView, float aspectRatio, float nearClip, float farClip) {
-	this->projectionType = Projection::Perspective;
+void Camera::setPerspective(float fieldOfView, float aspectRatio, float nearClip, float farClip) {
 	this->fieldOfView = fieldOfView;
 	this->aspectRatio = aspectRatio;
 	this->nearClip = nearClip;
 	this->farClip = farClip;
 
 	projectionMatrix = glm::perspective(fieldOfView, aspectRatio, nearClip, farClip);
-	//projectionMatrix = glm::infinitePerspective(fieldOfView, aspectRatio, nearClip);
+}
+
+void Camera::setZoom(float delta) {
+	this->zoom -= delta;
+	if (this->zoom <= 1.0f) this->zoom = 1.f;
 }

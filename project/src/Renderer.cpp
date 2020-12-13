@@ -3,6 +3,26 @@
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "tiny_obj_loader.h"
 
+using namespace std;
+
+glm::vec3 calculateAverage(std::set<Renderable*> renderables) {
+    float total = 0.0f;
+    glm::vec3 average(0);
+    for(Renderable* rendereable : renderables) {
+       std::vector<glm::vec4> vertices = rendereable->getMesh()->getVertices();
+        for (glm::vec4& vertix : vertices) { 
+            total++;
+            average.x += vertix.x;
+            average.y += vertix.y;
+            average.z += vertix.z;
+        }
+    }
+    if (total == 0) {
+        return average;
+    }
+    return glm::vec3(average.x/total, average.y/total, average.z/total);
+}
+
 Renderer::Renderer(Camera* camera, bool isCharacter) {
     this->camera = camera;
     this->clipPlaneEnabled = false;
@@ -18,9 +38,11 @@ Renderer::~Renderer() {
 
 void Renderer::load(Renderable* renderable) {
 	renderables.insert(renderable);
+    this->averageVertix = calculateAverage(renderables);
 }
 void Renderer::unload(Renderable* renderable) {
 	renderables.erase(renderable);
+    this->averageVertix = calculateAverage(renderables);
 }
 
 void Renderer::clearMesh() {
@@ -234,6 +256,7 @@ void Renderer::loadObj(const std::string& objFile) {
             }
         }
     }
+    this->averageVertix = calculateAverage(renderables);
 }
 
 Shader* Renderer::getShader() {
@@ -242,4 +265,8 @@ Shader* Renderer::getShader() {
 
 void Renderer::setShader(Shader* shader) {
     this->shader = shader;
+}
+
+glm::vec3 Renderer::getAverageVertix() {
+    return averageVertix;
 }

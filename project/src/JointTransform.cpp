@@ -34,7 +34,7 @@ glm::vec3 JointTransform::interpolate(glm::vec3 start, glm::vec3 end, float prog
 glm::mat4 JointTransform::getLocalTransform() {
 	glm::mat4 matrix = glm::identity<glm::mat4>();
 	matrix = glm::translate(matrix, position);
-	matrix = matrix * glm::toMat4(rotation);
+	matrix = matrix * rotation->toRotationMatrix();
 	return matrix;
 }
 
@@ -61,7 +61,7 @@ glm::mat4 JointTransform::getLocalTransform() {
  */
 JointTransform* JointTransform::interpolate(JointTransform* frameA, JointTransform* frameB, float progression) {
 	glm::vec3 pos = interpolate(frameA->position, frameB->position, progression);
-	glm::quat rot = glm::slerp(frameA->rotation, frameB->rotation, progression);
+	Quaternion* rot = Quaternion::interpolate(frameA->rotation, frameB->rotation, progression);
 	return new JointTransform(pos, rot);
 }
 
@@ -77,7 +77,7 @@ JointTransform* JointTransform::interpolate(JointTransform* frameA, JointTransfo
  *            - the rotation of the joint relative to the parent joint
  *            (bone-space) at a certain keyframe.
  */
-JointTransform::JointTransform(glm::vec3 position, glm::quat rotation) {
+JointTransform::JointTransform(glm::vec3 position, Quaternion* rotation) {
 	this->position = position;
 	this->rotation = rotation;
 }

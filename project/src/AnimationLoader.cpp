@@ -14,7 +14,7 @@ KeyFrame* AnimationLoader::createKeyFrame(KeyFrameData* data) {
 JointTransform* AnimationLoader::createTransform(JointTransformData* data) {
 	glm::mat4 mat = data->jointLocalTransform;
 	glm::vec3 translation(mat[3]);
-	glm::quat rotation = glm::quat_cast(mat);
+	Quaternion* rotation = Quaternion::fromMatrix(mat);
 	return new JointTransform(translation, rotation);
 }
 

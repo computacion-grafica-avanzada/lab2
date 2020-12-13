@@ -11,7 +11,7 @@
  * @param jointMatrices
  *            - the array of joint transforms that is being filled.
  */
-void AnimatedRenderable::addJointsToArray(Joint* headJoint, std::vector<glm::mat4> jointMatrices) {
+void AnimatedRenderable::addJointsToArray(Joint* headJoint, std::vector<glm::mat4>& jointMatrices) {
 	jointMatrices[headJoint->index] = headJoint->getAnimatedTransform();
 	for (Joint* childJoint : headJoint->children) {
 		addJointsToArray(childJoint, jointMatrices);
@@ -46,7 +46,7 @@ AnimatedRenderable::AnimatedRenderable(AnimatedMesh* mesh, Texture* texture, flo
 	this->rootJoint = rootJoint;
 	this->jointCount = jointCount;
 	this->animator = new Animator(this->rootJoint);
-	rootJoint->calcInverseBindTransform(glm::identity<glm::mat4>());
+	this->rootJoint->calcInverseBindTransform(glm::identity<glm::mat4>());
 }
 
 /**

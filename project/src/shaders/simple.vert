@@ -15,6 +15,7 @@ out DATA {
 	vec2 textureCoord;
 	vec3 normal;
 	float alpha;
+    vec4 test;
 } Out;
 
 uniform vec4 clipPlane;

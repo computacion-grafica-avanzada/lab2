@@ -57,7 +57,10 @@ std::vector<VertexSkinData*> SkinLoader::getSkinData(tinyxml2::XMLElement* weigh
 			jointId = std::stoi(aux);
 			aux = rawData[pointer++];
 			weightId = std::stoi(aux);
+			if (weightId < weights.size())
+			{
 			skinData->addJointEffect(jointId, weights[weightId]);
+			}
 		}
 		skinData->limitJointNumber(maxWeights);
 		skinningData.push_back(skinData);

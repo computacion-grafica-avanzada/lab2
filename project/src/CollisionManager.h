@@ -8,6 +8,7 @@ class CollisionManager
 private:
 	std::vector<Collider*> objectsColliders;
 	ColliderFloor* floorCollider;
+	void solvePlayerCollisionWithFloor();
 public:
 	Collider* player;
 
@@ -15,7 +16,6 @@ public:
 	~CollisionManager();
 	void addObjectCollider(Collider* objectCollider);
 	void removeObjectCollider(int id);
-	void solvePlayerCollisionWithFloor();
 	void solvePlayerCollisions();
 };
 

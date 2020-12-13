@@ -42,7 +42,7 @@ class AnimatedRenderable : public Renderable
 	 * @param jointMatrices
 	 *            - the array of joint transforms that is being filled.
 	 */
-	void addJointsToArray(Joint* headJoint, std::vector<glm::mat4> jointMatrices);
+	void addJointsToArray(Joint* headJoint, std::vector<glm::mat4>& jointMatrices);
 
 public:
 

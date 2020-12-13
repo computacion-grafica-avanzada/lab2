@@ -11,7 +11,7 @@ class Transform
 {
 private:
 	glm::vec3 pos;
-	glm::quat rot;
+	Quaternion* rot;
 	glm::vec3 scale;
 
 public:

@@ -7,7 +7,7 @@
 */
 void Animator::increaseAnimationTime()
 {
-	animationTime += TimeFrame::deltaTime;
+	animationTime += Display::deltaTime / 10;
 	while (animationTime > currentAnimation->getLength())
 	{
 		this->animationTime -= currentAnimation->getLength();
@@ -110,7 +110,7 @@ std::pair<KeyFrame*, KeyFrame*> Animator::getPreviousAndNextFrames()
 		}
 		previousFrame = allFrames[i];
 	}
-	return std::pair<KeyFrame*, KeyFrame*>(previousFrame, nextFrame);
+	return std::pair<KeyFrame*, KeyFrame*>(allFrames[0], allFrames[0]);
 }
 
 /**
@@ -161,7 +161,7 @@ std::map<std::string, glm::mat4> Animator::interpolatePoses(KeyFrame* previousFr
 	{
 		JointTransform* previousTransform = previousFrame->getJointKeyFrames()[jointName];
 		JointTransform* nextTransform = nextFrame->getJointKeyFrames()[jointName];
-		JointTransform* currentTransform = JointTransform::interpolate(previousTransform, nextTransform, progression);
+		JointTransform* currentTransform = previousTransform; // JointTransform::interpolate(previousTransform, nextTransform, progression);
 		currentPose.insert(std::pair<std::string, glm::mat4>(jointName, currentTransform->getLocalTransform()));
 	}
 	return currentPose;

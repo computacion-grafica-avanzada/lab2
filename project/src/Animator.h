@@ -5,7 +5,7 @@
 #include "Animation.h"
 #include "KeyFrame.h"
 #include "Joint.h"
-#include "TimeFrame.h"
+#include "Display.h"
 
 /**
  *

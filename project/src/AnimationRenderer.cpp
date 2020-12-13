@@ -59,6 +59,15 @@ void AnimationRenderer::render() {
 		for (unsigned int i = 0; i < (jointVector.size() < MAX_JOINTS_MODEL ? jointVector.size() : MAX_JOINTS_MODEL); ++i)
 		{
 			jointTransforms[i] = jointVector[i];
+
+			/*if (i == 0)
+			{
+				jointTransforms[i] = jointVector[i];
+			}
+			else
+			{
+				jointTransforms[i] = glm::identity<glm::mat4>();
+			}*/
 		}
 
 		//shader->setUniform4f("clipPlane", clipPlane);

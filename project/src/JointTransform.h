@@ -3,7 +3,7 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtx/quaternion.hpp>
+#include "Quaternion.h"
 
 /* Represents the local bone-space transform of a joint at a certain keyframe
 during an animation. This includes the position and rotation of the joint,
@@ -15,7 +15,7 @@ class JointTransform
 {
 	// remember, this position and rotation are relative to the parent bone!
 	glm::vec3 position;
-	glm::quat rotation;
+	Quaternion* rotation;
 
 	/**
 	 * Linearly interpolates between two translations based on a "progression"
@@ -83,6 +83,6 @@ public:
 	 *            - the rotation of the joint relative to the parent joint
 	 *            (bone-space) at a certain keyframe.
 	 */
-	JointTransform(glm::vec3 position, glm::quat rotation);
+	JointTransform(glm::vec3 position, Quaternion* rotation);
 };
 

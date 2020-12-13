@@ -27,13 +27,13 @@ out DATA {
 
 void main()
 {
-    vec4 totalLocalPos = vec4(1.0, 0.0, 0.0, 0.0);
+    vec4 totalLocalPos = vec4(0.0);
     vec4 totalNormal = vec4(0.0);
-    vec4 posePosition;  
+
     for (int i = 0; i < MAX_WEIGHTS; i++) 
     {		
         mat4 jointTransform = jointTransforms[jointIds[i]];
-        posePosition = jointTransform * position;
+        vec4 posePosition = jointTransform * position;
         totalLocalPos = totalLocalPos + posePosition * jointWeights[i];
 
         vec4 worldNormal = jointTransform * vec4(normal, 0.0);
