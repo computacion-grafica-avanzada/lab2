@@ -12,7 +12,7 @@ uniform sampler2D dudvSampler;
 
 uniform float moveFactor;
 
-const float waveStrength = 0.04;
+const float waveStrength = 0.004;
 
 void main() {
 	vec2 ndc = (clipSpace.xy / clipSpace.w)/2.0 + 0.5;

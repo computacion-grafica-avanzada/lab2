@@ -14,7 +14,6 @@ void Camera::InitViewMatrix() {
 	worldUp = glm::vec3(0, 1, 0);
 	up = worldUp;
 
-
 	yaw = -90.0f;
 	zoom = 150.f;
 	pitch = 0.f;
@@ -40,10 +39,23 @@ void Camera::calculatePosition() {
 glm::mat4 Camera::GetProjectionMatrix() {
 	return projectionMatrix;
 }
-void Camera::SetPosition(glm::vec3 position) {
-	this->position = position;
-	viewMatrix = glm::lookAt(this->position, this->position + this->front, this->up);
+void Camera::moveCameraDown() {
+	float camDistance = 2 * (this->position.y - 4); //waterHeight
+	glm::vec3 invertedCam = this->position - glm::vec3(0, camDistance, 0);
+
+	float playerDistance = 2 * (player->getPosition().y - 4); //waterHeight
+	glm::vec3 invertedPlayer = player->getPosition() - glm::vec3(0, playerDistance, 0);
+
+	glm::mat4 uno = glm::lookAt(this->position, player->getPosition(), this->up);
+	glm::mat4 dos = glm::lookAt(invertedCam, invertedPlayer, this->up);
+	
+	viewMatrix = glm::lookAt(invertedCam, invertedPlayer, this->up);
 }
+
+void Camera::moveCameraUp() {
+	viewMatrix = glm::lookAt(this->position, player->getPosition(), this->up);
+}
+
 glm::vec3 Camera::GetPosition() {
 	return position;
 }
@@ -56,12 +68,16 @@ glm::vec3 Camera::GetUp() {
 glm::vec3 Camera::GetRight() {
 	return right;
 }
-void Camera::setPitch(float delta) {
+void Camera::setPitch(float pitch) {
+	this->pitch = pitch;
+}
+
+void Camera::updatePitch(float delta) {
 	pitch += (delta * sensitivity);
 	if (pitch > 89.0f)
 		pitch = 89.0f;
-	if (pitch < -89.0f)
-		pitch = -89.0f;
+	if (pitch < 0.f)
+		pitch = 0.f;
 }
 
 void Camera::setAap(float delta) {
@@ -85,19 +101,6 @@ float Camera::GetYaw() {
 	return yaw;
 }
 void Camera::UpdateVectors() {
-	//glm::vec3 front;
-	//front.x = cos(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
-	//front.y = sin(glm::radians(this->pitch));
-	//front.z = sin(glm::radians(this->yaw)) * cos(glm::radians(this->pitch));
-	////front.x = cos(glm::radians(this->yaw)) * cos(glm::radians(0.0f));
-	////front.y = sin(glm::radians(0.0f));
-	////front.z = sin(glm::radians(this->yaw)) * cos(glm::radians(0.0f));
-
-	//this->front = glm::normalize(front);
-	//this->right = glm::normalize(glm::cross(this->front, this->worldUp));
-	//this->up = glm::normalize(glm::cross(this->right, this->front));
-
-
 	calculatePosition();
 	this->front = player->getPosition() - this->position;
 	this->front.y = 0;
@@ -119,9 +122,6 @@ glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
 		float dot = glm::dot(ref, front);
 		float det = glm::dot(up, cross);
 		float rot = atan2(det, dot);
-
-		//float rot2 = glm::radians(-90.f);
-		//cout << zoom << " " << rot2 << " " << aap << " " << rot << " (" << position.x << " " << position.y << " " << position.z << ") " << front.x << " " << front.y << " " << front.z << endl;
 
 		modelMatrix = glm::translate(modelMatrix, character->getPosition());
 		switch (direction) {
@@ -152,19 +152,12 @@ glm::mat4 Camera::GetModelMatrix(bool isCharacter) {
 				modelMatrix = glm::rotate(modelMatrix, prevRot, up);
 				break;
 		}
-		//modelMatrix = glm::rotate(modelMatrix, glm::radians(90.f), up);
-		//modelMatrix = glm::translate(modelMatrix, -character->getPosition());
-		//modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0, 0));
 	}
 	return modelMatrix;
 }
 
 glm::mat4 Camera::GetViewMatrix() {
-	return glm::lookAt(
-		this->position,
-		this->player->getPosition(),
-		this->up
-	);
+	return viewMatrix;
 }
 
 float Camera::GetFieldOfView() {

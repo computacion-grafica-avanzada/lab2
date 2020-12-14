@@ -228,7 +228,7 @@ int main(int argc, char* argv[]) {
 				{
 					if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
 						camera->setAap(-sdlEvent.motion.xrel);
-						camera->setPitch(sdlEvent.motion.yrel);
+						camera->updatePitch(sdlEvent.motion.yrel);
 					}
 					break;
 				}

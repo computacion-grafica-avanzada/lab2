@@ -57,17 +57,11 @@ void MainRenderer::setCharacter(Character* _character) {
 }
 
 void MainRenderer::render() {
-	glm::vec3 cameraPosition = camera->GetPosition();
-	float pitch = camera->GetPitch();
 
 	// move camera under plane
-	float distance = 2 * (cameraPosition.y - 4); //waterHeight
-	cameraPosition.y -= distance;
-	pitch *= -1;
-	camera->SetPosition(cameraPosition);
-	camera->setPitch(pitch);
+	camera->moveCameraDown();
 
-	 //Render the scene in the reflection buffer
+	//Render the scene in the reflection buffer
 	waterFrameBuffer->bindReflectionBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	for (Renderer* renderer : renderers) {
@@ -75,16 +69,13 @@ void MainRenderer::render() {
 		renderer->render(lights);
 		renderer->disableClipPlane();
 		skybox->enableClipPlane(glm::vec4(0, 1, 0, -4));
-		skybox->render(); 
+		skybox->render();
 		skybox->disableClipPlane();
 	}
 	waterFrameBuffer->unbindBuffer();
 
 	// move camera back over plane
-	cameraPosition.y += distance;
-	pitch *= -1;
-	camera->SetPosition(cameraPosition);
-	camera->setPitch(pitch);
+	camera->moveCameraUp();
 
 	waterFrameBuffer->bindRefractionBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -102,11 +93,11 @@ void MainRenderer::render() {
 		renderer->render(lights);
 	}
 
+	skybox->render();
+
 	for (WaterRenderer* renderer : waterRenderers) {
 		renderer->render(waterFrameBuffer);
 	}
-
-	skybox->render();
 
 	for (GuiRenderer* renderer : guiRenderers) {
 		renderer->render();
