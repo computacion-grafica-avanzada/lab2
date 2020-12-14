@@ -12,6 +12,7 @@ class Renderer {
 	glm::vec4 clipPlane;
 	bool clipPlaneEnabled;
 	glm::vec3 averageVertix;
+	glm::vec3 highestVertix;
 	glm::mat4 customModel;
 
 	bool isCharacter;
@@ -31,6 +32,7 @@ public:
 
 	void loadObj(const std::string& objFile);	// for each mesh creates a renderable and adds it to set
 	glm::vec3 getAverageVertix();
+	glm::vec3 getHighestVertix();
 
 	void setShader(Shader* shader);
 	Shader* getShader();
