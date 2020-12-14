@@ -16,12 +16,13 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
+uniform vec3 skyColor;
 uniform vec4 clipPlane;
 uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
 uniform float textureTiling;
 
-const float threshold = 10000 * 10000;
+const float threshold = 500 * 500;
 
 void main() {
 	vec4 worldPosition = model * position;

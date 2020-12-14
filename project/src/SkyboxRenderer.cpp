@@ -143,8 +143,10 @@ void SkyboxRenderer::tick() {
 	}
 }
 
-void SkyboxRenderer::skyColors() {
+glm::vec3 SkyboxRenderer::getSkyColor() {
+	return glm::mix(start, end, blendFactor);
 }
+
 
 // noche - 00:00 -> negro
 // manana - 06:00 -> celeste

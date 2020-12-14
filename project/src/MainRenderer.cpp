@@ -66,7 +66,7 @@ void MainRenderer::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	for (Renderer* renderer : renderers) {
 		renderer->enableClipPlane(glm::vec4(0, 1, 0, -4)); //TODO change to water height if different than 0
-		renderer->render(lights);
+		renderer->render(lights, skybox->getSkyColor());
 		renderer->disableClipPlane();
 		skybox->enableClipPlane(glm::vec4(0, 1, 0, -4));
 		skybox->render();
@@ -81,7 +81,7 @@ void MainRenderer::render() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (Renderer* renderer : renderers) {
 		renderer->enableClipPlane(glm::vec4(0, -1, 0, 4));
-		renderer->render(lights);
+		renderer->render(lights, skybox->getSkyColor());
 		renderer->disableClipPlane();
 		skybox->enableClipPlane(glm::vec4(0, -1, 0, 4));
 		skybox->render();
@@ -90,7 +90,7 @@ void MainRenderer::render() {
 	waterFrameBuffer->unbindBuffer();
 
 	for (Renderer* renderer : renderers) {
-		renderer->render(lights);
+		renderer->render(lights, skybox->getSkyColor());
 	}
 
 	skybox->render();

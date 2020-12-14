@@ -4,7 +4,7 @@ in vec4 clipSpace;
 in vec2 textureCoords;
 in vec3 toCameraVector;
 
-out vec4 out_Color;
+out vec4 outColor;
 
 uniform sampler2D reflectionSampler;
 uniform sampler2D refractionSampler;
@@ -37,9 +37,9 @@ void main() {
 	float refractiveFactor = dot(viewVector, vec3(0,1,0)); //asume water normal to be y
 	//refractiveFactor = pow(refractiveFactor, 10);
 
-	out_Color = mix(reflectColor, refractColor, refractiveFactor);
-	out_Color = mix(out_Color, vec4(0,0,1,1), 0.2);
-	//out_Color = vec4(ndc,0,1);
-	//out_Color = vec4(refractTexCoords,0,1);
-	//out_Color = vec4(0,1,0,1.0);
+	outColor = mix(reflectColor, refractColor, refractiveFactor);
+	//outColor = mix(outColor, vec4(0,0,1,1), 0.02);
+	//outColor = mix(vec4(skyColor,1), outColor, alpha);
+	//outColor = vec4(0,alpha,0,1);
+	//outColor = vec4(toCameraVector, 1);
 }

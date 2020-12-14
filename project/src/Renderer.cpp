@@ -74,7 +74,7 @@ void Renderer::disableClipPlane() {
 	this->clipPlaneEnabled = false;
 }
 
-void Renderer::render(std::set<Light*> lights) {
+void Renderer::render(std::set<Light*> lights, glm::vec3 skyColor) {
     (clipPlaneEnabled) ? glEnable(GL_CLIP_DISTANCE0) : glDisable(GL_CLIP_DISTANCE0);
 	for (Renderable* renderable : renderables) {
 		Shader* shader = getShader();
@@ -97,6 +97,7 @@ void Renderer::render(std::set<Light*> lights) {
             model = customModel;
         }
 
+        shader->setUniform3f("skyColor", skyColor);
         shader->setUniform3f("cameraPosition", camera->GetPosition());
 		shader->setUniform4f("clipPlane", clipPlane);
 		shader->setUniform1f("textureTiling", 1);

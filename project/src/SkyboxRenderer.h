@@ -18,7 +18,6 @@ class SkyboxRenderer : ITickable {
 
 	float blendFactor;
 	glm::vec3 start, end;
-	void skyColors();
 
 public:
 	SkyboxRenderer(Camera*);
@@ -27,6 +26,8 @@ public:
 	void enableClipPlane(glm::vec4 clipPlane);
 	void disableClipPlane();
 	void render();
+
+	glm::vec3 getSkyColor();
 
 	void tick();
 };
