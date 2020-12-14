@@ -37,17 +37,30 @@ void CollisionManager::removeObjectCollider(int id)
 void CollisionManager::solvePlayerCollisionWithFloor()
 {
 	float floorHeight = floorCollider->getHeightAtPos(player->pos);
-	if (player->pos.y < floorHeight + player->radius)
+	if (player->pos.y != floorHeight + playerFeetPosOffset)
 	{
-		player->pos.y = floorHeight + player->radius;
+		//printf("\n%f", floorHeight);
+		player->pos.y = floorHeight + playerFeetPosOffset;
 	}
+	//if (player->pos.y < floorHeight + player->radius)
+	//{
+	//	player->pos.y = floorHeight + player->radius;
+	//}
 }
 
-void CollisionManager::solvePlayerCollisions()
+void CollisionManager::solvePlayerCollisions(bool flyMode)
 {
 	for (int i = 0; i < objectsColliders.size(); i++)
 	{
 		player->solveCollisionWithObject(objectsColliders[i]);
 	}
-	//solvePlayerCollisionWithFloor();
+	if (!flyMode)
+	{
+		solvePlayerCollisionWithFloor();
+	}
+}
+
+void CollisionManager::setPlayerFeetPosOffset(float offset)
+{
+	this->playerFeetPosOffset = offset;
 }

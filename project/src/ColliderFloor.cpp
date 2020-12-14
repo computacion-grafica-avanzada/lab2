@@ -8,8 +8,8 @@ ColliderFloor::ColliderFloor(std::set<Mesh*> meshes)
 // Reference
 // https://www.scenebeta.com/node/17755
 
-bool ColliderFloor::isPointInTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 pos) {
-
+bool ColliderFloor::isPointInTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 pos)
+{
 	float orientation, abt, bct, cat;
 
 	//calculamos la orientaci�n del triangulo
@@ -22,12 +22,14 @@ bool ColliderFloor::isPointInTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, 
 	cat = (v3.x - pos.x) * (v1.z - pos.z) - (v3.z - pos.z) * (v1.x - pos.x);
 
 	//si la orientaci�n del tri�ngulo y la de los dem�s tri�ngulos es igual a cero o mayor, el punto est� dentro del tri�ngulo
-	if (orientation >= 0 && abt >= 0 && bct >= 0 && cat >= 0) {
+	if (orientation >= 0 && abt >= 0 && bct >= 0 && cat >= 0)
+	{
 		return 1;
 	}
 
 	//si la orientaci�n del tri�ngulo y la de los dem�s tri�ngulos es menor que cero, el punto tambi�n est� dentro del tri�ngulo
-	if (orientation < 0 && abt < 0 && bct < 0 && cat < 0) {
+	if (orientation < 0 && abt < 0 && bct < 0 && cat < 0)
+	{
 		return 1;
 	}
 
@@ -35,8 +37,8 @@ bool ColliderFloor::isPointInTriangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, 
 	return 0;
 }
 
-float ColliderFloor::heightOfTriangleAtPos(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 pos) {
-
+float ColliderFloor::heightOfTriangleAtPos(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, glm::vec3 pos)
+{
 	float A, B, C, D, height;
 
 	//A, B y C son la normal del plano del triangulo
@@ -59,11 +61,12 @@ float ColliderFloor::heightOfTriangleAtPos(glm::vec3 v1, glm::vec3 v2, glm::vec3
 }
 
 
-float ColliderFloor::getHeightAtPos(glm::vec3 pos) {
-
+float ColliderFloor::getHeightAtPos(glm::vec3 pos)
+{
 	float height = 0;// , tempHeight = 99999999, x1, y1, z1;
 
-	int v1 = 0, v2 = 0, v3 = 0;
+	unsigned int v1Index = 0, v2Index = 0, v3Index = 0;
+	int aux;
 
 	//Una cosa buena de este c�digo es que puedes escalar el modelo(no el que se va a dibujar sino el que se va a procesar)
 	//x1 = pos.x / escala;
@@ -78,25 +81,27 @@ float ColliderFloor::getHeightAtPos(glm::vec3 pos) {
 	//}
 
 	//Buscar el triangulo en el que las coordenada x y z est�n localizadas.
-	
-    for(Mesh* mesh : meshes) {
-		for (int vertex = 1; vertex < mesh->getVertices().size(); vertex += 3) {
+
+	for (Mesh* mesh : meshes)
+	{
+		for (int vertex = 0; vertex < mesh->getIndices().size() - 1; vertex += 3)
+		{
 			//indices de la cara (vertices)
 			//a = mesh->getVertices()[vertex].cara[0]; //n�mero del primer v�rtice del triangulo
 			//b = mesh->getVertices()[vertex].cara[3]; //n�mero del segundo v�rtice del triangulo
 			//c = mesh->getVertices()[vertex].cara[6]; //n�mero del tercer v�rtice del triangulo
-
-			v1 = vertex;
-			v2 = vertex + 1;
-			v3 = vertex + 2;
+			v1Index = mesh->getIndices()[vertex];
+			aux = vertex + 1;
+			v2Index = mesh->getIndices()[aux];
+			aux = vertex + 2;
+			v3Index = mesh->getIndices()[aux];
 
 			//Mirar si el punto (solo se tienen en cuenta las coordenadas  x, z) est� dentro de este triangulo (si no, pasar al siguiente)
-			if (isPointInTriangle(mesh->getVertices()[v1], mesh->getVertices()[v2], mesh->getVertices()[v3], pos))
+			if (isPointInTriangle(mesh->getVertices()[v1Index], mesh->getVertices()[v2Index], mesh->getVertices()[v3Index], pos))
 			{
-
 				//conseguimos la altura de la intersecci�n
 				//asignamos la altura actual a una variable para luego compararla con la anterior
-				height = heightOfTriangleAtPos(mesh->getVertices()[v1], mesh->getVertices()[v2], mesh->getVertices()[v3], pos);
+				height = heightOfTriangleAtPos(mesh->getVertices()[v1Index], mesh->getVertices()[v2Index], mesh->getVertices()[v3Index], pos);
 				//esto sirve para conseguir la altura m�s cercana al personaje
 				//if (abs(pos.y - height) > abs(pos.y - tempHeight))
 				//{

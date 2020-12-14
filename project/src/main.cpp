@@ -15,6 +15,7 @@
 #include "GuiRenderer.h"
 #include "TickEngine.h"
 #include "GameScene.h"
+#include "ColliderFloor.h"
 
 using namespace std;
 
@@ -125,13 +126,19 @@ int main(int argc, char* argv[]) {
 	Renderer* fish = new Renderer(camera, false, fishModelMatrix);
 	fish->loadObj("../models/fish/big_fish.obj");
 	fish->setShader(worldShader);
-	
+
 	glm::mat4 fishModelMatrix2 = glm::translate(glm::mat4(1.0), glm::vec3(80, 15, -100));
 	Renderer* fish2 = new Renderer(camera, false, fishModelMatrix);
 	fish2->loadObj("../models/fish/big_fish.obj");
 	fish2->setShader(worldShader);
 
 	initIsland(camera, worldShader);
+
+	std::set<Mesh*> floorMeshes;
+	Renderable* islandRenderable = *(island2->renderables.begin());
+	floorMeshes.insert(islandRenderable->getMesh());
+
+	ColliderFloor* colliderFloor = new ColliderFloor(floorMeshes);
 
 	//Renderer* boat = new Renderer(camera, false);
 	//boat->loadObj("../models/boat/boat3.obj");
@@ -142,7 +149,7 @@ int main(int argc, char* argv[]) {
 	Light* light = new Light(glm::vec3(550), glm::vec3(1, 1, 1));
 	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
 
-	//CollisionManager* collisionManager = new CollisionManager(characterCollider, floorCollider);
+	CollisionManager* collisionManager = new CollisionManager(characterCollider, colliderFloor);
 	//collisionManager->addObjectCollider(boatCollider);
 
 	// create Gui with FPS
@@ -157,6 +164,7 @@ int main(int argc, char* argv[]) {
 
 
 	bool running = true;	// set running to true
+	bool flyMode = false;
 	int count = 0;
 	SDL_Event sdlEvent;		// variable to detect SDL events
 	while (running)			// the event loop
@@ -180,68 +188,73 @@ int main(int argc, char* argv[]) {
 			glm::vec3 position = character->getPosition();
 			glm::vec3 cross = glm::cross(camera->GetFront(), camera->GetUp());
 			switch (sdlEvent.type) {
-				case SDL_QUIT:
+			case SDL_QUIT:
+				running = false;
+				break;
+			case SDL_KEYDOWN:
+				switch (sdlEvent.key.keysym.sym) {
+				case SDLK_q:
 					running = false;
 					break;
-				case SDL_KEYDOWN:
-					switch (sdlEvent.key.keysym.sym) {
-						case SDLK_q:
-							running = false;
-							break;
-						case SDLK_UP:
-						case SDLK_w:
-							character->setPosition(position + camera->GetFront() * cameraSpeed);
-							character->setDirection(Direction::FRONT);
-							break;
-						case SDLK_DOWN:
-						case SDLK_s:
-							character->setPosition(position - camera->GetFront() * cameraSpeed);
-							character->setDirection(Direction::BACK);
-							break;
-						case SDLK_LEFT:
-						case SDLK_a:
-							character->setPosition(position - glm::normalize(cross) * cameraSpeed);
-							//character->setPosition(glm::vec3(position.x, position.y, position.z - 2));
-							character->setDirection(Direction::LEFT);
-							break;
-						case SDLK_RIGHT:
-						case SDLK_d:
-							character->setPosition(position + glm::normalize(cross) * cameraSpeed);
-							character->setDirection(Direction::RIGHT);
-							break;
-						case SDLK_SPACE:
-							character->setPosition(position + camera->GetUp() * cameraSpeed);
-							break;
-						case SDLK_LSHIFT:
-							character->setPosition(position - camera->GetUp() * cameraSpeed);
-							break;
-						case SDLK_c:
-							character->switchCharacter();
-							characterRenderer->clearMesh();
-							characterRenderer->loadObj(character->currentCharacterPath());
-							break;
-						case SDLK_r:
-							camera->resetCamera();
-							break;
-					}
+				case SDLK_UP:
+				case SDLK_w:
+					character->setPosition(position + camera->GetFront() * cameraSpeed);
+					character->setDirection(Direction::FRONT);
 					break;
-				case SDL_MOUSEMOTION: // look around scene
-				{
-					if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-						camera->setAap(-sdlEvent.motion.xrel);
-						camera->setPitch(sdlEvent.motion.yrel);
-					}
+				case SDLK_DOWN:
+				case SDLK_s:
+					character->setPosition(position - camera->GetFront() * cameraSpeed);
+					character->setDirection(Direction::BACK);
+					break;
+				case SDLK_LEFT:
+				case SDLK_a:
+					character->setPosition(position - glm::normalize(cross) * cameraSpeed);
+					//character->setPosition(glm::vec3(position.x, position.y, position.z - 2));
+					character->setDirection(Direction::LEFT);
+					break;
+				case SDLK_RIGHT:
+				case SDLK_d:
+					character->setPosition(position + glm::normalize(cross) * cameraSpeed);
+					character->setDirection(Direction::RIGHT);
+					break;
+				case SDLK_SPACE:
+					character->setPosition(position + camera->GetUp() * cameraSpeed);
+					flyMode = true;
+					break;
+				case SDLK_LSHIFT:
+					character->setPosition(position - camera->GetUp() * cameraSpeed);
+					flyMode = true;
+					break;
+				case SDLK_LCTRL:
+					flyMode = false;
+					break;
+				case SDLK_c:
+					character->switchCharacter();
+					characterRenderer->clearMesh();
+					characterRenderer->loadObj(character->currentCharacterPath());
+					break;
+				case SDLK_r:
+					camera->resetCamera();
 					break;
 				}
-				case SDL_MOUSEWHEEL:
-				{
-					camera->setZoom(sdlEvent.wheel.y);
+				break;
+			case SDL_MOUSEMOTION: // look around scene
+			{
+				if (SDL_GetMouseState(NULL, NULL) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
+					camera->setAap(-sdlEvent.motion.xrel);
+					camera->setPitch(sdlEvent.motion.yrel);
 				}
+				break;
+			}
+			case SDL_MOUSEWHEEL:
+			{
+				camera->setZoom(sdlEvent.wheel.y);
+			}
 			}
 		}
-		// characterCollider->pos = character->getPosition();
-		// collisionManager->solvePlayerCollisions();
-		// character->setPosition(characterCollider->pos); // correct it in case of collision
+		characterCollider->pos = character->getPosition();
+		collisionManager->solvePlayerCollisions(flyMode);
+		character->setPosition(characterCollider->pos); // correct it in case of collision
 		camera->UpdateVectors();
 		MainRenderer::render();		// call the draw function
 		Display::swapBuffers();	// swap buffers

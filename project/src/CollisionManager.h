@@ -9,6 +9,7 @@ private:
 	std::vector<Collider*> objectsColliders;
 	ColliderFloor* floorCollider;
 	void solvePlayerCollisionWithFloor();
+	float playerFeetPosOffset;
 public:
 	Collider* player;
 
@@ -16,6 +17,7 @@ public:
 	~CollisionManager();
 	void addObjectCollider(Collider* objectCollider);
 	void removeObjectCollider(int id);
-	void solvePlayerCollisions();
+	void solvePlayerCollisions(bool flyMode);
+	void setPlayerFeetPosOffset(float offset);
 };
 
