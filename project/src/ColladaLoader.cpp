@@ -8,7 +8,7 @@ AnimatedModelData* ColladaLoader::loadColladaModel(const char* colladaFile, int 
 	SkinLoader* skinLoader = new SkinLoader(firstElem->FirstChildElement("library_controllers"), maxWeights);
 	SkinningData* skinningData = skinLoader->extractSkinData();
 
-	SkeletonLoader* jointsLoader = new SkeletonLoader(firstElem->FirstChildElement("library_visual_scenes"), skinningData->jointOrder);
+	SkeletonLoader* jointsLoader = new SkeletonLoader(firstElem->FirstChildElement("library_visual_scenes"), skinningData->jointOrder, skinningData->inverseBindTransforms);
 	SkeletonData* jointsData = jointsLoader->extractBoneData();
 
 	GeometryLoader* g = new GeometryLoader(firstElem->FirstChildElement("library_geometries"), skinningData->verticesSkinData);

@@ -10,7 +10,7 @@ Texture* AnimatedModelLoader::loadTexture(const char* textureFile)
 /* Constructs the joint-hierarchy skeleton from the data extracted from the collada file. */
 Joint* AnimatedModelLoader::createJoints(JointData* data)
 {
-	Joint* joint = new Joint(data->index, data->nameId, data->bindLocalTransform);
+	Joint* joint = new Joint(data->index, data->nameId, data->bindLocalTransform, data->inverseBindTransform);
 	for (JointData* child : data->children)
 	{
 		joint->addChild(createJoints(child));

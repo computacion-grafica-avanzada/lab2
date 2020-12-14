@@ -1,10 +1,12 @@
 #include "Quaternion.h"
 
-Quaternion::Quaternion(float x, float y, float z, float w) {
+Quaternion::Quaternion(float x, float y, float z, float w, bool useGlmQuat) {
 	this->x = x;
 	this->y = y;
 	this->z = z;
 	this->w = w;
+	quat = glm::quat(x, y, z, w);
+	this->useGlmQuat = useGlmQuat;
 	normalize();
 }
 
@@ -17,6 +19,7 @@ void Quaternion::normalize() {
 	x /= mag;
 	y /= mag;
 	z /= mag;
+	quat = glm::normalize(quat);
 }
 
 /**
@@ -33,31 +36,39 @@ void Quaternion::normalize() {
  */
 glm::mat4 Quaternion::toRotationMatrix() {
 	glm::mat4 matrix;
-	float xy = x * y;
-	float xz = x * z;
-	float xw = x * w;
-	float yz = y * z;
-	float yw = y * w;
-	float zw = z * w;
-	float xSquared = x * x;
-	float ySquared = y * y;
-	float zSquared = z * z;
-	matrix[0][0] = 1 - 2 * (ySquared + zSquared);
-	matrix[0][1] = 2 * (xy - zw);
-	matrix[0][2] = 2 * (xz + yw);
-	matrix[0][3] = 0;
-	matrix[1][0] = 2 * (xy + zw);
-	matrix[1][1] = 1 - 2 * (xSquared + zSquared);
-	matrix[1][2] = 2 * (yz - xw);
-	matrix[1][3] = 0;
-	matrix[2][0] = 2 * (xz - yw);
-	matrix[2][1] = 2 * (yz + xw);
-	matrix[2][2] = 1 - 2 * (xSquared + ySquared);
-	matrix[2][3] = 0;
-	matrix[3][0] = 0;
-	matrix[3][1] = 0;
-	matrix[3][2] = 0;
-	matrix[3][3] = 1;
+	if (useGlmQuat)
+	{
+		matrix = glm::toMat4(quat);
+	}
+	else
+	{
+		float xy = x * y;
+		float xz = x * z;
+		float xw = x * w;
+		float yz = y * z;
+		float yw = y * w;
+		float zw = z * w;
+		float xSquared = x * x;
+		float ySquared = y * y;
+		float zSquared = z * z;
+		matrix[0][0] = 1 - 2 * (ySquared + zSquared);
+		matrix[0][1] = 2 * (xy - zw);
+		matrix[0][2] = 2 * (xz + yw);
+		matrix[0][3] = 0;
+		matrix[1][0] = 2 * (xy + zw);
+		matrix[1][1] = 1 - 2 * (xSquared + zSquared);
+		matrix[1][2] = 2 * (yz - xw);
+		matrix[1][3] = 0;
+		matrix[2][0] = 2 * (xz - yw);
+		matrix[2][1] = 2 * (yz + xw);
+		matrix[2][2] = 1 - 2 * (xSquared + ySquared);
+		matrix[2][3] = 0;
+		matrix[3][0] = 0;
+		matrix[3][1] = 0;
+		matrix[3][2] = 0;
+		matrix[3][3] = 1;
+	}
+
 	return matrix;
 }
 
@@ -72,7 +83,7 @@ glm::mat4 Quaternion::toRotationMatrix() {
  *            - the transformation matrix containing the rotation which this
  *            quaternion shall represent.
  */
-Quaternion* Quaternion::fromMatrix(glm::mat4 matrix) {
+Quaternion* Quaternion::fromMatrix(glm::mat4 matrix, bool useGlmQuat) {
 	float w, x, y, z;
 	float diagonal = matrix[0][0] + matrix[1][1] + matrix[2][2];
 	if (diagonal > 0) {
@@ -103,7 +114,9 @@ Quaternion* Quaternion::fromMatrix(glm::mat4 matrix) {
 		y = (matrix[1][2] + matrix[2][1]) / z4;
 		z = z4 / 4.f;
 	}
-	return new Quaternion(x, y, z, w);
+	Quaternion* res = new Quaternion(x, y, z, w, useGlmQuat);
+	res->quat = glm::quat_cast(matrix);
+	return res;
 }
 
 /**
@@ -124,7 +137,7 @@ Quaternion* Quaternion::fromMatrix(glm::mat4 matrix) {
  * @return The resulting interpolated rotation in quaternion format.
  */
 Quaternion* Quaternion::interpolate(Quaternion* a, Quaternion* b, float blend) {
-	Quaternion* result = new Quaternion(0, 0, 0, 1);
+	Quaternion* result = new Quaternion(0, 0, 0, 1, a->useGlmQuat);
 	float dot = a->w * b->w + a->x * b->x + a->y * b->y + a->z * b->z;
 	float blendI = 1.f - blend;
 	if (dot < 0) {
@@ -139,6 +152,7 @@ Quaternion* Quaternion::interpolate(Quaternion* a, Quaternion* b, float blend) {
 		result->y = blendI * a->y + blend * b->y;
 		result->z = blendI * a->z + blend * b->z;
 	}
+	result->quat = glm::slerp(a->quat, b->quat, blendI);
 	result->normalize();
 	return result;
 }

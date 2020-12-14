@@ -19,10 +19,12 @@
  * @param parentBindTransform
  *            - the model-space bind transform of the parent joint.
  */
-void Joint::calcInverseBindTransform(glm::mat4 parentBindTransform) {
+void Joint::calcInverseBindTransform(glm::mat4 parentBindTransform)
+{
 	glm::mat4 bindTransform = parentBindTransform * localBindTransform;
 	inverseBindTransform = glm::inverse(bindTransform);
-	for (Joint* child : children) {
+	for (Joint* child : children)
+	{
 		child->calcInverseBindTransform(bindTransform);
 	}
 }
@@ -37,10 +39,11 @@ void Joint::calcInverseBindTransform(glm::mat4 parentBindTransform) {
 * @param bindLocalTransform
 *            - the bone-space transform of the joint in the bind position.
 */
-Joint::Joint(int index, std::string name, glm::mat4 bindLocalTransform) {
+Joint::Joint(int index, std::string name, glm::mat4 bindLocalTransform, glm::mat4 inverseBindTransform) {
 	this->index = index;
 	this->name = name;
 	this->localBindTransform = bindLocalTransform;
+	this->inverseBindTransform = inverseBindTransform;
 }
 
 /**

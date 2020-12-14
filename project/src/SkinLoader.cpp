@@ -30,6 +30,36 @@ std::vector<float> SkinLoader::loadWeights()
 	return weights;
 }
 
+std::vector<glm::mat4> SkinLoader::loadInverseBindTransforms()
+{
+	tinyxml2::XMLElement* inputNode = skinningData->FirstChildElement("joints");
+	std::string aux = std::string(XMLUtils::firstChildElementWithAttribute(inputNode, "input", "semantic", "INV_BIND_MATRIX")->Attribute("source"));
+	std::string inverseBindTransformsDataId = aux.substr(1);
+	tinyxml2::XMLElement* inverseBindTransformsNode = XMLUtils::firstChildElementWithAttribute(skinningData, "source", "id", inverseBindTransformsDataId)->FirstChildElement("float_array");
+	std::vector<std::string> rawData = XMLUtils::splitText(inverseBindTransformsNode->GetText(), " ");
+	std::vector<glm::mat4> inverseBindTransforms;
+	std::vector<std::string> rawMatrixData(16, "");
+	glm::mat4 matrix;
+	int auxIndex;
+	for (int i = 0; i < rawData.size(); i += 16)
+	{
+		for (int j = 0; j < 16; j++)
+		{
+			auxIndex = i + j;
+			rawMatrixData[j] = rawData[auxIndex];
+		}
+		matrix = XMLUtils::rawDataToMat4(rawMatrixData);
+		//if (i == 0)
+		//{
+		//	matrix *= CORRECTION;
+		//}
+		//matrix = glm::transpose(matrix);
+
+		inverseBindTransforms.push_back(matrix);
+	}
+	return inverseBindTransforms;
+}
+
 std::vector<int> SkinLoader::getEffectiveJointsCounts(tinyxml2::XMLElement* weightsDataNode)
 {
 	std::vector<std::string> rawData = XMLUtils::splitText(weightsDataNode->FirstChildElement("vcount")->GetText(), " ");
@@ -59,7 +89,7 @@ std::vector<VertexSkinData*> SkinLoader::getSkinData(tinyxml2::XMLElement* weigh
 			weightId = std::stoi(aux);
 			if (weightId < weights.size())
 			{
-			skinData->addJointEffect(jointId, weights[weightId]);
+				skinData->addJointEffect(jointId, weights[weightId]);
 			}
 		}
 		skinData->limitJointNumber(maxWeights);
@@ -79,8 +109,9 @@ SkinningData* SkinLoader::extractSkinData()
 {
 	std::vector<std::string> jointsList = loadJointsList();
 	std::vector<float> weights = loadWeights();
+	std::vector<glm::mat4> inverseBindTransforms = loadInverseBindTransforms();
 	tinyxml2::XMLElement* weightsDataNode = skinningData->FirstChildElement("vertex_weights");
 	std::vector<int> effectorJointCounts = getEffectiveJointsCounts(weightsDataNode);
 	std::vector<VertexSkinData*> vertexWeights = getSkinData(weightsDataNode, effectorJointCounts, weights);
-	return new SkinningData(jointsList, vertexWeights);
+	return new SkinningData(jointsList, vertexWeights, inverseBindTransforms);
 }

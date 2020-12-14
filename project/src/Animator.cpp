@@ -7,7 +7,9 @@
 */
 void Animator::increaseAnimationTime()
 {
-	animationTime += Display::deltaTime / 10;
+	//animationTime += Display::deltaTime / 10;
+	animationTime += Display::deltaTime;
+
 	while (animationTime > currentAnimation->getLength())
 	{
 		this->animationTime -= currentAnimation->getLength();
@@ -83,6 +85,17 @@ void Animator::applyPoseToJoints(std::map<std::string, glm::mat4> currentPose, J
 	}
 	currentTransform = currentTransform * joint->getInverseBindTransform();
 	joint->setAnimationTransform(currentTransform);
+
+	//joint->setAnimationTransform(glm::identity<glm::mat4>());
+
+	//if (joint->index == 0)
+	//{
+	//	joint->setAnimationTransform(currentTransform);
+	//}
+	//else
+	//{
+	//	joint->setAnimationTransform(glm::identity<glm::mat4>());
+	//}
 }
 
 /**
@@ -110,7 +123,8 @@ std::pair<KeyFrame*, KeyFrame*> Animator::getPreviousAndNextFrames()
 		}
 		previousFrame = allFrames[i];
 	}
-	return std::pair<KeyFrame*, KeyFrame*>(allFrames[0], allFrames[0]);
+	//return std::pair<KeyFrame*, KeyFrame*>(allFrames[0], allFrames[0]);
+	return std::pair<KeyFrame*, KeyFrame*>(previousFrame, nextFrame);
 }
 
 /**
@@ -161,7 +175,7 @@ std::map<std::string, glm::mat4> Animator::interpolatePoses(KeyFrame* previousFr
 	{
 		JointTransform* previousTransform = previousFrame->getJointKeyFrames()[jointName];
 		JointTransform* nextTransform = nextFrame->getJointKeyFrames()[jointName];
-		JointTransform* currentTransform = previousTransform; // JointTransform::interpolate(previousTransform, nextTransform, progression);
+		JointTransform* currentTransform = JointTransform::interpolate(previousTransform, nextTransform, progression);
 		currentPose.insert(std::pair<std::string, glm::mat4>(jointName, currentTransform->getLocalTransform()));
 	}
 	return currentPose;

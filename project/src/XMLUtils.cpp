@@ -38,7 +38,28 @@ std::vector<std::string> XMLUtils::splitText(std::string text, std::string delim
 	}
 	if (text != "")
 	{
-	res.push_back(text);
+		res.push_back(text);
 	}
 	return res;
 }
+
+glm::mat4 XMLUtils::rawDataToMat4(std::vector<std::string> rawData)
+{
+	glm::mat4 matrix = glm::identity<glm::mat4>();
+	std::vector<float> matrixData;
+	int auxIndex;
+	for (int i = 0; i < rawData.size(); i++)
+	{
+		matrixData.push_back(std::stof(rawData[i]));
+	}
+	for (int col = 0; col < 4; col++)
+	{
+		for (int row = 0; row < 4; row++)
+		{
+			auxIndex = col * 4 + row;
+			matrix[col][row] = matrixData[auxIndex];
+		}
+	}
+	return matrix;
+}
+

@@ -46,7 +46,7 @@ AnimatedRenderable::AnimatedRenderable(AnimatedMesh* mesh, Texture* texture, flo
 	this->rootJoint = rootJoint;
 	this->jointCount = jointCount;
 	this->animator = new Animator(this->rootJoint);
-	this->rootJoint->calcInverseBindTransform(glm::identity<glm::mat4>());
+	//this->rootJoint->calcInverseBindTransform(glm::identity<glm::mat4>());
 }
 
 /**

@@ -67,16 +67,16 @@ void testSphereBoxCollisions()
 
 int main(int argc, char* argv[]) {
 
-	glm::mat4 testMat(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
-	glm::quat testQuat = glm::quat_cast(testMat);
+	//glm::mat4 testMat(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16);
+	//glm::quat testQuat = glm::quat_cast(testMat);
 
 	//testMat = glm::transpose(testMat);
-	Quaternion* testQuat2 = Quaternion::fromMatrix(testMat);
+	//Quaternion* testQuat2 = Quaternion::fromMatrix(testMat);
 
-	glm::mat4 idMat = glm::identity<glm::mat4>();
-	idMat = glm::translate(idMat, glm::vec3(5, 5, 5));
+	//glm::mat4 idMat = glm::identity<glm::mat4>();
+	//idMat = glm::translate(idMat, glm::vec3(5, 5, 5));
 
-	glm::vec3 translateVec = idMat[3];
+	//glm::vec3 translateVec = idMat[3];
 
 	// COLLISION TESTS
 	//testFloorCollisions();

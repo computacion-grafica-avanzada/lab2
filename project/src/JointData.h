@@ -12,9 +12,10 @@ public:
 	int index;
 	std::string nameId;
 	glm::mat4 bindLocalTransform;
+	glm::mat4 inverseBindTransform;
 	std::vector<JointData*> children;
 
-	JointData(int index, std::string nameId, glm::mat4 bindLocalTransform);
+	JointData(int index, std::string nameId, glm::mat4 bindLocalTransform, glm::mat4 inverseBindTransform);
 	void addChild(JointData* child);
 };
 

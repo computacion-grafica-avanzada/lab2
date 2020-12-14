@@ -2,6 +2,9 @@
 
 #include <math.h>
 #include <glm/glm.hpp>
+#include<glm/gtc/quaternion.hpp>
+#include<glm/gtx/quaternion.hpp>
+
 
 /**
  * A quaternion simply represents a 3D rotation. The maths behind it is quite
@@ -27,6 +30,8 @@
 class Quaternion
 {
 	float x, y, z, w;
+	glm::quat quat;
+	bool useGlmQuat;
 
 public:
 
@@ -38,7 +43,7 @@ public:
 	 * @param z
 	 * @param w
 	 */
-	Quaternion(float x, float y, float z, float w);
+	Quaternion(float x, float y, float z, float w, bool useGlmQuat);
 
 	/**
 	 * Normalizes the quaternion.
@@ -70,7 +75,7 @@ public:
 	 *            - the transformation matrix containing the rotation which this
 	 *            quaternion shall represent.
 	 */
-	static Quaternion* fromMatrix(glm::mat4 matrix);
+	static Quaternion* fromMatrix(glm::mat4 matrix, bool useGlmQuat = false);
 
 	/**
 	 * Interpolates between two quaternion rotations and returns the resulting

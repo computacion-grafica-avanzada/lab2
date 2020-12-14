@@ -17,6 +17,7 @@ class SkeletonLoader
 
 	tinyxml2::XMLElement* armatureData;
 	std::vector<std::string> boneOrder;
+	std::vector<glm::mat4> inverseBindTransforms;
 	int jointCount = 0;
 
 	JointData* loadJointData(tinyxml2::XMLElement* jointNode, bool isRoot);
@@ -24,7 +25,7 @@ class SkeletonLoader
 	glm::mat4 convertData(std::vector<std::string> rawData);
 
 public:
-	SkeletonLoader(tinyxml2::XMLElement* visualSceneNode, std::vector<std::string> boneOrder);
+	SkeletonLoader(tinyxml2::XMLElement* visualSceneNode, std::vector<std::string> boneOrder, std::vector<glm::mat4> inverseBindTransforms);
 	SkeletonData* extractBoneData();
 };
 

@@ -31,35 +31,47 @@ JointData* SkeletonLoader::extractMainJointData(tinyxml2::XMLElement* jointNode,
 		matrix *= CORRECTION;
 	}
 	jointCount++;
-	return new JointData(index, nameId, matrix);
+	return new JointData(index, nameId, matrix, inverseBindTransforms[index]);
 }
 
 glm::mat4 SkeletonLoader::convertData(std::vector<std::string> rawData)
 {
-	std::vector<float> matrixData;
-	glm::mat4 matrix;
-	int auxIndex;
-	std::string aux;
-	for (int i = 0; i < 16; i++)
-	{
-		aux = rawData[i];
-		matrixData.push_back(std::stof(aux));
-	}
-	for (int i = 3; i >= 0; i--)
-	{
-		for (int j = 3; j >= 0; j--)
-		{
-			auxIndex = i * 4 + j;
-			matrix[i][j] = matrixData[auxIndex];
-		}
-	}
-	return matrix;
+	return XMLUtils::rawDataToMat4(rawData);
+	//glm::mat4 matrix = XMLUtils::rawDataToMat4(rawData);
+	//int auxIndex = 0;
+	//std::string aux;
+	////float matrixData[16];
+	////for (int i = rawData.size() - 1; i >= 0; i--)
+	////{
+	////	aux = rawData[i];
+	////	matrixData[i] = std::stof(aux);
+	////}
+	////matrix = glm::make_mat4(matrixData);
+
+	//std::vector<float> matrixData;
+	//for (int i = 0; i < rawData.size(); i++)
+	//{
+	//	aux = rawData[i];
+	//	//aux = rawData[rawData.size() - i - 1];
+
+	//	matrixData.push_back(std::stof(aux));
+	//}
+	//for (int col = 0; col < 4; col++)
+	//{
+	//	for (int row = 0; row < 4; row++)
+	//	{
+	//		auxIndex = col * 4 + row;
+	//		matrix[col][row] = matrixData[auxIndex];
+	//	}
+	//}
+	//return matrix;
 }
 
-SkeletonLoader::SkeletonLoader(tinyxml2::XMLElement* visualSceneNode, std::vector<std::string> boneOrder)
+SkeletonLoader::SkeletonLoader(tinyxml2::XMLElement* visualSceneNode, std::vector<std::string> boneOrder, std::vector<glm::mat4> inverseBindTransforms)
 {
 	armatureData = XMLUtils::firstChildElementWithAttribute(visualSceneNode->FirstChildElement("visual_scene"), "node", "id", "Armature");
 	this->boneOrder = boneOrder;
+	this->inverseBindTransforms = inverseBindTransforms;
 }
 
 SkeletonData* SkeletonLoader::extractBoneData()

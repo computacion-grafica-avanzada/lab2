@@ -3,6 +3,9 @@
 #include <tinyxml2.h>
 #include <string>
 #include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class XMLUtils
 {
@@ -13,5 +16,6 @@ public:
 	/* Get the child nodes of this node that have a given name. */
 	static std::vector<tinyxml2::XMLElement*> childrenWithName(tinyxml2::XMLElement* element, std::string name);
 	static std::vector<std::string> splitText(std::string text, std::string delimiter);
+	static glm::mat4 rawDataToMat4(std::vector<std::string> rawData);
 };
 

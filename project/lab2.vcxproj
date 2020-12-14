@@ -45,7 +45,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>..\libraries\Freeimage;..\libraries\SDL2-2.0.12\include;..\libraries\SDL2_ttf-2.0.15\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\libraries\SDL2-2.0.12\lib\x64;..\libraries\Freeimage;..\libraries\SDL2_ttf-2.0.15\lib\x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>..\libraries\SDL2-2.0.12\lib\x64;..\libraries\Freeimage;..\libraries\tinyxml2;..\libraries\SDL2_ttf-2.0.15\lib\x64;$(LibraryPath)</LibraryPath>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

@@ -27,7 +27,7 @@ public:
  * @param bindLocalTransform
  *            - the bone-space transform of the joint in the bind position.
  */
-	Joint(int index, std::string name, glm::mat4 bindLocalTransform);
+	Joint(int index, std::string name, glm::mat4 bindLocalTransform, glm::mat4 inverseBindTransform);
 
 	/**
  * This is called during set-up, after the joints hierarchy has been
