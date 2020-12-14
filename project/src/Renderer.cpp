@@ -97,6 +97,7 @@ void Renderer::render(std::set<Light*> lights, glm::vec3 skyColor) {
             model = customModel;
         }
 
+        shader->setUniform1f("lodEnabled", MainRenderer::lodEnabled);
         shader->setUniform3f("skyColor", skyColor);
         shader->setUniform3f("cameraPosition", camera->GetPosition());
 		shader->setUniform4f("clipPlane", clipPlane);

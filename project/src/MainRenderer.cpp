@@ -1,6 +1,7 @@
 #include "MainRenderer.h"
 #include "Character.h"
 
+float MainRenderer::lodEnabled = 1.f;
 Camera* MainRenderer::camera = NULL;
 Character* MainRenderer::character = NULL;
 std::set<Light*> MainRenderer::lights; 
@@ -111,4 +112,8 @@ void MainRenderer::enable_culling() {
 
 void MainRenderer::disable_culling() {
 	glDisable(GL_CULL_FACE);
+}
+
+void MainRenderer::toggleLod() {
+	lodEnabled = (lodEnabled == 1.f) ? 0.f : 1.f;
 }

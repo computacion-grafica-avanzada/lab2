@@ -213,6 +213,23 @@ int main(int argc, char* argv[]) {
 				case SDLK_d:
 					character->setPosition(position + glm::normalize(cross) * cameraSpeed);
 					character->setDirection(Direction::RIGHT);
+				case SDLK_SPACE:
+					character->setPosition(position + camera->GetUp() * cameraSpeed);
+					break;
+				case SDLK_LSHIFT:
+					character->setPosition(position - camera->GetUp() * cameraSpeed);
+					break;
+				case SDLK_c:
+					character->switchCharacter();
+					characterRenderer->clearMesh();
+					characterRenderer->loadObj(character->currentCharacterPath());
+					break;
+				case SDLK_r:
+					camera->resetCamera();
+					break;
+				case SDLK_l:
+					MainRenderer::toggleLod();
+					break;
 					break;
 				case SDLK_SPACE:
 					character->setPosition(position + camera->GetUp() * cameraSpeed);

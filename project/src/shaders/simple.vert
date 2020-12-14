@@ -16,13 +16,14 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
+uniform float lodEnabled;
 uniform vec3 skyColor;
 uniform vec4 clipPlane;
 uniform vec3 cameraPosition;
 uniform vec3 lightPosition;
 uniform float textureTiling;
 
-const float threshold = 500 * 500;
+const float threshold = 1000 * 1000;
 
 void main() {
 	vec4 worldPosition = model * position;
@@ -31,11 +32,14 @@ void main() {
 
 	gl_ClipDistance[0] = dot(worldPosition, clipPlane);
 
-	vec3 toCameraVector = cameraPosition - worldPosition.xyz;
-	float sq_dist = dot(toCameraVector, toCameraVector);
-	sq_dist = clamp(sq_dist, 0, threshold);
-	
-	Out.alpha = 1 - (sq_dist / threshold);
+	if (lodEnabled == 1.f) {
+		vec3 toCameraVector = cameraPosition - worldPosition.xyz;
+		float sq_dist = dot(toCameraVector, toCameraVector);
+		sq_dist = clamp(sq_dist, 0, threshold);
+		Out.alpha = 1 - (sq_dist / threshold);
+	} else {
+		Out.alpha = 1;
+	}
 	Out.worldPosition = worldPosition.xyz;
 	Out.textureCoord = textureCoord * textureTiling;
 	Out.normal = (model * vec4(normal, 0.0f)).xyz;

@@ -21,7 +21,7 @@ class Camera {
 public:
 	void UpdateVectors();
 	float angle, aap, zoom;
-	Camera(Character* player, float fov, float aspectRatio, float nearClip = 0.1f, float farClip = 15000.0f);
+	Camera(Character* player, float fov, float aspectRatio, float nearClip = 0.1f, float farClip = 2000.0f);
 
 	glm::mat4 GetProjectionMatrix();
 
