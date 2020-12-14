@@ -102,24 +102,23 @@ int main(int argc, char* argv[]) {
 
 	characterRenderer->setShader(worldShader);
 	MainRenderer::setCharacter(character);
-	Collider* characterCollider = new Collider(0, 1, 15.0f);
+	Collider* characterCollider = new Collider(0, 1, 40.0f);
 
 	//Renderer* island = new Renderer(camera, false);
 	////island->loadObj("../models/Landscapes/three_island2.obj");
 	//island->loadObj("../models/Landscapes/floor.obj");
 	//island->setShader(worldShader);
 
-	//std::set<Mesh*> floorMeshes;
-	//for (Renderable* renderable : island->renderables) {
-	//	floorMeshes.insert(renderable->getMesh());
-	//}
-	//ColliderFloor* floorCollider = new ColliderFloor(floorMeshes);
-
-
 	Renderer* island2 = new Renderer(camera, false, glm::mat4(1.0));
 	//island->loadObj("../models/Landscapes/three_island2.obj");
 	island2->loadObj("../models/Landscapes/island_low_nice.obj");
 	island2->setShader(worldShader);
+
+	std::set<Mesh*> floorMeshes;
+	for (Renderable* renderable : island2->renderables) {
+		floorMeshes.insert(renderable->getMesh());
+	}
+	ColliderFloor* floorCollider = new ColliderFloor(floorMeshes);
 
 	glm::mat4 fishModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-80, 15, 100));
 	Renderer* fish = new Renderer(camera, false, fishModelMatrix);
@@ -131,7 +130,8 @@ int main(int argc, char* argv[]) {
 	fish2->loadObj("../models/fish/big_fish.obj");
 	fish2->setShader(worldShader);
 
-	initIsland(camera, worldShader);
+	CollisionManager* collisionManager = new CollisionManager(characterCollider, floorCollider);
+	initIsland(camera, worldShader, collisionManager);
 
 	//Renderer* boat = new Renderer(camera, false);
 	//boat->loadObj("../models/boat/boat3.obj");
@@ -142,7 +142,6 @@ int main(int argc, char* argv[]) {
 	Light* light = new Light(glm::vec3(550), glm::vec3(1, 1, 1));
 	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
 
-	//CollisionManager* collisionManager = new CollisionManager(characterCollider, floorCollider);
 	//collisionManager->addObjectCollider(boatCollider);
 
 	// create Gui with FPS
@@ -239,9 +238,9 @@ int main(int argc, char* argv[]) {
 				}
 			}
 		}
-		// characterCollider->pos = character->getPosition();
-		// collisionManager->solvePlayerCollisions();
-		// character->setPosition(characterCollider->pos); // correct it in case of collision
+		characterCollider->pos = character->getPosition();
+		collisionManager->solvePlayerCollisions();
+		character->setPosition(characterCollider->pos); // correct it in case of collision
 		camera->UpdateVectors();
 		MainRenderer::render();		// call the draw function
 		Display::swapBuffers();	// swap buffers

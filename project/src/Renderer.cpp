@@ -23,6 +23,19 @@ glm::vec3 calculateAverage(std::set<Renderable*> renderables) {
     return glm::vec3(average.x/total, average.y/total, average.z/total);
 }
 
+glm::vec3 calculateHighestVertix(std::set<Renderable*> renderables) {
+    glm::vec3 highest(0);
+    for(Renderable* rendereable : renderables) {
+       std::vector<glm::vec4> vertices = rendereable->getMesh()->getVertices();
+        for (glm::vec4& vertix : vertices) { 
+            if (highest.y < vertix.y) {
+                highest = glm::vec3(vertix.x, vertix.y, vertix.z);
+            }
+        }
+    }
+    return highest;
+}
+
 Renderer::Renderer(Camera* camera, bool isCharacter, glm::mat4 customModel) {
     this->camera = camera;
     this->clipPlaneEnabled = false;
@@ -40,6 +53,7 @@ Renderer::~Renderer() {
 void Renderer::load(Renderable* renderable) {
 	renderables.insert(renderable);
     this->averageVertix = calculateAverage(renderables);
+    this->highestVertix = calculateHighestVertix(renderables);
 }
 void Renderer::unload(Renderable* renderable) {
 	renderables.erase(renderable);
@@ -94,12 +108,6 @@ void Renderer::render(std::set<Light*> lights) {
 
         shader->setUniform3f("lightPosition", light->getPosition());
         shader->setUniform3f("lightColor", light->getColor());
-
-		//shader->setUniform1f("textureTiling", renderable->getTextureTiling());
-		//shader->setUniform3f("directionalLight.color", Light::color);
-		//shader->setUniform1f("directionalLight.intensity", Light::intensity);
-		//shader->setUniform3f("directionalLight.direction", Light::direction);
-		//shader->setUniformMatrix4fv("gWorld", renderable->getTransform()->GetMatrix());
 
 		glDrawElements(GL_TRIANGLES, iBuffer->getCount(), GL_UNSIGNED_INT, 0);
 
@@ -271,6 +279,7 @@ void Renderer::loadObj(const std::string& objFile) {
         }
     }
     this->averageVertix = calculateAverage(renderables);
+    this->highestVertix = calculateHighestVertix(renderables);
 }
 
 Shader* Renderer::getShader() {
@@ -291,4 +300,8 @@ glm::mat4 Renderer::getCustomModel() {
 
 glm::vec3 Renderer::getAverageVertix() {
     return averageVertix;
+}
+
+glm::vec3 Renderer::getHighestVertix() {
+    return highestVertix;
 }
