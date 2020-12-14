@@ -29,11 +29,11 @@ void testFloorCollisions()
 
 	pos = glm::vec3(0.2f, 1.0f, 0.315f);
 
-	printf("Is point in triangle: %s", ColliderFloor::isPointInTriangle(v1, v2, v3, pos) ? "true" : "false");
-	printf("\nHeight of point: %.6f", ColliderFloor::heightOfTriangleAtPos(v1, v2, v3, pos));
+	//printf("Is point in triangle: %s", ColliderFloor::isPointInTriangle(v1, v2, v3, pos) ? "true" : "false");
+	//printf("\nHeight of point: %.6f", ColliderFloor::heightOfTriangleAtPos(v1, v2, v3, pos));
 
 	pos = glm::vec3(1.0f, 1.0f, 0.315f);
-	printf("\nIs point in triangle: %s", ColliderFloor::isPointInTriangle(v1, v2, v3, pos) ? "true" : "false");
+	//printf("\nIs point in triangle: %s", ColliderFloor::isPointInTriangle(v1, v2, v3, pos) ? "true" : "false");
 }
 
 void testSphereSphereCollisions()
@@ -45,8 +45,8 @@ void testSphereSphereCollisions()
 
 	Collider::solveCollisionSphereSphere(sphere1, sphere2);
 
-	printf("\nSphere 1 pos: (%.6f, %.6f, %.6f)", sphere1->pos.x, sphere1->pos.y, sphere1->pos.z);
-	printf("\nSphere 2 pos: (%.6f, %.6f, %.6f)", sphere2->pos.x, sphere2->pos.y, sphere2->pos.z);
+	//printf("\nSphere 1 pos: (%.6f, %.6f, %.6f)", sphere1->pos.x, sphere1->pos.y, sphere1->pos.z);
+	//printf("\nSphere 2 pos: (%.6f, %.6f, %.6f)", sphere2->pos.x, sphere2->pos.y, sphere2->pos.z);
 }
 
 void testSphereBoxCollisions()
@@ -58,8 +58,8 @@ void testSphereBoxCollisions()
 
 	Collider::solveCollisionSphereBox(sphere, box);
 
-	printf("\nSphere pos: (%.6f, %.6f, %.6f)", sphere->pos.x, sphere->pos.y, sphere->pos.z);
-	printf("\nBox pos: (%.6f, %.6f, %.6f)", box->pos.x, box->pos.y, box->pos.z);
+	//printf("\nSphere pos: (%.6f, %.6f, %.6f)", sphere->pos.x, sphere->pos.y, sphere->pos.z);
+	//printf("\nBox pos: (%.6f, %.6f, %.6f)", box->pos.x, box->pos.y, box->pos.z);
 }
 
 void testSphereCapsuleCollisions()
@@ -71,8 +71,8 @@ void testSphereCapsuleCollisions()
 
 	Collider::solveCollisionSphereCapsule(sphere, capsule);
 
-	printf("\nSphere pos: (%.6f, %.6f, %.6f)", sphere->pos.x, sphere->pos.y, sphere->pos.z);
-	printf("\nCapsule pos: (%.6f, %.6f, %.6f)", capsule->pos.x, capsule->pos.y, capsule->pos.z);
+	//printf("\nSphere pos: (%.6f, %.6f, %.6f)", sphere->pos.x, sphere->pos.y, sphere->pos.z);
+	//printf("\nCapsule pos: (%.6f, %.6f, %.6f)", capsule->pos.x, capsule->pos.y, capsule->pos.z);
 }
 
 int main(int argc, char* argv[]) {
@@ -96,7 +96,6 @@ int main(int argc, char* argv[]) {
 	Shader* waterShader = new Shader("./src/shaders/water.vert", "./src/shaders/water.frag");
 	Shader* textShader = new Shader("./src/shaders/text.vert", "./src/shaders/text.frag");
 
-	Texture* dudv = new Texture("../models/dudv.png");
 
 	Renderer* characterRenderer = new Renderer(camera, true, glm::mat4(1.0));
 	characterRenderer->loadObj(character->currentCharacterPath());
@@ -143,8 +142,10 @@ int main(int argc, char* argv[]) {
 	//Collider* boatCollider = new Collider(2, 2, 18.0f);
 	//boatCollider->pos = boat->getAverageVertix();
 
+	Texture* dudv = new Texture("../models/waterDUDV.png");
+	Texture* normal = new Texture("../models/normal.png");
 	Light* light = new Light(glm::vec3(550), glm::vec3(1, 1, 1));
-	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, NULL);
+	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, normal);
 
 	//CollisionManager* collisionManager = new CollisionManager(characterCollider, colliderFloor);
 	//collisionManager->addObjectCollider(boatCollider);
@@ -189,8 +190,8 @@ int main(int argc, char* argv[]) {
 	SDL_Event sdlEvent;		// variable to detect SDL events
 	while (running)			// the event loop
 	{
-		glClearColor(1.0, 1.0, 1.0, 1.0);					// set background colour
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
+		//glClearColor(1.0, 1.0, 1.0, 1.0);					// set background colour
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
 		Display::update(tex);
 		TickEngine::tick(tex2);
 		if (count == 4) {
