@@ -8,4 +8,4 @@
 void initIsland(Camera* camera, Shader* shader, CollisionManager* collisionManager);
 void initTowers(Camera* camera, Shader* shader, CollisionManager* collisionManager);
 void initTrees(Camera* camera, Shader* shader, CollisionManager* collisionManager);
-void initStones(Camera* camera, Shader* shader);
+void initStones(Camera* camera, Shader* shader, CollisionManager* collisionManager);
