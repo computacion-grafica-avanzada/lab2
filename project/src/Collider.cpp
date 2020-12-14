@@ -217,6 +217,10 @@ void Collider::solveCollisionWithObject(Collider* objectCollider)
 		{
 			solveCollisionSphereBox(this, objectCollider);
 		}
+		else if (objectCollider->type == capsule)
+		{
+			solveCollisionSphereCapsule(this, objectCollider);
+		}
 		break;
 	case box:
 		if (objectCollider->type == sphere)
