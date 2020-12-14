@@ -44,7 +44,7 @@ WaterRenderer::~WaterRenderer() {
 	MainRenderer::unload(this);
 }
 
-void WaterRenderer::tick() {
+void WaterRenderer::tick(float time) {
 	moveFactor += moveSpeed * Display::deltaTime;
 	moveFactor = fmod(moveFactor, 1.0f);
 }

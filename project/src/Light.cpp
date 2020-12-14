@@ -4,8 +4,6 @@
 Light::Light(glm::vec3 position, glm::vec3 color) {
 	this->position = position;
 	this->color = color;
-
-	this->time = 15.f;
 	MainRenderer::load(this);
 }
 
@@ -29,9 +27,7 @@ void Light::setColor(glm::vec3 color) {
 	this->color = color;
 }
 
-void Light::tick() {
-	time += Display::deltaTime;
-	time = fmod(time, 60.0f);
+void Light::tick(float time) {
 	this->position = glm::vec3(
 		radius * cosf(time * speed),
 		radius * sinf(time * speed),
