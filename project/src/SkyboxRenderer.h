@@ -14,11 +14,9 @@ class SkyboxRenderer : ITickable {
 	Texture* cubeMap;
 	glm::vec4 clipPlane;
 	bool clipPlaneEnabled;
-	float time;
 
 	float blendFactor;
 	glm::vec3 start, end;
-	void skyColors();
 
 public:
 	SkyboxRenderer(Camera*);
@@ -28,5 +26,7 @@ public:
 	void disableClipPlane();
 	void render();
 
-	void tick();
+	glm::vec3 getSkyColor();
+
+	void tick(float time);
 };

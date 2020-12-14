@@ -156,10 +156,33 @@ int main(int argc, char* argv[]) {
 	fps->scale = glm::vec2(0.125, 0.0625);
 	fps->position = glm::vec2(0.875, 0.9375);
 
+	Texture* tex2 = new Texture();
+	GuiTexture* time = new GuiTexture();
+	time->tex = tex2;
+	time->scale = glm::vec2(0.125, 0.0625);
+	time->position = glm::vec2(0.875, 0.8125);
+
+	Texture* texMenu = new Texture();
+	GuiTexture* menu = new GuiTexture();
+	menu->tex = texMenu;
+	menu->scale = glm::vec2(0.6, 0.0625);
+	menu->position = glm::vec2(0, 0.0625);
+
+	Texture* texMenu2 = new Texture();
+	GuiTexture* menu2 = new GuiTexture();
+	menu2->tex = texMenu2;
+	menu2->scale = glm::vec2(0.6, 0.0625);
+	menu2->position = glm::vec2(0, -0.0625);
+
+	SDL_Color black = { 0,0,0 };
+	texMenu->setText("Go near the towers and", "../OpenSans-Regular.ttf", black, 180);
+	texMenu2->setText("press P to stop time", "../OpenSans-Regular.ttf", black, 180);
+
 	GuiRenderer* guiRend = new GuiRenderer(textShader);
 	guiRend->load(fps);
+	guiRend->load(time);
 
-
+	bool showMenu = false;
 	bool running = true;	// set running to true
 	bool flyMode = false;
 	int count = 0;
@@ -169,7 +192,7 @@ int main(int argc, char* argv[]) {
 		glClearColor(1.0, 1.0, 1.0, 1.0);					// set background colour
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
 		Display::update(tex);
-		TickEngine::tick();
+		TickEngine::tick(tex2);
 		if (count == 4) {
 			fishModelMatrix = glm::rotate(fishModelMatrix, glm::radians(0.5f), glm::vec3(0, 1, 0));
 			fish->setCustomModel(fishModelMatrix);
@@ -206,7 +229,6 @@ int main(int argc, char* argv[]) {
 				case SDLK_LEFT:
 				case SDLK_a:
 					character->setPosition(position - glm::normalize(cross) * cameraSpeed);
-					//character->setPosition(glm::vec3(position.x, position.y, position.z - 2));
 					character->setDirection(Direction::LEFT);
 					break;
 				case SDLK_RIGHT:
@@ -232,6 +254,26 @@ int main(int argc, char* argv[]) {
 					break;
 				case SDLK_r:
 					camera->resetCamera();
+					break;
+				case SDLK_l:
+					MainRenderer::toggleLod();
+					break;
+				case SDLK_p:
+					glm::vec2 pos(character->getPosition().x, character->getPosition().z);
+					activateTower(pos);
+					break;
+				case SDLK_m:
+					if (!showMenu) {
+						guiRend->load(menu);
+						guiRend->load(menu2);
+						showMenu = true;
+					}
+					else {
+						guiRend->unload(menu);
+						guiRend->unload(menu2);
+						showMenu = false;
+					}
+
 					break;
 				}
 				break;

@@ -28,6 +28,6 @@ public:
 	WaterRenderer(Camera* camera);
 	~WaterRenderer();
 
-	void tick();
+	void tick(float time);
 	void render(WaterFrameBuffer* waterFrameBuffer);
 };

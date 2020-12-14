@@ -21,6 +21,8 @@ class MainRenderer {
 	static WaterFrameBuffer* waterFrameBuffer;
 
 public:
+	static float lodEnabled;
+
 	static void init();
 	static void init(Camera* camera);
 
@@ -43,4 +45,6 @@ public:
 
 	static Character* getCharacter();
 	static void setCharacter(Character* character);
+
+	static void toggleLod();
 };

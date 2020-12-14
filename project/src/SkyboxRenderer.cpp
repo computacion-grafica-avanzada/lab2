@@ -7,12 +7,11 @@ SkyboxRenderer::SkyboxRenderer(Camera* camera) {
 	this->clipPlane = glm::vec4(0, -1, 0, 100000);
 	this->clipPlaneEnabled = false;
 
-	this->time = 15.f;
 	this->start = glm::vec3(0.529, 0.808, 0.922);
 	this->end = glm::vec3(0.141, 0.643, 0.847);
 	this->blendFactor = 0.f;
 
-	float size = 8000.f;
+	float size = 1000.f;
 	std::vector<glm::vec3> vertices = {
 		glm::vec3(-size,  size, -size),
 		glm::vec3(-size, -size, -size),
@@ -116,9 +115,7 @@ void SkyboxRenderer::render() {
 	shader->unbind();
 }
 
-void SkyboxRenderer::tick() {
-	time += Display::deltaTime;
-	time = fmod(time, 60.0f);
+void SkyboxRenderer::tick(float time) {
 
 	// one day is one minute
 	if (time >= 0 && time < 15) {
@@ -143,8 +140,10 @@ void SkyboxRenderer::tick() {
 	}
 }
 
-void SkyboxRenderer::skyColors() {
+glm::vec3 SkyboxRenderer::getSkyColor() {
+	return glm::mix(start, end, blendFactor);
 }
+
 
 // noche - 00:00 -> negro
 // manana - 06:00 -> celeste

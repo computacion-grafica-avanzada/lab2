@@ -284,3 +284,36 @@ void initTowers(Camera* camera, Shader* world, CollisionManager* collisionManage
 	towerSOCollider->pos = glm::vec3(-300, 30, 300);
 	collisionManager->addObjectCollider(towerSOCollider);
 }
+
+void activateTower(glm::vec2 pos) {
+	glm::vec2 toTower = pos - glm::vec2(-300, 300);
+	float nightDist = glm::dot(toTower, toTower);
+	std::cout << "night " << nightDist << "(" << toTower.x << " " << toTower.y << ")" << endl;
+	if (nightDist <= 3500) {
+		TickEngine::freezeTime(0.f);
+	}
+	else {
+		toTower = pos - glm::vec2(-300, -300);
+		float morningDist = glm::dot(toTower, toTower);
+		std::cout << "morning " << morningDist << "(" << toTower.x << " " << toTower.y << ")" << endl;
+		if (morningDist <= 3500) {
+			TickEngine::freezeTime(15.f);
+		}
+		else {
+			toTower = pos - glm::vec2(300, -300);
+			float middayDist = glm::dot(toTower, toTower);
+			std::cout << "midday " << middayDist << "(" << toTower.x << " " << toTower.y << ")" << endl;
+			if (middayDist <= 3500) {
+				TickEngine::freezeTime(30.f);
+			}
+			else {
+				toTower = pos - glm::vec2(300, 300);
+				float sunsetDist = glm::dot(toTower, toTower);
+				std::cout << "sunset " << sunsetDist << "(" << toTower.x << " " << toTower.y << ")" << endl;
+				if (sunsetDist <= 3500) {
+					TickEngine::freezeTime(45.f);
+				}
+			}
+		}
+	}
+}

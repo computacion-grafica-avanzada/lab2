@@ -28,7 +28,7 @@ public:
  	void clearMesh();
 	void enableClipPlane(glm::vec4 clipPlane);
 	void disableClipPlane();
-	void render(std::set<Light*> lights);
+	void render(std::set<Light*> lights, glm::vec3 skyColor);
 
 	void loadObj(const std::string& objFile);	// for each mesh creates a renderable and adds it to set
 	glm::vec3 getAverageVertix();

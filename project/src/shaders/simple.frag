@@ -19,6 +19,7 @@ struct DirectionalLight {
 uniform DirectionalLight directionalLight;
 uniform sampler2D textureSampler;
 
+uniform vec3 skyColor;
 uniform vec3 lightColor;
 
 out vec4 outColor;
@@ -60,5 +61,5 @@ void main() {
 	vec3 diffuse = brightness * lightColor;
 
 	outColor = vec4(diffuse, 1.0) * textureColor;
-	outColor = mix(vec4(1,1,1,1), outColor, In.alpha);
+	outColor = mix(vec4(skyColor,1), outColor, In.alpha);
 }
