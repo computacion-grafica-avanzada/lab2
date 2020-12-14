@@ -30,7 +30,7 @@ WaterRenderer::WaterRenderer(Camera* camera, Shader* shader, Texture* dudv, Text
 	moveFactor = 0;
 	textureTiling = 1;
 	moveSpeed = 1.0f / 40.0f;
-	distortionStrength = 0.004f;
+	distortionStrength = 0.04f;
 	specularPower = 20.0f;
 
 	height = 4.f;
@@ -44,14 +44,16 @@ WaterRenderer::~WaterRenderer() {
 	MainRenderer::unload(this);
 }
 
+void WaterRenderer::tick() {
+	moveFactor += moveSpeed * Display::deltaTime;
+	moveFactor = fmod(moveFactor, 1.0f);
+}
+
 void WaterRenderer::render(WaterFrameBuffer* waterFrameBuffer) {
 	MainRenderer::disable_culling();
 	shader->bind();
 	vertexArray->bind();
 	
-	moveFactor += moveSpeed * Display::deltaTime;
-	moveFactor = fmod(moveFactor, 1.0f);
-
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, waterFrameBuffer->getReflectionTexture());
 

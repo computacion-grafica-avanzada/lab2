@@ -21,11 +21,14 @@ class Camera {
 public:
 	void UpdateVectors();
 	float angle, aap, zoom;
-	Camera(Character* player, float fov, float aspectRatio, float nearClip = 0.1f, float farClip = 12000.0f);
+	Camera(Character* player, float fov, float aspectRatio, float nearClip = 0.1f, float farClip = 15000.0f);
 
 	glm::mat4 GetProjectionMatrix();
 
 	void calculatePosition();
+
+	void moveCameraUp();
+	void moveCameraDown();
 
 	void SetPosition(glm::vec3 position);
 	glm::vec3 GetPosition();
@@ -35,6 +38,7 @@ public:
 	void SetFront(glm::vec3 front);
 
 	void setPitch(float delta);
+	void updatePitch(float pitch);
 	void setAap(float delta);
 
 	float GetPitch();

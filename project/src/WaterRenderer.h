@@ -6,9 +6,10 @@
 #include "buffers/VertexArray.h"
 #include "buffers/WaterFrameBuffer.h"
 #include "Display.h"
+#include "ITickable.h"
 #include <set>
 
-class WaterRenderer {
+class WaterRenderer : ITickable {
 private:
 	Camera* camera;
 	Shader* shader;
@@ -27,5 +28,6 @@ public:
 	WaterRenderer(Camera* camera);
 	~WaterRenderer();
 
+	void tick();
 	void render(WaterFrameBuffer* waterFrameBuffer);
 };
