@@ -56,7 +56,7 @@ void Collider::solveCollisionSphereSphere(Collider* s1, Collider* s2)
 	// Checks if the collision exists.
 	if (Math::distSquared(s1->pos, s2->pos) < (s1->radius + s2->radius) * (s1->radius + s2->radius))
 	{
-		printf("\nCollision detected!");
+		//printf("\nCollision detected!");
 
 		// Just to prevent errors when normalizing.
 		if (s1->pos == s2->pos)
@@ -130,7 +130,7 @@ void Collider::solveCollisionSphereBox(Collider* s, Collider* b)
 	// Checks if the collision exists.
 	if (distSq < radiusSq)
 	{
-		printf("\nCollision detected!");
+		//printf("\nCollision detected!");
 
 		// Just to prevent errors when normalizing.
 		if (s->pos == closestPoint)
@@ -164,12 +164,12 @@ void Collider::solveCollisionSphereCapsule(Collider* s, Collider* c)
 	if (Math::distXZSquared(s->pos, c->pos) < (s->radius + c->radius) * (s->radius + c->radius) &&
 		abs(s->pos.y - c->pos.y) < s->radius + c->height + c->radius)
 	{
-		printf("\nCollision detected!");
+		//printf("\nCollision detected!");
 
 		// Solve the collision as if it was with a ball at the top/bottom of the capsule
 		if (abs(s->pos.y - c->pos.y) > s->radius + c->height / 2.0f)
 		{
-			printf("\nCase limits");
+			//printf("\nCase limits");
 
 			glm::vec3 extremePos;
 			// Sphere at the top of the capsule
@@ -202,7 +202,7 @@ void Collider::solveCollisionSphereCapsule(Collider* s, Collider* c)
 		// Solve the collision as if it was with a ball at the same height of the sphere
 		else
 		{
-			printf("\nCase middle");
+			//printf("\nCase middle");
 
 			glm::vec3 imaginarySpherePos;
 			// Sphere at the same height of the other sphere
@@ -268,4 +268,3 @@ void Collider::solveCollisionWithObject(Collider* objectCollider)
 		break;
 	}
 }
-

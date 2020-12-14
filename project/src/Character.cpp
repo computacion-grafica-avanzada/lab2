@@ -5,8 +5,8 @@ Character::Character(glm::vec3 position) {
 	this->position = position;
 
 	this->currentChar = 0;
-	CharacterSpecs beagle = { "../models/beagle/beagle_origin.obj", 50 };
-	CharacterSpecs dog = { "../models/dog/dog_origin.obj", 50 };
+	CharacterSpecs beagle = { "../models/beagle/beagle_origin.obj", 100 };
+	CharacterSpecs dog = { "../models/dog/dog_origin.obj", 200 };
 	this->characters = { beagle, dog };
 	this->feetPosOffset = 5;
 }

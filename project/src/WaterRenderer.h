@@ -1,5 +1,5 @@
 #pragma once
-
+#include "Light.h"
 #include "Camera.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -29,5 +29,5 @@ public:
 	~WaterRenderer();
 
 	void tick(float time);
-	void render(WaterFrameBuffer* waterFrameBuffer);
+	void render(std::set<Light*> lights, WaterFrameBuffer* waterFrameBuffer);
 };

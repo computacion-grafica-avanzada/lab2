@@ -9,8 +9,8 @@ WaterRenderer::WaterRenderer(Camera* camera, Shader* shader, Texture* dudv, Text
 	this->shader->setUniform1i("reflectionSampler", 0);
 	this->shader->setUniform1i("refractionSampler", 1);
 	this->shader->setUniform1i("dudvSampler", 2);
-	//shader->setUniform1i("normalSampler", 3);
-	//shader->setUniform1i("depthSampler", 4);
+	this->shader->setUniform1i("normalSampler", 3);
+	this->shader->setUniform1i("depthSampler", 4);
 	this->shader->unbind();
 
 	this->dudv = dudv;
@@ -49,10 +49,12 @@ void WaterRenderer::tick(float time) {
 	moveFactor = fmod(moveFactor, 1.0f);
 }
 
-void WaterRenderer::render(WaterFrameBuffer* waterFrameBuffer) {
+void WaterRenderer::render(std::set<Light*> lights, WaterFrameBuffer* waterFrameBuffer) {
 	MainRenderer::disable_culling();
 	shader->bind();
 	vertexArray->bind();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, waterFrameBuffer->getReflectionTexture());
@@ -61,16 +63,17 @@ void WaterRenderer::render(WaterFrameBuffer* waterFrameBuffer) {
 	glBindTexture(GL_TEXTURE_2D, waterFrameBuffer->getRefractionTexture());
 
 	dudv->bind(2);
+	normal->bind(3);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, waterFrameBuffer->getRefractionDepthTexture());
 
-	//water->getDUDV()->bind(2);
-	//water->getNormal()->bind(3);
-	//glActiveTexture(GL_TEXTURE4);
-	//glBindTexture(GL_TEXTURE_2D, waterFrameBuffer->getRefractionDepthTexture());
+	shader->setUniform1f("near", camera->GetNearClip());
+	shader->setUniform1f("far", camera->GetFarClip());
+	
+	Light* light = *lights.begin();
+	shader->setUniform3f("lightPosition", light->getPosition());
+	shader->setUniform3f("lightColor", light->getColor());
 
-	//shader->SetUniform1f("near", camera->GetNearClip());
-	//shader->SetUniform1f("far", camera->GetFarClip());
-	//shader->SetUniform3f("lightPosition", Light::position);
-	//shader->SetUniform3f("lightColor", Light::color);
 	shader->setUniform3f("cameraPosition", camera->GetPosition());
 	shader->setUniform1f("moveFactor", moveFactor);
 	//shader->SetUniform1f("textureTiling", water->textureTiling);
@@ -96,10 +99,11 @@ void WaterRenderer::render(WaterFrameBuffer* waterFrameBuffer) {
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	dudv->unbind();
-	//water->getNormal()->bind(3);
+	normal->unbind();
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
+	glDisable(GL_BLEND);
 	vertexArray->unbind();
 	shader->unbind();
 	MainRenderer::enable_culling();

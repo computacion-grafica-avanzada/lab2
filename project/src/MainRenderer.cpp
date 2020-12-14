@@ -58,6 +58,8 @@ void MainRenderer::setCharacter(Character* _character) {
 }
 
 void MainRenderer::render() {
+	glClearColor(skybox->getSkyColor().x, skybox->getSkyColor().y, skybox->getSkyColor().z, 1.0);					// set background colour
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
 
 	// move camera under plane
 	camera->moveCameraDown();
@@ -66,7 +68,7 @@ void MainRenderer::render() {
 	waterFrameBuffer->bindReflectionBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 	for (Renderer* renderer : renderers) {
-		renderer->enableClipPlane(glm::vec4(0, 1, 0, -4)); //TODO change to water height if different than 0
+		renderer->enableClipPlane(glm::vec4(0, 1, 0, -4 + 2.f)); //TODO change to water height if different than 0
 		renderer->render(lights, skybox->getSkyColor());
 		renderer->disableClipPlane();
 		skybox->enableClipPlane(glm::vec4(0, 1, 0, -4));
@@ -81,7 +83,7 @@ void MainRenderer::render() {
 	waterFrameBuffer->bindRefractionBuffer();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	for (Renderer* renderer : renderers) {
-		renderer->enableClipPlane(glm::vec4(0, -1, 0, 4));
+		renderer->enableClipPlane(glm::vec4(0, -1, 0, 4 + 1.f));
 		renderer->render(lights, skybox->getSkyColor());
 		renderer->disableClipPlane();
 		skybox->enableClipPlane(glm::vec4(0, -1, 0, 4));
@@ -97,7 +99,7 @@ void MainRenderer::render() {
 	skybox->render();
 
 	for (WaterRenderer* renderer : waterRenderers) {
-		renderer->render(waterFrameBuffer);
+		renderer->render(lights, waterFrameBuffer);
 	}
 
 	for (GuiRenderer* renderer : guiRenderers) {
