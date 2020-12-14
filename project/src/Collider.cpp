@@ -58,6 +58,12 @@ void Collider::solveCollisionSphereSphere(Collider* s1, Collider* s2)
 	{
 		printf("\nCollision detected!");
 
+		// Just to prevent errors when normalizing.
+		if (s1->pos == s2->pos)
+		{
+			s2->pos *= 0.99f;
+		}
+
 		glm::vec3 newDist = glm::normalize(s1->pos - s2->pos) * (s1->radius + s2->radius);
 		// The lighter object corrects its position
 		if (s1->mass == 0 || (s1->mass > s2->mass && s2->mass != 0))
@@ -125,6 +131,13 @@ void Collider::solveCollisionSphereBox(Collider* s, Collider* b)
 	if (distSq < radiusSq)
 	{
 		printf("\nCollision detected!");
+
+		// Just to prevent errors when normalizing.
+		if (s->pos == closestPoint)
+		{
+			closestPoint *= 0.99f;
+		}
+
 		glm::vec3 intersec = glm::normalize(closestPoint - s->pos) * (s->radius - std::sqrt(distSq));
 		//printf("\nIntersec: (%.6f, %.6f, %.6f)", intersec.x, intersec.y, intersec.z);
 
@@ -169,6 +182,12 @@ void Collider::solveCollisionSphereCapsule(Collider* s, Collider* c)
 				extremePos = glm::vec3(c->pos.x, c->pos.y - c->height / 2.0f, c->pos.z);
 			}
 
+			// Just to prevent errors when normalizing.
+			if (s->pos == extremePos)
+			{
+				extremePos *= 0.99f;
+			}
+
 			glm::vec3 newDist = glm::normalize(s->pos - extremePos) * (s->radius + c->radius);
 			// The lighter object corrects its position
 			if (s->mass == 0 || (s->mass > c->mass && c->mass != 0))
@@ -188,6 +207,12 @@ void Collider::solveCollisionSphereCapsule(Collider* s, Collider* c)
 			glm::vec3 imaginarySpherePos;
 			// Sphere at the same height of the other sphere
 			imaginarySpherePos = glm::vec3(c->pos.x, s->pos.y, c->pos.z);
+
+			// Just to prevent errors when normalizing.
+			if (s->pos == imaginarySpherePos)
+			{
+				imaginarySpherePos *= 0.99f;
+			}
 
 			glm::vec3 newDist = glm::normalize(s->pos - imaginarySpherePos) * (s->radius + c->radius);
 			// The lighter object corrects its position
@@ -217,6 +242,10 @@ void Collider::solveCollisionWithObject(Collider* objectCollider)
 		{
 			solveCollisionSphereBox(this, objectCollider);
 		}
+		else if (objectCollider->type == capsule)
+		{
+			solveCollisionSphereCapsule(this, objectCollider);
+		}
 		break;
 	case box:
 		if (objectCollider->type == sphere)
@@ -229,9 +258,9 @@ void Collider::solveCollisionWithObject(Collider* objectCollider)
 		}
 		break;
 	case capsule:
-		if (objectCollider->type == capsule)
+		if (objectCollider->type == sphere)
 		{
-			solveCollisionSphereCapsule(this, objectCollider);
+			solveCollisionSphereCapsule(objectCollider, this);
 		}
 		break;
 	default:
