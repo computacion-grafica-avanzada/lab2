@@ -12,7 +12,6 @@ void initStones(Camera* camera, Shader* world,  CollisionManager* collisionManag
 	// SE island
 	glm::mat4 model = glm::translate(glm::mat4(1.0), glm::vec3(200, 30, 300));
 	model = glm::scale(model, glm::vec3(0.2));
-	//model = glm::rotate(model, glm::radians(90.f), glm::vec3(0, 1, 0));
 	Renderer* rock = new Renderer(camera, false, model);
 	rock->loadObj("../models/Stone/stone.obj");
 	rock->setShader(world);
@@ -73,6 +72,24 @@ void initStones(Camera* camera, Shader* world,  CollisionManager* collisionManag
 	Collider* rock6Collider = new Collider(15, 2, 2.0f, rock6->getHighestVertix().y);
 	rock6Collider->pos = glm::vec3(-300, 30, -400);
 	collisionManager->addObjectCollider(rock6Collider);
+
+	model = glm::translate(glm::mat4(1.0), glm::vec3(300, 0, 150));
+	model = glm::scale(model, glm::vec3(12));
+	Renderer* rock7 = new Renderer(camera, false, model);
+	rock7->loadObj("../models/Stone/rock1.obj");
+	rock7->setShader(world);
+	Collider* rock7Collider = new Collider(15, 2, 1.0f);
+	rock7Collider->pos = glm::vec3(300, 0, 150);
+	collisionManager->addObjectCollider(rock7Collider);
+
+	model = glm::translate(glm::mat4(1.0), glm::vec3(-250, 40, 350));
+	model = glm::scale(model, glm::vec3(10));
+	Renderer* rock8 = new Renderer(camera, false, model);
+	rock8->loadObj("../models/Stone/rock3.obj");
+	rock8->setShader(world);
+	Collider* rock8Collider = new Collider(15, 2, 10.0f);
+	rock8Collider->pos = glm::vec3(-250, 40, 350);
+	collisionManager->addObjectCollider(rock8Collider);
 }
 
 void initTrees(Camera* camera, Shader* world, CollisionManager* collisionManager) {
