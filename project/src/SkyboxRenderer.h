@@ -11,7 +11,6 @@ class SkyboxRenderer : ITickable {
 	Shader* shader;
 	Camera* camera;
 	VertexArray* vertexArray;
-	Texture* cubeMap;
 	glm::vec4 clipPlane;
 	bool clipPlaneEnabled;
 

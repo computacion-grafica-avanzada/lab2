@@ -18,10 +18,6 @@ uniform float near;
 uniform float far;
 uniform vec3 lightColor;
 
-//const float waveStrength = 0.004;
-//const float shineDamper = 20.0;
-//const float reflectivity = 0.6;
-
 const float waveStrength = 0.04;
 const float shineDamper = 20.0;
 const float reflectivity = 0.5;
@@ -42,10 +38,6 @@ void main() {
 	vec2 distortedTexCoords = texture(dudvSampler, vec2(textureCoords.x + moveFactor, textureCoords.y)).rg * 0.1;
 	distortedTexCoords = textureCoords + vec2(distortedTexCoords.x, distortedTexCoords.y + moveFactor);
 	vec2 totalDistortion = (texture(dudvSampler, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength * clamp(waterDepth/500.0, 0.0, 1.0);;
-
-	//vec2 distortion1 = (texture(dudvSampler, vec2(textureCoords.x + moveFactor, textureCoords.y)).rg * 2.0 - 1) * waveStrength;
-	//vec2 distortion2 = (texture(dudvSampler, vec2(-textureCoords.x + moveFactor, textureCoords.y + moveFactor)).rg * 2.0 - 1) * waveStrength;
-	//vec2 totalDistortion = distortion1 + distortion2;
 
 	refractTexCoords += totalDistortion;
 	refractTexCoords = clamp(refractTexCoords, 0.001, 0.999);
@@ -74,11 +66,4 @@ void main() {
 	outColor = mix(reflectColor, refractColor, refractiveFactor);
 	outColor = outColor + vec4(specularHighlights, 0.0);
 	outColor.a = clamp(waterDepth/10.0, 0.0, 1.0);
-
-	//outColor = mix(outColor, vec4(0,0,1,1), 0.02);
-	//outColor = mix(vec4(skyColor,1), outColor, alpha);
-	//outColor = vec4(0,alpha,0,1);
-	//outColor = vec4(toCameraVector, 1);
-	//outColor = normalMapColor;
-	//outColor = vec4(waterDepth/100.0);
 }
