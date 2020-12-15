@@ -1,0 +1,86 @@
+﻿  GameScene.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Light.h(11,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\GameScene.cpp(14,41): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\GameScene.cpp(23,41): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\GameScene.cpp(33,41): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\GameScene.cpp(45,41): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\GameScene.cpp(55,41): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\GameScene.cpp(67,41): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\GameScene.cpp(228,22): warning C4305: 'argument': truncation from 'double' to 'T'
+          with
+          [
+              T=float
+          ]
+  Display.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Display.cpp(9,18): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Display.cpp(60,16): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+  Character.cpp
+  Buffer.cpp
+  IndexBuffer.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\buffers\IndexBuffer.cpp(11,21): warning C4267: '=': conversion from 'size_t' to 'GLsizei', possible loss of data
+  VertexArray.cpp
+  Collider.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Math.h(11,2): warning C4091: 'static ': ignored on left of 'Math' when no variable is declared
+  ColliderFloor.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\ColliderFloor.cpp(53,11): warning C4305: '=': truncation from 'double' to 'float'
+  CollisionManager.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\CollisionManager.cpp(13,46): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  ITickable.cpp
+  Light.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Light.h(11,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Math.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Math.h(11,2): warning C4091: 'static ': ignored on left of 'Math' when no variable is declared
+  WaterFrameBuffer.cpp
+  Camera.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Light.h(11,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Camera.cpp(118,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Light.h(11,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\main.cpp(273,21): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\main.cpp(274,41): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\main.cpp(280,35): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
+  MainRenderer.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Light.h(11,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Mesh.cpp
+  Renderable.cpp
+  Renderer.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Light.h(11,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Shader.cpp
+  Generating Code...
+  Compiling...
+  GuiRenderer.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Light.h(11,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+  SkyboxRenderer.cpp
+  Texture.cpp
+  TickEngine.cpp
+  WaterRenderer.cpp
+D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\src\Light.h(11,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Generating Code...
+  glad.c
+  lab2.vcxproj -> D:\Julio\Documents\Fing\10 Semestre\Compgraf Avanzada\obligatorio2\lab2\project\x64\Debug\lab2.exe
+  ..\libraries\SDL2-2.0.12\lib\x64\SDL2.dll
+  1 File(s) copied
