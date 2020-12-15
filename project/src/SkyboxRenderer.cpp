@@ -1,7 +1,7 @@
 #include "SkyboxRenderer.h"
 
 SkyboxRenderer::SkyboxRenderer(Camera* camera) {
-	this->shader = new Shader("./src/shaders/skybox.vert", "./src/shaders/skybox.frag");
+	this->shader = new Shader("../shaders/skybox.vert", "../shaders/skybox.frag");
 	this->camera = camera;
 	
 	this->clipPlane = glm::vec4(0, -1, 0, 100000);
@@ -59,21 +59,6 @@ SkyboxRenderer::SkyboxRenderer(Camera* camera) {
 	Buffer* vertexBuffer = new Buffer(vertices);
 	vertexArray = new VertexArray();
 	vertexArray->addBuffer(vertexBuffer, 0);
-	//  "../models/Skybox/right",
-	//	"../models/Skybox/left",
-	//	"../models/Skybox/top",
-	//	"../models/Skybox/bottom",
-	//	"../models/Skybox/back",
-	//	"../models/Skybox/front",
-	std::vector<std::string> filenames = { 
-		"../models/Skybox/lake2_rt.jpg", 
-		"../models/Skybox/lake2_lf.jpg", 
-		"../models/Skybox/lake2_up.jpg", 
-		"../models/Skybox/lake2_dn.jpg", 
-		"../models/Skybox/lake2_bk.jpg", 
-		"../models/Skybox/lake2_ft.jpg",
-	};
-	cubeMap = new Texture(filenames);
 }
 
 SkyboxRenderer::~SkyboxRenderer() {
@@ -92,7 +77,6 @@ void SkyboxRenderer::disableClipPlane() {
 
 void SkyboxRenderer::render() {
 	shader->bind();
-	cubeMap->bind();
 	vertexArray->bind();
 
 	glm::mat4 no_translation = camera->GetViewMatrix();
@@ -111,7 +95,6 @@ void SkyboxRenderer::render() {
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 
 	vertexArray->unbind();
-	cubeMap->unbind();
 	shader->unbind();
 }
 

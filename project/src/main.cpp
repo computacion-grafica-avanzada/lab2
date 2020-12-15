@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
 	//return 0;
 
 	Display::init(800, 800);
-	Character* character = new Character(glm::vec3(0, 60, 0));// , characterRenderer);
+	Character* character = new Character(glm::vec3(0, 60, 5));
 	Camera* camera = new Camera(character, 45, 1.f);
 	MainRenderer::init(camera);
 
@@ -92,9 +92,9 @@ int main(int argc, char* argv[]) {
 	MainRenderer::enable_culling();
 
 	// Create shaders
-	Shader* worldShader = new Shader("./src/shaders/simple.vert", "./src/shaders/simple.frag");
-	Shader* waterShader = new Shader("./src/shaders/water.vert", "./src/shaders/water.frag");
-	Shader* textShader = new Shader("./src/shaders/text.vert", "./src/shaders/text.frag");
+	Shader* worldShader = new Shader("../shaders/simple.vert", "../shaders/simple.frag");
+	Shader* waterShader = new Shader("../shaders/water.vert", "../shaders/water.frag");
+	Shader* textShader = new Shader("../shaders/text.vert", "../shaders/text.frag");
 
 
 	Renderer* characterRenderer = new Renderer(camera, true, glm::mat4(1.0));
@@ -120,12 +120,12 @@ int main(int argc, char* argv[]) {
 	}
 	ColliderFloor* floorCollider = new ColliderFloor(floorMeshes);
 
-	glm::mat4 fishModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-80, 15, 100));
+	glm::mat4 fishModelMatrix = glm::translate(glm::mat4(1.0), glm::vec3(-80, -5, 100));
 	Renderer* fish = new Renderer(camera, false, fishModelMatrix);
 	fish->loadObj("../models/fish/big_fish.obj");
 	fish->setShader(worldShader);
 
-	glm::mat4 fishModelMatrix2 = glm::translate(glm::mat4(1.0), glm::vec3(80, 15, -100));
+	glm::mat4 fishModelMatrix2 = glm::translate(glm::mat4(1.0), glm::vec3(120, -5, -100));
 	Renderer* fish2 = new Renderer(camera, false, fishModelMatrix);
 	fish2->loadObj("../models/fish/big_fish.obj");
 	fish2->setShader(worldShader);
@@ -136,19 +136,10 @@ int main(int argc, char* argv[]) {
 
 	initIsland(camera, worldShader, collisionManager);
 
-	//Renderer* boat = new Renderer(camera, false);
-	//boat->loadObj("../models/boat/boat3.obj");
-	//boat->setShader(worldShader);
-	//Collider* boatCollider = new Collider(2, 2, 18.0f);
-	//boatCollider->pos = boat->getAverageVertix();
-
 	Texture* dudv = new Texture("../models/waterDUDV.png");
 	Texture* normal = new Texture("../models/normal.png");
 	Light* light = new Light(glm::vec3(550), glm::vec3(1, 1, 1));
 	WaterRenderer* waterRenderer = new WaterRenderer(camera, waterShader, dudv, normal);
-
-	//CollisionManager* collisionManager = new CollisionManager(characterCollider, colliderFloor);
-	//collisionManager->addObjectCollider(boatCollider);
 
 	// create Gui with FPS
 	Texture* tex = new Texture();
@@ -190,8 +181,8 @@ int main(int argc, char* argv[]) {
 	SDL_Event sdlEvent;		// variable to detect SDL events
 	while (running)			// the event loop
 	{
-		//glClearColor(1.0, 1.0, 1.0, 1.0);					// set background colour
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear window
+		//glClearColor(1.0, 1.0, 1.0, 1.0);						// set background colour
+		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// clear window
 		Display::update(tex);
 		TickEngine::tick(tex2);
 		if (count == 4) {
@@ -202,8 +193,6 @@ int main(int argc, char* argv[]) {
 			count = 0;
 		}
 		count++;
-		// TODO delta frame and tick engine
-		//SDL_SetRelativeMouseMode((SDL_bool) true);
 		float cameraSpeed = character->currentCharacterSpeed() * Display::deltaTime;
 		while (SDL_PollEvent(&sdlEvent)) {
 			glm::vec3 position = character->getPosition();
@@ -297,7 +286,7 @@ int main(int argc, char* argv[]) {
 		character->setPosition(characterCollider->pos); // correct it in case of collision
 		camera->UpdateVectors();
 		MainRenderer::render();		// call the draw function
-		Display::swapBuffers();	// swap buffers
+		Display::swapBuffers();		// swap buffers
 	}
 
 	//FIN LOOP PRINCIPAL

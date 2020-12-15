@@ -204,6 +204,6 @@ void Camera::setPerspective(float fieldOfView, float aspectRatio, float nearClip
 }
 
 void Camera::setZoom(float delta) {
-	this->zoom -= delta;
+	this->zoom -= delta * 10;
 	if (this->zoom <= 1.0f) this->zoom = 1.f;
 }
