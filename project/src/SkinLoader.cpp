@@ -49,11 +49,11 @@ std::vector<glm::mat4> SkinLoader::loadInverseBindTransforms()
 			rawMatrixData[j] = rawData[auxIndex];
 		}
 		matrix = XMLUtils::rawDataToMat4(rawMatrixData);
+		//matrix = glm::transpose(matrix);
 		//if (i == 0)
 		//{
-		//	matrix *= CORRECTION;
+		//matrix *= CORRECTION;
 		//}
-		//matrix = glm::transpose(matrix);
 
 		inverseBindTransforms.push_back(matrix);
 	}

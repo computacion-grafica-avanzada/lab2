@@ -76,10 +76,11 @@ void AnimationDataLoader::processTransforms(std::string jointName, std::vector<s
 			}
 		}
 		transform = glm::transpose(transform);
+
 		if (root)
 		{
 			//because up axis in Blender is different to up axis in game
-			transform *= CORRECTION;
+		transform *= CORRECTION;
 		}
 		keyFrames[i]->addJointTransform(new JointTransformData(jointName, transform));
 	}

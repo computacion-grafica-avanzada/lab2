@@ -84,9 +84,17 @@ void Animator::applyPoseToJoints(std::map<std::string, glm::mat4> currentPose, J
 		applyPoseToJoints(currentPose, childJoint, currentTransform);
 	}
 	currentTransform = currentTransform * joint->getInverseBindTransform();
+
 	joint->setAnimationTransform(currentTransform);
 
-	//joint->setAnimationTransform(glm::identity<glm::mat4>());
+	//if (joint->name == "Torso" || joint->name == "Chest" || joint->name == "Upper_Arm_L" || joint->name == "Lower_Arm_L" || joint->name == "Hand_L")
+	//{
+	//	joint->setAnimationTransform(currentTransform);
+	//}
+	//else
+	//{
+	//	joint->setAnimationTransform(glm::identity<glm::mat4>());
+	//}
 
 	//if (joint->index == 0)
 	//{

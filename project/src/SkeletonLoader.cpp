@@ -25,6 +25,7 @@ JointData* SkeletonLoader::extractMainJointData(tinyxml2::XMLElement* jointNode,
 	glm::mat4 matrix = glm::identity<glm::mat4>();
 	matrix = convertData(matrixData);
 	matrix = glm::transpose(matrix);
+
 	if (isRoot)
 	{
 		//because in Blender z is up, but in our game y is up.
